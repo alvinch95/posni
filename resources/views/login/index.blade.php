@@ -35,7 +35,7 @@
           @endif
           <div class="card text-center">
             <div class="card-header d-flex align-items-center justify-content-center">
-                <h1 class="display-6">Please login</h1>
+                <h1 class="display-6">Please Login</h1>
             </div>
             <div class="card-body">
               <main class="form-signin">
