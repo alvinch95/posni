@@ -20,11 +20,11 @@
             </div>
       </form>
 
-      <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'asc']) }}" class="btn btn-dark">Sort by Name (ASC)</a>
-      <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'desc']) }}" class="btn btn-outline-dark">Sort by Name (DESC)</a>
+      <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'asc']) }}" class="btn btn-dark mb-1">Sort by Name (ASC)</a>
+      <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'desc']) }}" class="btn btn-outline-dark mb-1">Sort by Name (DESC)</a>
 
-      <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'order' => 'asc']) }}" class="btn btn-warning">Sort by Stock (ASC)</a>
-      <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'order' => 'desc']) }}" class="btn btn-outline-warning">Sort by Stock (DESC)</a>
+      <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'order' => 'asc']) }}" class="btn btn-warning mb-1">Sort by Stock (ASC)</a>
+      <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'order' => 'desc']) }}" class="btn btn-outline-warning mb-1">Sort by Stock (DESC)</a>
 
   </div>
 </div>
