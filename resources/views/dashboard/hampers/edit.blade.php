@@ -128,6 +128,11 @@
 
 
 <script>
+  //to make search field autofocus when selecting the dropdown
+  $(document).on('select2:open', () => {
+    document.querySelector('.select2-search__field').focus();
+  });
+  
   $(document).ready(function() {
     $('select[name="item_id[]"]').select2({
         theme:"bootstrap-5"

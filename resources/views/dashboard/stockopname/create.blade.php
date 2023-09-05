@@ -46,6 +46,10 @@
 </div>
 
 <script>
+  $(document).on('select2:open', () => {
+    document.querySelector('.select2-search__field').focus();
+  });
+  
   $(document).ready(function() {
       // Initialize Select2
       $('select[name="item_id"]').select2({

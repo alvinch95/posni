@@ -118,12 +118,14 @@
 
 
 <script>
+    //to make search field autofocus when selecting the dropdown
+    $(document).on('select2:open', () => {
+      document.querySelector('.select2-search__field').focus();
+    });
+
     $(document).ready(function() {
-      // Initialize Select2
-      $('select[name="item_id[]"]').select2({
-          // Optional: You can customize Select2 options here
-          theme:"bootstrap-5"
-      });
+      // Initialize Select2 for the default item
+      initializeSelect2($('select[name="item_id[]"]'));
 
       $(".add-row").on("click", function() {
         var newRow = `
@@ -157,10 +159,8 @@
         `;
         $(".item_details").append(newRow);
 
-        //initialize select2
-        $('select[name="item_id[]"]').select2({
-            theme:"bootstrap-5"
-        });
+        // Initialize Select2 for the newly added item
+        initializeSelect2($('select[name="item_id[]"]').last());
       });
 
       $(".item_details").on("click", ".remove-row", function() {
@@ -193,6 +193,13 @@
         updateRevenuePercentage();
       });
     });
+
+    // Function to initialize Select2
+    function initializeSelect2(element) {
+        element.select2({
+            theme: "bootstrap-5"
+        });
+    }
 
     function updateKeuntunganOnly()
     {
