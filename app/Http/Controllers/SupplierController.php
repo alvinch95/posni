@@ -87,6 +87,7 @@ class SupplierController extends Controller
      */
     public function update(Request $request, Supplier $supplier)
     {
+        $rules = [];
         if($supplier->name != $request->name)
         {
             $rules['name'] = 'required|max:255|unique:suppliers';
