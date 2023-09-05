@@ -40,9 +40,7 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|max:255|unique:suppliers',
-            'phone' => 'numeric',
-            'bank_account' => 'numeric'
+            'name' => 'required|max:255|unique:suppliers'
         ]);
         $validatedData['notes'] = $request->notes; // Add notes field
 
@@ -86,11 +84,6 @@ class SupplierController extends Controller
      */
     public function update(Request $request, Supplier $supplier)
     {
-        $rules = [
-            'phone' => 'numeric',
-            'bank_account' => 'numeric'
-        ];
-        
         if($supplier->name != $request->name)
         {
             $rules['name'] = 'required|max:255|unique:suppliers';
