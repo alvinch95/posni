@@ -42,6 +42,9 @@ class SupplierController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255|unique:suppliers'
         ]);
+
+        $validatedData['phone'] = $request->phone; // Add notes field
+        $validatedData['bank_account'] = $request->bank_account; // Add notes field
         $validatedData['notes'] = $request->notes; // Add notes field
 
         Supplier::create($validatedData);
@@ -90,6 +93,8 @@ class SupplierController extends Controller
         }
 
         $validatedData = $request->validate($rules);
+        $validatedData['phone'] = $request->phone;
+        $validatedData['bank_account'] = $request->bank_account;
         $validatedData['notes'] = $request->notes; // Add notes field
 
         Supplier::where('id', $supplier->id)->update($validatedData);
