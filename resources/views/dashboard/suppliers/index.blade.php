@@ -26,6 +26,7 @@
           <th scope="col">Name</th>
           <th scope="col">Phone</th>
           <th scope="col">Bank Account No</th>
+          <th scope="col">Notes</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
@@ -36,6 +37,7 @@
                 <td>{{ $supplier->name }}</td>
                 <td>{{ $supplier->phone }}</td>
                 <td>{{ $supplier->bank_account }}</td>
+                <td>{{ $supplier->notes }}</td>
                 <td>
                     <a href="/dashboard/suppliers/{{ $supplier->id }}" class="badge bg-primary"><span data-feather="eye"></span></a>
                     <a href="/dashboard/suppliers/{{ $supplier->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
