@@ -58,6 +58,10 @@ class StockOpnameController extends Controller
             $sh->end_stock = $request->end_stock;
             $sh->remark = $request->remark;
             $sh->save();
+
+            $item = Item::find($sh->item_id);
+            $item->stock = $request->end_stock;
+            $item->save();
             DB::commit();
             Alert::success('Success', 'Stock Opname Submitted Successfully !');
             return back();

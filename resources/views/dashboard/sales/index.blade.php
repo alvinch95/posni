@@ -40,7 +40,7 @@
                                     <img src="{{ asset('storage/hampers-images/no-image-found.jpg') }}" class="card-img" alt="{{ $hamper->name }}" />
                                 @endif
                             </div>
-                            <div class="card-body">
+                            <div class="card-body px-2">
                                 <div class="d-flex justify-content-between">
                                     <p class="small"><a href="#!" class="text-muted">{{ $hamper->serie->name }}</a></p>
                                     <p class="small text-info">{{ "Rp. ".number_format($hamper->capital_price, 0, ',', '.') }}</p>
@@ -130,7 +130,11 @@
                         <p class="fs-6 fw-bold mb-0 text-center" id="total_cuan_label">Cuan : {{ "Rp. ".number_format($total_cart-$total_modal, 0, ',', '.') }}</p>
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-success checkout">Checkout</button>
+                        <button type="submit" class="btn @if ($shopping_carts->count() <= 0)
+                            btn-secondary
+                        @else
+                            btn-success
+                        @endif checkout" @if($shopping_carts->count() <= 0) disabled @endif>Checkout</button>
                     </div>
                 </div>
             </div>
