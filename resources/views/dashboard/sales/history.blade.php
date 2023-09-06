@@ -88,11 +88,11 @@
                   <td>{{ "Rp. ".number_format($so->total_revenue, 0, ',', '.') }}</td>
                   <td>
                     <a href="/dashboard/sales/{{ $so->id }}" class="badge bg-primary" title="View Order Detail"><span data-feather="eye"></span></a>
-                    <form action="/dashboard/sales/{{ $so->id }}" method="post" class="d-inline">
+                    {{-- <form action="/dashboard/sales/{{ $so->id }}" method="post" class="d-inline">
                       @method('delete')
                       @csrf
                       <button class="badge bg-danger border-0 hapus" title="Cancel Order"><span data-feather="x-circle"></span></button>
-                    </form>
+                    </form> --}}
                 </td>
               </tr>
           @php

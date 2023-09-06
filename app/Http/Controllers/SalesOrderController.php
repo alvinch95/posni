@@ -208,9 +208,13 @@ class SalesOrderController extends Controller
             'sales_orders' => SalesOrder::with('customer')->whereRaw($whereRaw)->orderBy($sortField, $sortOrder)->filter(request(['search']))->paginate(10)->withQueryString()
         ]);
     }
-    public function show(SalesOrder $salesOrder)
+    public function show(SalesOrder $sale)
     {
-        //
+        $so = SalesOrder::with(['details.salesOrderDetailItems','customer','details.hamper'])->find($sale->id);
+
+        return view('dashboard.sales.show',[
+            'sales_order' => $so
+        ]);
     }
 
     /**
