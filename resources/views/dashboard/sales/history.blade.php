@@ -1,5 +1,11 @@
 @extends('dashboard.layouts.main')
 
+@section('head')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;1,100;1,500&family=REM:wght@100&display=swap" rel="stylesheet">
+@endsection
+
 @section('container')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Sales Order Histories</h1>
@@ -15,25 +21,25 @@
   <div class="col-md-8">
       <form action="/dashboard/sales/history">
           <div class="row mb-3 align-items-center">
-            <div class="col-md-3">
-              <div class="form-floating">
-                <input type="text" class="form-control mx-1" placeholder="Search items.." name="search" value="{{ request('search') }}">
+            <div class="col-lg-3">
+              <div class="form-floating mb-1">
+                <input type="text" class="form-control" placeholder="Search items.." name="search" value="{{ request('search') }}">
                 <label for="search" class="form-label text-muted">Search keyword</label>
               </div>
             </div>
-            <div class="col-md-3">
-              <div class="form-floating">
+            <div class="col-lg-3">
+              <div class="form-floating mb-1">
                 <input type="date" class="form-control" id="order_date_from" name="order_date_from" value="{{ request('order_date_from') }}">
                 <label for="order_date_from" class="form-label">Order Date From</label>
               </div>
             </div>
-            <div class="col-md-3">
-              <div class="form-floating">
+            <div class="col-lg-3">
+              <div class="form-floating mb-1">
                 <input type="date" class="form-control" id="order_date_to" name="order_date_to" value="{{ request('order_date_to') }}">
                 <label for="order_date_to" class="form-label">Order Date To</label>
               </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-lg-1">
               <button class="btn text-white" style="background-color: #966F33" type="submit">Search</button>
             </div>
           </div>
@@ -41,12 +47,12 @@
 
 
       <div class="d-flex align-items-center">
-        <h4 class="d-inline display-6">Sorting :</h4>
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'asc']) }}" class="btn btn-dark mx-1">Item Name (ASC)</a>
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'desc']) }}" class="btn btn-outline-dark mx-1">Item Name (DESC)</a>
+        <h4 class="d-inline" style="font-family: 'Montserrat', sans-serif;">Sorting</h4>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'asc']) }}" class="btn btn-dark mx-1 btn-sm">Item Name (ASC)</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'desc']) }}" class="btn btn-outline-dark mx-1 btn-sm">Item Name (DESC)</a>
   
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'asc']) }}" class="btn btn-warning mx-1">Date (ASC)</a>
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'desc']) }}" class="btn btn-outline-warning mx-1">Date (DESC)</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'asc']) }}" class="btn btn-warning mx-1 btn-sm">Date (ASC)</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'desc']) }}" class="btn btn-outline-warning mx-1 btn-sm">Date (DESC)</a>
       </div>
   </div>
 </div>
