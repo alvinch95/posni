@@ -1,5 +1,11 @@
 @extends('dashboard.layouts.main')
 
+@section('head')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;1,100;1,500&family=REM:wght@100&display=swap" rel="stylesheet">
+@endsection
+
 @section('container')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">My Items</h1>
@@ -20,12 +26,14 @@
             </div>
       </form>
 
-      <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'asc']) }}" class="btn btn-dark mb-1">Sort by Name (ASC)</a>
-      <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'desc']) }}" class="btn btn-outline-dark mb-1">Sort by Name (DESC)</a>
+      <div class="d-flex align-items-center">
+        <h4 class="d-inline" style="font-family: 'Montserrat', sans-serif;">Sorting</h4>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'asc']) }}" class="btn btn-dark mb-1 btn-sm mx-1">Name (ASC)</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'desc']) }}" class="btn btn-outline-dark mb-1 btn-sm mx-1">Name (DESC)</a>
 
-      <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'order' => 'asc']) }}" class="btn btn-warning mb-1">Sort by Stock (ASC)</a>
-      <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'order' => 'desc']) }}" class="btn btn-outline-warning mb-1">Sort by Stock (DESC)</a>
-
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'order' => 'asc']) }}" class="btn btn-warning mb-1 btn-sm mx-1">Stock (ASC)</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'order' => 'desc']) }}" class="btn btn-outline-warning mb-1 btn-sm mx-1">Stock (DESC)</a>
+      </div>
   </div>
 </div>
 

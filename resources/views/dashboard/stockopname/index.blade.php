@@ -1,5 +1,11 @@
 @extends('dashboard.layouts.main')
 
+@section('head')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;1,100;1,500&family=REM:wght@100&display=swap" rel="stylesheet">
+@endsection
+
 @section('container')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">{{ $title }}</h1>
@@ -22,12 +28,12 @@
 
 
       <div class="d-flex align-items-center">
-        <h4 class="d-inline display-6">Sorting :</h4>
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'asc']) }}" class="btn btn-dark mx-1">Item Name (ASC)</a>
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'desc']) }}" class="btn btn-outline-dark mx-1">Item Name (DESC)</a>
+        <h4 class="d-inline" style="font-family: 'Montserrat', sans-serif;">Sorting</h4>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'asc']) }}" class="btn btn-dark mx-1 btn-sm mb-1">Item Name (ASC)</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'desc']) }}" class="btn btn-outline-dark mx-1 btn-sm mb-1">Item Name (DESC)</a>
   
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'asc']) }}" class="btn btn-warning mx-1">Date (ASC)</a>
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'desc']) }}" class="btn btn-outline-warning mx-1">Date (DESC)</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'asc']) }}" class="btn btn-warning mx-1 btn-sm mb-1">Date (ASC)</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'desc']) }}" class="btn btn-outline-warning mx-1 btn-sm mb-1">Date (DESC)</a>
       </div>
 
   </div>
