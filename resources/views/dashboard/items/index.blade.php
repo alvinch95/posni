@@ -40,8 +40,18 @@
 <div class="table-responsive col-lg-8">
     <a href="/dashboard/items/create" class="btn btn-primary mb-3">Add new items</a>
     @if ($items->count())
-      <table class="table table-bordered border-dark table-striped table-sm">
-        <caption>List of items</caption>
+      <table id="itemsTable" class="table table-bordered border-dark table-striped table-sm">
+        <caption>
+          <div class="d-flex float-end">
+            <label for="page-size-select" class="mx-2">Page Size:</label>
+            <select id="page-size-select" class="form-select page-size-select">
+                <option value="10" {{ $pageSize==10?"selected":"" }}>10</option>
+                <option value="25" {{ $pageSize==25?"selected":"" }}>25</option>
+                <option value="50" {{ $pageSize==50?"selected":"" }}>50</option>
+            </select>
+          </div>
+          Showing {{ $pageSize<=$totalData?$pageSize:$totalData }} of {{ $totalData }} results
+        </caption>
         <thead class="table-dark border-dark">
           <tr>
             <th scope="col">#</th>
@@ -87,9 +97,38 @@
       <p class="text-center fs-4">No Product Found.</p>
     @endif
 </div>
-
+<style>
+  /* Style the page size select */
+  .page-size-select {
+        padding: 4px 8px; /* Adjust padding as needed */
+        font-size: 12px; /* Adjust font size as needed */
+        width: 70px; /* Adjust width as needed */
+    }
+</style>
   <script>
     $(document).ready(function(){
+      $('#page-size-select').on('change', function() {
+          console.log("test");
+          const selectedPageSize = $(this).val();
+          const currentUrl = window.location.href;
+
+          // Replace the "page_size" query parameter with the selected page size
+          const updatedUrl = updateQueryStringParameter(currentUrl, 'page_size', selectedPageSize);
+
+          // Redirect to the updated URL
+          window.location.href = updatedUrl;
+      });
+
+      // Function to update query parameters in URL
+      function updateQueryStringParameter(uri, key, value) {
+          const re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+          const separator = uri.indexOf('?') !== -1 ? "&" : "?";
+          if (uri.match(re)) {
+              return uri.replace(re, '$1' + key + "=" + value + '$2');
+          }
+          return uri + separator + key + "=" + value;
+      }
+
       $('.hapus').click(function(e) {
         e.preventDefault();
         var form = $(this).parents('form');
