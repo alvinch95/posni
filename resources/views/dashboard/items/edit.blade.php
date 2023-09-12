@@ -61,6 +61,7 @@
             <option value="{{ old('uom', $item->uom) }}" selected hidden>{{ old('uom', $item->uom) }}</option>
             <option value="pcs">pcs</option>
             <option value="cm">cm</option>
+            <option value="gram">gram</option>
           </select>
 
           @error('uom')

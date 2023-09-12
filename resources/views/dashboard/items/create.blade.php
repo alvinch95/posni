@@ -52,6 +52,7 @@
             <option value="{{ old('uom') }}" selected hidden>{{ old('uom') }}</option>
             <option value="pcs">pcs</option>
             <option value="cm">cm</option>
+            <option value="gram">gram</option>
           </select>
           @error('uom')
             <div class="invalid-feedback">
