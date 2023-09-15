@@ -29,6 +29,18 @@
       trix-toolbar [data-trix-button-group="file-tools"]{
         display:none;
       }
+      #loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.6); /* Add a semi-transparent background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
     </style>
   </head>
   <body>
@@ -41,6 +53,11 @@
     @include('dashboard.layouts.sidebar')
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div id="loading-container" style="display: none;">
+        <div>
+            <img src="{{ asset('img/loading-gif.gif') }}" alt="Loading...">
+        </div>
+      </div>
       @yield('container')
     </main>
   </div>

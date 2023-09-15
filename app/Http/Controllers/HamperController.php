@@ -47,8 +47,16 @@ class HamperController extends Controller
     {
         return view('dashboard.hampers.create',[
             'series' => Serie::all(),
-            'items' => Item::all()
+            'items' => Item::all(),
+            'hampers' => Hamper::all()
         ]);
+    }
+
+    public function copyHampers(Request $request)
+    {
+        $hamper = Hamper::find($request->hamperID);
+
+        return $hamper->details;
     }
 
     /**

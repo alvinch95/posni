@@ -2,11 +2,6 @@
 
 @section('container')
 <section class="mt-5">
-    <div id="loading-container" style="display: none;">
-        <div>
-            <img src="{{ asset('img/loading-gif.gif') }}" alt="Loading...">
-        </div>
-    </div>
     <div class="row">
         <div class="col-lg-9">
             <div class="row d-flex justify-content-left">
@@ -66,7 +61,7 @@
                                     <div class="d-flex align-items-center justify-content-center">
                                         <input type="hidden" name="hamper_id" value="{{ $hamper->id }}">
                                         <input type="hidden" name="selling_price" value="{{ $hamper->selling_price }}">
-                                        <button type="submit" class="btn btn-dark" @if($hamper->getStock() <= 0) disabled @endif ><i class="bi bi-cart"></i></button>
+                                        <button type="submit" class="btn btn-dark add-cart" id="add-cart" @if($hamper->getStock() <= 0) disabled @endif ><i class="bi bi-cart"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -183,18 +178,6 @@
     </div>
 </div>
 <style>
-    #loading-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.6); /* Add a semi-transparent background */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    }
     /* Media query for screens with a maximum width of 768px (typical for mobile devices) */
     @media (max-width: 768px) {
         .shopping-cart {
@@ -249,7 +232,7 @@
 </style>
 <script>
     $(document).ready(function () {
-        $('#addToCartForm').submit(function (e) {
+        $('.add-cart').click(function(e){
             $("#loading-container").show();
         });
 

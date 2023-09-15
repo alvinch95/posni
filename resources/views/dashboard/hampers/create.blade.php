@@ -37,6 +37,64 @@
             @endforeach
           </select>
         </div>
+        <div class="mb-3">
+          <label for="image" class="form-label">Hampers Image</label>
+          <img class="img-preview img-fluid mb-3 col-sm-5">
+          <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" onchange="previewImage()">
+          @error('image')
+            <div class="invalid-feedback">
+              {{ $message }}
+            </div>
+          @enderror
+        </div>
+        <hr class="mt-4 bg-dark">
+        <h1 class="display-6">Details :</h1>
+        <!-- Add a dropdown for selecting an existing hamper inside each row of the dynamic details section -->
+        <div class="row align-items-end mb-3">
+          <div class="col-lg-6 col-md-12">
+            <label for="copy_hamper" class="form-label">Copy from other hampers</label>
+            <select class="form-select select2" name="copy_hamper">
+                <option value="" disabled selected hidden>Select an existing hamper</option>
+                @foreach ($hampers as $hamper)
+                    <option value="{{ $hamper->id }}">{{ $hamper->name }}</option>
+                @endforeach
+            </select>
+          </div>
+          <div class="col-lg-1">
+            <button class="btn btn-dark" id="copyButton">Copy</button>
+          </div>
+        </div>
+        <div class="item_details">
+          <div class="row">
+            <div class="col-lg-3">
+              <label for="item_id" class="form-label">Item</label>
+              <select class="form-select select2" name="item_id[]" required>
+                <option value="" disabled selected hidden>Select an item</option>
+                @foreach ($items as $item)
+                  <option value="{{ $item->id }}" data-unit-price="{{ $item->purchase_price }}">{{ $item->name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-lg-3">
+              <label for="unit_price" class="form-label">Harga Satuan</label>
+              <input type="number" class="unit_price form-control @error('unit_price') is-invalid @enderror" name="unit_price[]" value="{{ old('unit_price') }}" readonly>
+            </div>
+            <div class="col-lg-2">
+              <label for="qty" class="form-label">Jumlah</label>
+              <input type="number" class="qty form-control @error('qty') is-invalid @enderror" name="qty[]" value="{{ old('qty') }}" step="1" required>
+            </div>
+            <div class="col-lg-3">
+              <label for="total" class="form-label">Total</label>
+              <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
+            </div>
+            <div class="col-lg-1">
+              <label class="form-label" style="visibility: hidden;">Delete</label>
+              <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3"><button type="button" class="btn btn-warning add-row">Add row</button></div>
+        <hr class="my-4 bg-dark">
         <div class="row">
           <div class="col-lg-3">
             <label for="capital_price" class="form-label">Harga Modal</label>
@@ -69,49 +127,6 @@
         <div class="mb-3">
           <p class="lead">Keuntungan = Rp. <span id="revenue_amount">0</span></p>
         </div>
-        <div class="mb-3">
-          <label for="image" class="form-label">Hampers Image</label>
-          <img class="img-preview img-fluid mb-3 col-sm-5">
-          <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" onchange="previewImage()">
-          @error('image')
-            <div class="invalid-feedback">
-              {{ $message }}
-            </div>
-          @enderror
-        </div>
-        <hr class="mt-4 bg-dark">
-        <h1 class="display-6">Details :</h1>
-        <div class="item_details">
-          <div class="row">
-            <div class="col-lg-3">
-              <label for="item_id" class="form-label">Item</label>
-              <select class="form-select select2" name="item_id[]" required>
-                <option value="" disabled selected hidden>Select an item</option>
-                @foreach ($items as $item)
-                  <option value="{{ $item->id }}" data-unit-price="{{ $item->purchase_price }}">{{ $item->name }}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="col-lg-3">
-              <label for="unit_price" class="form-label">Harga Satuan</label>
-              <input type="number" class="unit_price form-control @error('unit_price') is-invalid @enderror" name="unit_price[]" value="{{ old('unit_price') }}" readonly>
-            </div>
-            <div class="col-lg-2">
-              <label for="qty" class="form-label">Jumlah</label>
-              <input type="number" class="qty form-control @error('qty') is-invalid @enderror" name="qty[]" value="{{ old('qty') }}" step="1" required>
-            </div>
-            <div class="col-lg-3">
-              <label for="total" class="form-label">Total</label>
-              <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
-            </div>
-            <div class="col-lg-1">
-              <label class="form-label" style="visibility: hidden;">Delete</label>
-              <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
-            </div>
-          </div>
-        </div>
-        <div class="mt-3"><button type="button" class="btn btn-warning add-row">Add row</button></div>
-        <hr class="my-4 bg-dark">
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
 </div>
@@ -126,41 +141,68 @@
     $(document).ready(function() {
       // Initialize Select2 for the default item
       initializeSelect2($('select[name="item_id[]"]'));
+      initializeSelect2($('select[name="copy_hamper"]'));
+
+      $("#copyButton").click(function(e) {
+          e.preventDefault();
+          // Handle the copy operation here
+          var selectedHamperId = $("select[name='copy_hamper']").val();
+          
+          if(!selectedHamperId)
+          {
+            Swal.fire({
+                    icon: 'warning',
+                    title: '',
+                    text: "Choose hampers first"
+                });
+            return;
+          }
+          Swal.fire({
+              title: 'Area you sure ?',
+              text: "This will reset all your hampers details and replace with copied hampers.",
+              icon: 'question',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes!'
+          }).then((result) => {
+              if (result.value) {
+                $("#loading-container").show();
+                $.ajax({
+                  type: "POST",
+                  url: "{{ route('dashboard.hampers.copy') }}", // Replace with your actual route URL
+                  data: {
+                      "_token": "{{ csrf_token() }}",
+                      hamperID: selectedHamperId
+                  },
+                  success: function(response) {
+                      addRowsFromResponse(response);
+                      $('select[name="copy_hamper"]').val('').trigger('change.select2');
+                      $("#loading-container").hide();
+                      Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: "Success copy hampers"
+                      })
+                  },
+                  error: function(xhr, textStatus, errorThrown) {
+                      $("#loading-container").hide();
+                      // Extract the error message from the server response
+                      var errorMessage = xhr.responseText;
+                      // Display the error message using SweetAlert
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: errorMessage
+                      });
+                  }
+                });
+              }
+          });
+      });
 
       $(".add-row").on("click", function() {
-        var newRow = `
-          <div class="row mt-3">
-            <div class="col-lg-3">
-              <label for="item_id" class="form-label">Item</label>
-              <select class="form-select select2" name="item_id[]" required>
-                <option value="" disabled selected hidden>Select an item</option>
-                @foreach ($items as $item)
-                  <option value="{{ $item->id }}" data-unit-price="{{ $item->purchase_price }}">{{ $item->name }}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="col-lg-3">
-              <label for="unit_price" class="form-label">Harga Satuan</label>
-              <input type="number" class="unit_price form-control @error('unit_price') is-invalid @enderror" name="unit_price[]" value="{{ old('unit_price') }}" readonly>
-            </div>
-            <div class="col-lg-2">
-              <label for="qty" class="form-label">Jumlah</label>
-              <input type="number" class="qty form-control @error('qty') is-invalid @enderror" name="qty[]" value="{{ old('qty') }}" step="1" required>
-            </div>
-            <div class="col-lg-3">
-              <label for="total" class="form-label">Total</label>
-              <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
-            </div>
-            <div class="col-lg-1">
-              <label class="form-label" style="visibility: hidden;">Delete</label>
-              <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
-            </div>
-          </div>
-        `;
-        $(".item_details").append(newRow);
-
-        // Initialize Select2 for the newly added item
-        initializeSelect2($('select[name="item_id[]"]').last());
+        addRows();
       });
 
       $(".item_details").on("click", ".remove-row", function() {
@@ -193,6 +235,60 @@
         updateRevenuePercentage();
       });
     });
+
+    function addRows(){
+      var newRow = `
+        <div class="row mt-3">
+          <div class="col-lg-3">
+            <label for="item_id" class="form-label">Item</label>
+            <select class="form-select select2" name="item_id[]" required>
+              <option value="" disabled selected hidden>Select an item</option>
+              @foreach ($items as $item)
+                <option value="{{ $item->id }}" data-unit-price="{{ $item->purchase_price }}">{{ $item->name }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="col-lg-3">
+            <label for="unit_price" class="form-label">Harga Satuan</label>
+            <input type="number" class="unit_price form-control @error('unit_price') is-invalid @enderror" name="unit_price[]" value="{{ old('unit_price') }}" readonly>
+          </div>
+          <div class="col-lg-2">
+            <label for="qty" class="form-label">Jumlah</label>
+            <input type="number" class="qty form-control @error('qty') is-invalid @enderror" name="qty[]" value="{{ old('qty') }}" step="1" required>
+          </div>
+          <div class="col-lg-3">
+            <label for="total" class="form-label">Total</label>
+            <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
+          </div>
+          <div class="col-lg-1">
+            <label class="form-label" style="visibility: hidden;">Delete</label>
+            <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
+          </div>
+        </div>
+      `;
+      $(".item_details").append(newRow);
+
+      // Initialize Select2 for the newly added item
+      initializeSelect2($('select[name="item_id[]"]').last());
+    }
+
+    function addRowsFromResponse(response) {
+        if (response && response.length > 0) {
+            // Remove all existing rows
+            $('.item_details .row').remove();
+
+            response.forEach(function(item) {
+              addRows(); // Add a new empty row
+              // Set values for the new row
+              var newSelect = $('.item_details select[name="item_id[]"]').last();
+              newSelect.val(item.item_id);
+              newSelect.trigger('change'); // Trigger change event to populate other fields
+              var newQty = $('.item_details .qty').last();
+              newQty.val(item.qty);
+              newQty.trigger('change');
+            });
+        }
+    }
 
     // Function to initialize Select2
     function initializeSelect2(element) {

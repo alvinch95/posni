@@ -89,6 +89,7 @@ Route::resource('/dashboard/customers', CustomerController::class)->middleware('
 Route::resource('/dashboard/series', SerieController::class)->except('show')->middleware('auth');
 Route::resource('/dashboard/variants', VariantController::class)->except('show')->middleware('auth');
 
+Route::post('dashboard/hampers/copyHampers',[HamperController::class, 'copyHampers'])->middleware('auth')->name('dashboard.hampers.copy');
 Route::post('dashboard/hampers/updatePrice', [HamperController::class, 'updatePrice'])->middleware('auth')->name('dashboard.hampers.updatePrice');
 Route::resource('/dashboard/hampers', HamperController::class)->middleware('auth');
 Route::resource('/dashboard/purchases', PurchaseController::class)->middleware('auth');
