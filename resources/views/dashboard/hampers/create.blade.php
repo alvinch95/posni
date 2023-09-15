@@ -60,7 +60,7 @@
                 @endforeach
             </select>
           </div>
-          <div class="col-lg-1">
+          <div class="col-lg-1 col-md-12 @mobile mt-2 @endmobile">
             <button class="btn btn-dark" id="copyButton">Copy</button>
           </div>
         </div>
@@ -83,13 +83,17 @@
               <label for="qty" class="form-label">Jumlah</label>
               <input type="number" class="qty form-control @error('qty') is-invalid @enderror" name="qty[]" value="{{ old('qty') }}" step="1" required>
             </div>
-            <div class="col-lg-3">
-              <label for="total" class="form-label">Total</label>
-              <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
-            </div>
-            <div class="col-lg-1">
-              <label class="form-label" style="visibility: hidden;">Delete</label>
-              <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
+            <div class="col-lg-4">
+              <div class="row">
+                  <div class="col-10">
+                      <label for="total" class="form-label">Total</label>
+                      <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
+                  </div>
+                  <div class="col-2">
+                      <label class="form-label" style="visibility: hidden;">Delete</label>
+                      <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
+                  </div>
+              </div>
             </div>
           </div>
         </div>
@@ -256,13 +260,17 @@
             <label for="qty" class="form-label">Jumlah</label>
             <input type="number" class="qty form-control @error('qty') is-invalid @enderror" name="qty[]" value="{{ old('qty') }}" step="1" required>
           </div>
-          <div class="col-lg-3">
-            <label for="total" class="form-label">Total</label>
-            <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
-          </div>
-          <div class="col-lg-1">
-            <label class="form-label" style="visibility: hidden;">Delete</label>
-            <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
+          <div class="col-lg-4">
+            <div class="row">
+                <div class="col-10">
+                    <label for="total" class="form-label">Total</label>
+                    <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
+                </div>
+                <div class="col-2">
+                    <label class="form-label" style="visibility: hidden;">Delete</label>
+                    <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
+                </div>
+            </div>
           </div>
         </div>
       `;
