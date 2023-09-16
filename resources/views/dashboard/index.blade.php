@@ -19,7 +19,7 @@
                         <div>
                             <select class="form-select" id="year" name="year">
                                 <option value="" disabled selected hidden>Select year</option>
-                                @for ($year = 2023; $year <= 2023; $year++)
+                                @for ($year = 2023; $year <= $currentYear; $year++)
                                     <option value="{{ $year }}">{{ $year }}</option>
                                 @endfor
                             </select>
