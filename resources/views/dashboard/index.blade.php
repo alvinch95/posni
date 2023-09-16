@@ -6,8 +6,8 @@
     <h1 class="h2">Welcome back, {{ auth()->user()->name }}</h1>
 </div>
 
-<div class="row">
-    <div class="col-md-5">
+<div class="row mb-3">
+    <div class="col-md-12">
         <div class="card">
             <div class="card-header" style="background-color: #008080; color: white;">
                 Monthly Transactions
@@ -31,18 +31,27 @@
             </div>
         </div>
     </div>
+</div>
 
-    <div class="col-md-5">
+<div class="row">
+    <div class="col-md-4">
         <div class="card">
-            <div class="card-header" style="background-color: #007BFF; color: white;">
+            <div class="card-header" style="background-color: #C0C0C0; color: white;">
                 Chart 2
             </div>
             <div class="card-body">
             </div>
         </div>
     </div>
-
-    <!-- Add more chart cards as needed -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header" style="background-color: #C8A2C8; color: white;">
+                Chart 3
+            </div>
+            <div class="card-body">
+            </div>
+        </div>
+    </div>
 
 </div>
 

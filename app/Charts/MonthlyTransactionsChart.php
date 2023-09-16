@@ -29,20 +29,35 @@ class MonthlyTransactionsChart
 
         // Define an array to map month numbers to month names
         $monthNames = [
-            1 => 'January',
-            2 => 'February',
-            3 => 'March',
-            4 => 'April',
+            1 => 'Jan',
+            2 => 'Feb',
+            3 => 'Mar',
+            4 => 'Apr',
             5 => 'May',
-            6 => 'June',
-            7 => 'July',
-            8 => 'August',
-            9 => 'September',
-            10 => 'October',
-            11 => 'November',
-            12 => 'December',
+            6 => 'Jun',
+            7 => 'Jul',
+            8 => 'Aug',
+            9 => 'Sep',
+            10 => 'Oct',
+            11 => 'Nov',
+            12 => 'Dec',
         ];
+        
+        //loop from month 1 to 12, if that month is not exists then insert 0 as total
+        for ($month = 1; $month <= 12; $month++) {
+            if(!$data->contains('month',$month)){
+                $newElement = [
+                    'month' => $month, // Month
+                    'total_order' => 0,   // Initialize total_order to 0
+                    'total_revenue' => 0 // Initialize total_revenue to 0
+                ];   
+                $data->push($newElement);
+            }
+        }
 
+        $data = $data->sortBy('month');
+
+        //rename month 1 - 12 with the month Names
         $dataArray = $data->map(function ($item) use ($monthNames) {
             $item['month'] = $monthNames[$item['month']];
             return $item;
