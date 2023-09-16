@@ -54,7 +54,8 @@ class HamperController extends Controller
 
     public function copyHampers(Request $request)
     {
-        $hamper = Hamper::find($request->hamperID);
+        $hamper = Hamper::with('details.item')->orderBy('name', 'asc')->find($request->hamperID);
+
 
         return $hamper->details;
     }

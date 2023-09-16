@@ -4,4 +4,29 @@
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Welcome back, {{ auth()->user()->name }}</h1>
 </div>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header" style="background-color: #008080; color: white;">
+                Chart 1
+            </div>
+            <div class="card-body">
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header" style="background-color: #007BFF; color: white;">
+                Chart 2
+            </div>
+            <div class="card-body">
+            </div>
+        </div>
+    </div>
+
+    <!-- Add more chart cards as needed -->
+
+</div>
 @endsection

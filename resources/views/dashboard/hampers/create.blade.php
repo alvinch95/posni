@@ -282,6 +282,7 @@
     }
 
     function addRowsFromResponse(response) {
+      console.log(response);
         if (response && response.length > 0) {
             // Remove all existing rows
             $('.item_details .row').remove();
