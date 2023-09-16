@@ -13,6 +13,7 @@ use App\Http\Controllers\SerieController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\VariantController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HamperController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SalesOrderController;
@@ -70,12 +71,7 @@ Route::post('/logout', [LoginController::class, 'logout']);
 Route::get('/register', [RegisterController::class, 'index'])->middleware('guest');
 Route::post('/register', [RegisterController::class, 'store']);
 
-Route::get('/dashboard', function(){
-    return view('dashboard.index',[
-        'title' => 'Dashboard',
-        'active' => 'dashboard'
-    ]);
-})->middleware('auth');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard.index');
 
 
 //route resource artinya udah sepaket crud, tinggal diarahin sesuai dengan nama method di dalam controllernya
