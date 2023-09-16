@@ -90,7 +90,7 @@
         <div class="item_details">
         @foreach ($hamper_details as $details)
           <div class="row mt-3 item-detail-row">
-            <div class="col-lg-3">
+            <div class="col-lg-4">
               <label for="item_id" class="form-label">Item</label>
               <select class="form-select select2" name="item_id[]" required>
                 <option value="" disabled selected hidden>Select an item</option>
@@ -101,7 +101,7 @@
                 @endforeach
               </select>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-2">
               <label for="unit_price" class="form-label">Harga Satuan</label>
               <input type="number" class="unit_price form-control @error('unit_price') is-invalid @enderror" name="unit_price[]" value="{{ old('unit_price',$details->unit_price) }}" readonly>
             </div>
@@ -111,13 +111,19 @@
             </div>
             <div class="col-lg-4">
               <div class="row">
-                  <div class="col-10">
+                  <div class="col-7 pe-0">
                     <label for="total" class="form-label">Total</label>
                     <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total',$details->total) }}" readonly>
                   </div>
                   <div class="col-2">
                     <label class="form-label" style="visibility: hidden;">Delete</label>
                     <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
+                  </div>
+                  <div class="col-3 d-flex align-items-end ps-1">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-primary move-up border border-2 border-dark"><span class="bi bi-arrow-up"></span></button>
+                      <button type="button" class="btn btn-primary move-down border border-2 border-dark"><span class="bi bi-arrow-down"></span></button>
+                    </div>
                   </div>
               </div>
             </div>
@@ -145,7 +151,7 @@
     $(".add-row").on("click", function() {
       var newRow = `
         <div class="row mt-3 item-detail-row">
-          <div class="col-lg-3">
+          <div class="col-lg-4">
             <label for="item_id" class="form-label">Item</label>
             <select class="form-select select2" name="item_id[]" required>
               <option value="" disabled selected hidden>Select an item</option>
@@ -154,7 +160,7 @@
               @endforeach
             </select>
           </div>
-          <div class="col-lg-3">
+          <div class="col-lg-2">
             <label for="unit_price" class="form-label">Harga Satuan</label>
             <input type="number" class="unit_price form-control @error('unit_price') is-invalid @enderror" name="unit_price[]" value="{{ old('unit_price') }}" readonly>
           </div>
@@ -164,14 +170,20 @@
           </div>
           <div class="col-lg-4">
             <div class="row">
-                <div class="col-10">
-                    <label for="total" class="form-label">Total</label>
-                    <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
-                </div>
-                <div class="col-2">
-                    <label class="form-label" style="visibility: hidden;">Delete</label>
-                    <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
-                </div>
+                  <div class="col-7 pe-0">
+                      <label for="total" class="form-label">Total</label>
+                      <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
+                  </div>
+                  <div class="col-2">
+                      <label class="form-label" style="visibility: hidden;">d</label>
+                      <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
+                  </div>
+                  <div class="col-3 d-flex align-items-end ps-1">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-primary move-up border border-2 border-dark"><span class="bi bi-arrow-up"></span></button>
+                      <button type="button" class="btn btn-primary move-down border border-2 border-dark"><span class="bi bi-arrow-down"></span></button>
+                    </div>
+                  </div>
             </div>
           </div>
         </div>
@@ -212,7 +224,32 @@
       updateKeuntunganOnly();
       updateRevenuePercentage();
     });
+
+    $(".item_details").on("click", ".move-up", function(e) {
+      const row = e.target.closest(".item-detail-row");
+      moveRowUp(row);
+    });
+
+    $(".item_details").on("click", ".move-down", function(e) {
+      const row = e.target.closest(".item-detail-row");
+      moveRowDown(row);
+    });
   });
+
+  function moveRowUp(row) {
+    const prevRow = row.previousElementSibling;
+    if (prevRow) {
+      row.parentNode.insertBefore(row, prevRow);
+    }
+  }
+
+  // Function to move a row down
+  function moveRowDown(row) {
+    const nextRow = row.nextElementSibling;
+    if (nextRow) {
+      row.parentNode.insertBefore(nextRow, row);
+    }
+  }
 
   function updateKeuntunganOnly()
   {
