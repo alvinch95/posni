@@ -70,6 +70,7 @@ class ItemsController extends Controller
 
         $validatedData['user_id'] = auth()->user()->id;
         $validatedData['slug'] = str_replace(" ","-",strtolower($request->name));
+        $validatedData['description'] = $request->description;
 
         Item::create($validatedData);
 
@@ -128,6 +129,7 @@ class ItemsController extends Controller
 
         $validatedData = $request->validate($rules);
         $validatedData['slug'] = str_replace(" ","-",strtolower($request->name));
+        $validatedData['description'] = $request->description;
 
         if($request->file('image'))
         {
