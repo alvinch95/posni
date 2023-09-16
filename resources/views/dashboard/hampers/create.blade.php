@@ -89,11 +89,11 @@
                       <label for="total" class="form-label">Total</label>
                       <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
                   </div>
-                  <div class="col-2">
+                  <div class="col-2 px-1">
                       <label class="form-label" style="visibility: hidden;">d</label>
                       <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
                   </div>
-                  <div class="col-3 d-flex align-items-end ps-1">
+                  <div class="col-3 d-flex align-items-end @desktop px-2 @elsedesktop px-0 @enddesktop">
                     <div class="btn-group">
                       <button type="button" class="btn btn-primary move-up border border-2 border-dark"><span class="bi bi-arrow-up"></span></button>
                       <button type="button" class="btn btn-primary move-down border border-2 border-dark"><span class="bi bi-arrow-down"></span></button>
@@ -298,11 +298,11 @@
                       <label for="total" class="form-label">Total</label>
                       <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" value="{{ old('total') }}" readonly>
                   </div>
-                  <div class="col-2">
+                  <div class="col-2 px-1">
                       <label class="form-label" style="visibility: hidden;">d</label>
                       <button class="btn btn-danger border-0 remove-row"><span class="bi bi-trash"></span></button>
                   </div>
-                  <div class="col-3 d-flex align-items-end ps-1">
+                  <div class="col-3 d-flex align-items-end @desktop px-2 @elsedesktop px-0 @enddesktop">
                     <div class="btn-group">
                       <button type="button" class="btn btn-primary move-up border border-2 border-dark"><span class="bi bi-arrow-up"></span></button>
                       <button type="button" class="btn btn-primary move-down border border-2 border-dark"><span class="bi bi-arrow-down"></span></button>
