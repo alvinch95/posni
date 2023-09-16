@@ -65,7 +65,7 @@
           </div>
         </div>
         <div class="item_details">
-          <div class="row">
+          <div class="row item-detail-row">
             <div class="col-lg-3">
               <label for="item_id" class="form-label">Item</label>
               <select class="form-select select2" name="item_id[]" required>
@@ -210,7 +210,7 @@
       });
 
       $(".item_details").on("click", ".remove-row", function() {
-        $(this).closest(".row").remove();
+        $(this).closest(".item-detail-row").remove();
         updateHargaModal();
         updateRevenue();
       });
