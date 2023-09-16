@@ -30,16 +30,7 @@ use App\Http\Controllers\StockOpnameController;
 |
 */
 
-Route::get('/', function () {
-    // return view('home', [
-    //     "title" => "Home",
-    //     "active" => "home"
-    // ]);
-    return view('dashboard.index',[
-        'title' => 'Dashboard',
-        'active' => 'dashboard'
-    ]);
-})->middleware('auth');
+Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
 Route::get('/about', function () {
     return view('about', [
