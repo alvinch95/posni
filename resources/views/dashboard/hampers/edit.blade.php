@@ -144,7 +144,7 @@
 
     $(".add-row").on("click", function() {
       var newRow = `
-        <div class="row mt-3">
+        <div class="row mt-3 item-detail-row">
           <div class="col-lg-3">
             <label for="item_id" class="form-label">Item</label>
             <select class="form-select select2" name="item_id[]" required>
@@ -182,7 +182,8 @@
       });
     });
 
-    $(".item_details").on("click", ".remove-row", function() {
+    $(".item_details").on("click", ".remove-row", function(e) {
+      e.preventDefault();
       $(this).closest(".item-detail-row").remove();
       updateHargaModal();
       updateRevenue();
@@ -215,8 +216,8 @@
 
   function updateKeuntunganOnly()
   {
-    var hargaModal = parseFloat($("#capital_price").val());
-    var hargaJual = parseFloat($("#selling_price").val());
+    var hargaModal = parseFloat($("#capital_price").val()) || 0;
+    var hargaJual = parseFloat($("#selling_price").val()) || 0;
     var revenue = hargaJual - hargaModal;
     var formattedRevenue = revenue.toLocaleString('id-ID', {
       style: 'currency',
@@ -227,16 +228,16 @@
 
   function updateRevenuePercentage()
   {
-    var hargaModal = parseFloat($("#capital_price").val());
-    var hargaJual = parseFloat($("#selling_price").val());
+    var hargaModal = parseFloat($("#capital_price").val()) || 0;
+    var hargaJual = parseFloat($("#selling_price").val()) || 0;
     var revenue = parseFloat(hargaJual - hargaModal);
     var revPercent = ((revenue/hargaModal)*100).toFixed(2);
     $("#revenue_percentage").val(revPercent);
   }
 
   function updateRevenue(){
-    var hargaModal = parseFloat($("#capital_price").val());
-    var cuan = parseFloat($("#revenue_percentage").val());
+    var hargaModal = parseFloat($("#capital_price").val()) || 0;
+    var cuan = parseFloat($("#revenue_percentage").val()) || 0;
     var hargaJual = hargaModal + (hargaModal * (cuan/100));
     var revenue = hargaJual - hargaModal;
     var formattedRevenue = revenue.toLocaleString('id-ID', {
