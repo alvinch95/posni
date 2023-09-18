@@ -32,7 +32,7 @@
               </div>
             @enderror
           </div>
-          <div class="col-lg-2">
+          <div class="col-lg-3">
             <label for="revenue" class="form-label">Keuntungan</label>
             <div class="input-group mb-3">
               <input type="number" class="form-control" id="revenue_percentage" aria-label="Keuntungan" aria-describedby="basic-addon2" value="{{ $hampers->revenue_percentage }}">

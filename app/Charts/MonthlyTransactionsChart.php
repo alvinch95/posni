@@ -20,7 +20,7 @@ class MonthlyTransactionsChart
         $data = SalesOrder::select(
             DB::raw('MONTH(order_date) as month'),
             DB::raw('SUM(total_order) as total_order'),
-            DB::raw('SUM(total_revenue) as total_revenue'),
+            DB::raw('SUM(total_revenue) as total_revenue')
         )
         ->whereYear('order_date', $year)
         ->groupBy('month')
