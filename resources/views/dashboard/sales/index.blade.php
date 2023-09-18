@@ -100,8 +100,16 @@
                     @endforeach
                 </div>
                 <div class="px-2">
-                    <label for="order_date_picker" class="form-label">Order Date</label>
-                    <input type="date" class="form-control" id="order_date_picker" required>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="order_date_picker" class="form-label">Order Date</label>
+                            <input type="date" class="form-control" id="order_date_picker" value="{{ now()->format('Y-m-d') }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="remarks" class="form-label">Keterangan</label>
+                            <input type="text" class="form-control" id="remarks_input" required>
+                        </div>
+                    </div>
                 </div>
                 <div class="d-flex flex-column align-items-center justify-content-center mt-3 mb-3">
                     <div class="d-flex justify-content-between">
@@ -144,7 +152,8 @@
             <input type="hidden" name="total_order" id="total_order" value="{{ $total_cart }}">
             <input type="hidden" name="total_modal" id="total_modal" value="{{ $total_modal }}">
             <input type="hidden" name="total_cuan" id="total_cuan" value="{{ $total_cart - $total_modal }}">
-            <input type="hidden" name="order_date" id="order_date">
+            <input type="hidden" name="order_date" id="order_date" value="{{ now()->format('Y-m-d') }}">
+            <input type="hidden" name="remarks" id="remarks">
         </form>
     </div>
 </section>
@@ -302,6 +311,10 @@
         $('#order_date_picker').on('change', function(){
             var order_date = $(this).val();
             $('#order_date').val(order_date);
+        });
+        $('#remarks_input').on('change', function(){
+            var remarks = $(this).val();
+            $('#remarks').val(remarks);
         });
 
         $('#discount').on('change', function () {

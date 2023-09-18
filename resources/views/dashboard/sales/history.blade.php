@@ -69,8 +69,10 @@
             <th scope="col">Sales Order No</th>
             <th scope="col">Date</th>
             <th scope="col">Customer</th>
+            <th scope="col">Remarks</th>
             <th scope="col">Total Order</th>
             <th scope="col">Revenue</th>
+            <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -84,6 +86,7 @@
                   <td>{{ $so->order_number }}</td>
                   <td>{{ $so->order_date }}</td>
                   <td>{{ $so->customer->name }}</td>
+                  <td>{{ $so->remarks }}</td>
                   <td>{{ "Rp. ".number_format($so->total_order, 0, ',', '.') }}</td>
                   <td>{{ "Rp. ".number_format($so->total_revenue, 0, ',', '.') }}</td>
                   <td>
@@ -103,7 +106,7 @@
         </tbody>
         <tfoot>
           <tr>
-              <td colspan="4"><strong>Total:</strong></td>
+              <td colspan="5"><strong>Total:</strong></td>
               <td><strong>{{ "Rp. ".number_format($totalOrderSum, 0, ',', '.') }}</strong></td>
               <td><strong>{{ "Rp. ".number_format($totalRevenueSum, 0, ',', '.') }}</strong></td>
               <td></td>

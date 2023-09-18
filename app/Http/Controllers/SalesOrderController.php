@@ -113,6 +113,7 @@ class SalesOrderController extends Controller
             $so->total_capital_price = $request->total_modal;
             $so->total_order = $request->total_order;
             $so->total_revenue = $request->total_cuan;
+            $so->remarks = $request->remarks;
             $so->save();
 
             $salesOrderID = $so->id;
