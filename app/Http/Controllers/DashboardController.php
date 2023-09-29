@@ -28,12 +28,12 @@ class DashboardController extends Controller
         ->orderByDesc('Qty_Sold')
         ->paginate(5);
 
-        // return view('dashboard.index',[
-        //     'monthly_chart' => $chart->build($year),
-        //     'daily_chart' => $chart2->build($dateFrom, $dateTo),
-        //     'currentYear' => $currentYear,
-        //     'topSellingProducts' => $topSellingProducts
-        // ]);
-        return view('dashboard.custom');
+        return view('dashboard.index',[
+            'monthly_chart' => $chart->build($year),
+            'daily_chart' => $chart2->build($dateFrom, $dateTo),
+            'currentYear' => $currentYear,
+            'topSellingProducts' => $topSellingProducts
+        ]);
+        // return view('dashboard.custom');
     }
 }

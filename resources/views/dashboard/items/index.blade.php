@@ -50,7 +50,7 @@
                 <option value="50" {{ $pageSize==50?"selected":"" }}>50</option>
             </select>
           </div>
-          Showing {{ $pageSize<=$totalData?$pageSize:$totalData }} of {{ $totalData }} results
+          Showing {{ $pageSize<=$totalData?$items->count():$totalData }} of {{ $totalData }} results
         </caption>
         <thead class="table-dark border-dark">
           <tr>

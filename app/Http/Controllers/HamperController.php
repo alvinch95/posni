@@ -20,6 +20,7 @@ class HamperController extends Controller
      */
     public function index()
     {
+        $pageSize = request('page_size', 10); // Default page size is 10
         $previousSort = session('previous_sort', ''); // Retrieve previous sorting criteria from session
         // Get the current sorting criteria from the request
         $currentSort = request()->query('sort', '');
@@ -34,7 +35,9 @@ class HamperController extends Controller
         }
 
         return view('dashboard.hampers.index', [
-            'hampers' => Hamper::with(['serie'])->orderBy($sortField, $sortOrder)->filter(request(['search']))->paginate(10)->withQueryString()
+            'hampers' => Hamper::with(['serie'])->orderBy($sortField, $sortOrder)->filter(request(['search']))->paginate($pageSize)->withQueryString(),
+            'pageSize' => $pageSize,
+            'totalData' => Hamper::orderBy($sortField, $sortOrder)->filter(request(['search']))->count()
         ]);
     }
 
