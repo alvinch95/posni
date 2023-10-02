@@ -59,6 +59,7 @@
             <th scope="col">Purchase Price</th>
             <th scope="col">Selling Price</th>
             <th scope="col">Stock</th>
+            <th scope="col">Value</th>
             <th scope="col">Image</th>
             <th scope="col">Action</th>
           </tr>
@@ -71,6 +72,7 @@
                   <td>{{ "Rp. ".number_format($item->purchase_price, 0, ',', '.') }}</td>
                   <td>{{ "Rp. ".number_format($item->selling_price, 0, ',', '.') }}</td>
                   <td>{{ $item->stock." ".$item->uom }}</td>
+                  <td>{{ "Rp. ".number_format($item->stock*$item->purchase_price, 0, ',', '.') }}</td>
                   @if ($item->image)
                   <td><img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px;"></td>
                   @else
