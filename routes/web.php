@@ -33,7 +33,7 @@ use App\Http\Controllers\DashboardProductController;
 
 Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
-Route::post('/webhook', [WebhookController::class, 'handleWebhook']);
+Route::post('/webhook', [WebhookController::class, 'handleWebhook'])->middleware('exempt.csrf');
 
 Route::get('/about', function () {
     return view('about', [
