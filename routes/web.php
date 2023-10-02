@@ -32,7 +32,7 @@ use App\Http\Controllers\StockOpnameController;
 
 Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
-Route::post('/webhook', [WebhookController::class, 'test']);
+Route::post('/webhook', [WebhookController::class, 'handleWebhook']);
 
 Route::get('/about', function () {
     return view('about', [
