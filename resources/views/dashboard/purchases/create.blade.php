@@ -1,5 +1,11 @@
 @extends('dashboard.layouts.main')
 
+@section('head')
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+@endsection
+
 @section('container')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h3>Transaksi Pembelian</h3>
@@ -55,7 +61,7 @@
           <div class="row">
             <div class="col-lg-3">
               <label for="item_id" class="form-label">Item</label>
-              <select class="form-select" name="item_id[]" required>
+              <select class="form-select select2" name="item_id[]" required>
                 <option value="" disabled selected hidden>Select an item</option>
                 @foreach ($items as $item)
                   <option value="{{ $item->id }}" data-unit-price="{{ $item->purchase_price }}">{{ $item->name }}</option>
@@ -97,7 +103,15 @@
 
 
 <script>
+
+    //to make search field autofocus when selecting the dropdown
+    $(document).on('select2:open', () => {
+      document.querySelector('.select2-search__field').focus();
+    });
+
     $(document).ready(function() {
+      initializeSelect2($('select[name="item_id[]"]'));
+
       $('.submitbtn').click(function(e) {
         e.preventDefault();
         var form = $(this).parents('form');
@@ -121,7 +135,7 @@
           <div class="row mt-3">
             <div class="col-lg-3">
               <label for="item_id" class="form-label">Item</label>
-              <select class="form-select" name="item_id[]" required>
+              <select class="form-select select2" name="item_id[]" required>
                 <option value="" disabled selected hidden>Select an item</option>
                 @foreach ($items as $item)
                   <option value="{{ $item->id }}" data-unit-price="{{ $item->purchase_price }}">{{ $item->name }}</option>
@@ -147,6 +161,9 @@
           </div>
         `;
         $(".item_details").append(newRow);
+
+        // Initialize Select2 for the newly added item
+        initializeSelect2($('select[name="item_id[]"]').last());
       });
 
       $(".item_details").on("click", ".remove-row", function() {
@@ -186,6 +203,13 @@
         updateTotal();
       });
     });
+
+    // Function to initialize Select2
+    function initializeSelect2(element) {
+        element.select2({
+            theme: "bootstrap-5"
+        });
+    }
 
     function updateTotal() {
       var sum = 0;
