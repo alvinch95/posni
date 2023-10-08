@@ -1,102 +1,62 @@
 @extends('dashboard.layouts.main')
 
 @section('container')
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h3>{{ $hampers->name }}</h3>
-</div>
-
-<div class="col-lg-8">
-    {{-- enctype supaya formnya bisa submit gambar --}}
-    <form method="post" action="/dashboard/hampers" class="mb-5" enctype="multipart/form-data"> 
-        @csrf
-        <div class="mb-3 @desktop w-25 @elsedesktop w-100 @enddesktop">
-          <label for="name" class="form-label">Nama Hampers</label>
-          <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" autofocus value="{{ $hampers->name }}" required>
-          @error('name')
-            <div class="invalid-feedback">
-              {{ $message }}
-            </div>
-          @enderror
-        </div>
-        <div class="mb-3 @desktop w-25 @elsedesktop w-100 @enddesktop">
-          <label for="serie" class="form-label">Series</label>
-          <input type="text" class="form-control @error('name') is-invalid @enderror" id="serie_id" name="serie_id" autofocus value="{{ $hampers->serie->name }}" required>
-        </div>
-        <div class="row">
-          <div class="col-lg-3">
-            <label for="capital_price" class="form-label">Harga Modal</label>
-            <input type="number" class="form-control @error('capital_price') is-invalid @enderror" id="capital_price" name="capital_price" value="{{ $hampers->capital_price }}" readonly>
-            @error('capital_price')
-              <div class="invalid-feedback">
-                {{ $message }}
-              </div>
-            @enderror
-          </div>
-          <div class="col-lg-2">
-            <label for="revenue" class="form-label">Keuntungan</label>
-            <div class="input-group mb-3">
-              <input type="number" class="form-control" id="revenue_percentage" aria-label="Keuntungan" aria-describedby="basic-addon2" value="{{ $hampers->revenue_percentage }}">
-              <div class="input-group-append">
-                <span class="input-group-text" id="basic-addon2">%</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3">
-            <label for="selling_price" class="form-label">Harga Jual</label>
-            <input type="number" class="form-control @error('selling_price') is-invalid @enderror" id="selling_price" name="selling_price" value="{{ $hampers->selling_price }}">
-            @error('selling_price')
-              <div class="invalid-feedback">
-                {{ $message }}
-              </div>
-            @enderror
-          </div>
-        </div>
-        <div class="mb-3">
-          <p class="lead">Keuntungan = Rp. <span id="revenue_amount">{{ number_format(($hampers->selling_price - $hampers->capital_price), 0, ',', '.') }}</span></p>
-        </div>
-        <div class="mb-3">
-          <label for="image" class="form-label">Hampers Image</label>
-            @if ($hampers->image)
-                <div>
-                    <img src="{{ asset('storage/' . $hampers->image) }}" alt="{{ $hampers->name }}" class="img-fluid" style="max-width: 400px; max-height: 400px;">
+<div class="container-fluid">
+    <div class="row mt-3">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title">Order Information</h5>
                 </div>
-            @else
-                <p>No image</p>
-            @endif
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <ul class="list-group list-group-flush">
+                          <li class="list-group-item"><strong>Order Number:</strong> {{ $purchase_order->order_number }}</li>
+                          <li class="list-group-item"><strong>Supplier:</strong> {{ $purchase_order->supplier->name }}</li>
+                          <li class="list-group-item"><strong>Purchase Date:</strong> {{ $purchase_order->purchase_date }}</li>
+                          <li class="list-group-item"><strong>Total:</strong> Rp. {{ number_format($purchase_order->total, 0, ',', '.') }}</li>
+                          <li class="list-group-item"><strong>Additional Fee:</strong> Rp. {{ number_format($purchase_order->additional_fee, 0, ',', '.') }}</li>
+                          <li class="list-group-item"><strong>Notes:</strong> {{ $purchase_order->notes }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+            </div>
         </div>
-        <hr class="mt-4 bg-dark">
-        <h1 class="display-6">Details :</h1>
-        <div class="item_details">
-        @foreach ($hamper_details as $details)
-          <div class="row">
-            <div class="col-lg-3">
-              <label for="item_id" class="form-label">Item</label>
-              <input class="form-control" type="text" name="" id="" value="{{ $details->item->name }}">
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="card-title">Items</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="border border-3 border-secondary bg-dark text-white fs-5">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Unit Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($purchase_order->details as $index => $detail)
+                                <tr class="border border-2 border-secondary fs-5">
+                                    <td>{{ $detail->item->name }}</td>
+                                    <td>{{ $detail->qty }}</td>
+                                    <td>Rp. {{ number_format($detail->unit_price, 0, ',', '.') }}</td>
+                                    <td>Rp. {{ number_format($detail->total, 0, ',', '.') }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-3">
-              <label for="unit_price" class="form-label">Harga Satuan</label>
-              <input class="form-control" type="text" name="" id="" value="{{ $details->item->purchase_price }}">
-            </div>
-            <div class="col-lg-2">
-              <label for="qty" class="form-label">Jumlah</label>
-              <input class="form-control" type="text" name="" id="" value="{{ $details->qty }}">
-            </div>
-            <div class="col-lg-3">
-              <label for="total" class="form-label">Total</label>
-              <input class="form-control" type="text" name="" id="" value="{{ number_format(($details->item->purchase_price*$details->qty), 0, ',', '.') }}">
-            </div>
-          </div>
-        @endforeach
         </div>
-        <hr class="my-4 bg-dark">
-    </form>
+    </div>
 </div>
-
-
-<script>
-    $(document).ready(function() {
-      // Add readonly attribute to all input fields within the form
-      $("form :input").prop("readonly", true);
-    });
-</script>
 @endsection

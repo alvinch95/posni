@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Item;
+use App\Models\Hamper;
+use App\Models\HamperDetail;
+use App\Models\Serie;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -53,30 +57,60 @@ class ItemsController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|max:255|unique:items',
-            'purchase_price' => 'required|numeric',
-            'selling_price' => 'required|numeric|gt:purchase_price',
-            'stock' => 'required|numeric',
-            'uom' => 'required',
-            'image' => 'image|file|max:1024'
-        ]);
+        try{
+            DB::beginTransaction();
+            $validatedData = $request->validate([
+                'name' => 'required|max:255|unique:items',
+                'purchase_price' => 'required|numeric',
+                'selling_price' => 'required|numeric|gt:purchase_price',
+                'stock' => 'required|numeric',
+                'uom' => 'required',
+                'image' => 'image|file|max:1024'
+            ]);
 
-        if($request->file('image'))
-        {
-            //store image ke folder
-            $validatedData['image'] = $request->file('image')->store('item-images');
+            if($request->file('image'))
+            {
+                //store image ke folder
+                $validatedData['image'] = $request->file('image')->store('item-images');
+            }
+
+            $validatedData['user_id'] = auth()->user()->id;
+            $validatedData['slug'] = str_replace(" ","-",strtolower($request->name));
+            $validatedData['description'] = $request->description;
+
+            $item = Item::create($validatedData);
+
+            $serie = Serie::where('name','=','Item')->first();
+            
+
+            $hamper = new Hamper;
+            $hamper->serie_id = $serie?$serie->id:1;
+            $hamper->name = $item->name;
+            $hamper->capital_price = $item->purchase_price;
+            $hamper->revenue_percentage = round((($item->selling_price/$item->purchase_price)-1)*100,2);
+            $hamper->selling_price = $item->selling_price;
+            $hamper->image = $item->image;
+            $hamper->from_item = $item->id;
+            $hamper->save();
+
+            $detail = new HamperDetail;
+            $detail->hamper_id = $hamper->id;
+            $detail->item_id = $item->id;
+            $detail->unit_price = $item->purchase_price;
+            $detail->qty = 1;
+            $detail->total = $item->purchase_price;
+            $detail->save();
+
+            DB::commit();
+            Alert::success('Success', 'New Item has been added');
+
+            return redirect('/dashboard/items');
+        }catch (\Exception $e) {
+            DB::rollback();
+            // Handle the exception (log, display error message, etc.)
+            Alert::error('Error', $e->getMessage());
+            return back()->with('error', 'An error occurred while submitting item.');
         }
-
-        $validatedData['user_id'] = auth()->user()->id;
-        $validatedData['slug'] = str_replace(" ","-",strtolower($request->name));
-        $validatedData['description'] = $request->description;
-
-        Item::create($validatedData);
-
-        Alert::success('Success', 'New Item has been added');
-
-        return redirect('/dashboard/items');
     }
 
     /**

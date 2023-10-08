@@ -136,7 +136,11 @@ class PurchaseController extends Controller
      */
     public function show(Purchase $purchase)
     {
-        //
+        $po = Purchase::with(['details.item','supplier'])->find($purchase->id);
+
+        return view('dashboard.purchases.show',[
+            'purchase_order' => $po
+        ]);
     }
 
     /**
