@@ -132,6 +132,15 @@ class HamperController extends Controller
         ]);
     }
 
+    public function catalog(Hamper $hamper)
+    {
+        return view('dashboard.hampers.catalog',[
+            'hamper' => $hamper->load('serie'),
+            'hamper_details' => HamperDetail::with(['item' => function ($query){
+                $query->withTrashed();
+            }])->where('hamper_id',$hamper->id)->get()
+        ]);
+    }
     /**
      * Show the form for editing the specified resource.
      *

@@ -16,7 +16,7 @@ class DashboardController extends Controller
         $year = request('year',now()->format("Y"));
         $currentYear = now()->format("Y");
 
-        $dateFrom = request('order_date_from', today()->subDays(7));
+        $dateFrom = request('order_date_from', today()->subDays(6));
         $dateTo = request('order_date_to', today());
         
 

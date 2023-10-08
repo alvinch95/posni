@@ -47,12 +47,16 @@
 
 
       <div class="d-flex align-items-center">
-        <h4 class="d-inline" style="font-family: 'Montserrat', sans-serif;">Sorting</h4>
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'asc']) }}" class="btn btn-dark mx-1 btn-sm">Item Name (ASC)</a>
+        {{-- <h4 class="d-inline" style="font-family: 'Montserrat', sans-serif;">Sorting</h4> --}}
+        {{-- <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'asc']) }}" class="btn btn-dark mx-1 btn-sm">Item Name (ASC)</a>
         <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'order' => 'desc']) }}" class="btn btn-outline-dark mx-1 btn-sm">Item Name (DESC)</a>
   
         <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'asc']) }}" class="btn btn-warning mx-1 btn-sm">Date (ASC)</a>
-        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'desc']) }}" class="btn btn-outline-warning mx-1 btn-sm">Date (DESC)</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'order' => 'desc']) }}" class="btn btn-outline-warning mx-1 btn-sm">Date (DESC)</a> --}}
+        <a href="" class="btn btn-sm mx-1 btn-filter-date text-white" style="background-color: #008080;" data-date-range="today">Today</a>
+        <a href="" class="btn btn-sm mx-1 btn-filter-date text-white" style="background-color: #008080;" data-date-range="last7days">Last 7 days</a>
+        <a href="" class="btn btn-sm mx-1 btn-filter-date text-white" style="background-color: #008080;" data-date-range="thisMonth">This Month</a>
+        <a href="" class="btn btn-sm mx-1 btn-filter-date text-white" style="background-color: #008080;" data-date-range="lastMonth">Last Month</a>
       </div>
   </div>
 </div>
@@ -126,7 +130,51 @@
 
   <script>
     $(document).ready(function(){
-      
+      $('.btn-filter-date').click(function(event) {
+          event.preventDefault();
+
+          // Define the date ranges (you can modify these)
+          var today = new Date().toISOString().split('T')[0];
+          var last7Days = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          var thisMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 2).toISOString().split('T')[0];
+          var lastMonthStart = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 2).toISOString().split('T')[0];
+          var lastMonthEnd = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+
+          // Get the clicked button's data attribute to determine the date range
+          var dateRange = $(this).data('date-range');
+          var orderDateFrom, orderDateTo;
+
+          // Set orderDateFrom and orderDateTo based on the selected date range
+          switch (dateRange) {
+              case 'today':
+                  orderDateFrom = today;
+                  orderDateTo = today;
+                  break;
+              case 'last7days':
+                  orderDateFrom = last7Days;
+                  orderDateTo = today;
+                  break;
+              case 'thisMonth':
+                  orderDateFrom = thisMonthStart;
+                  orderDateTo = today;
+                  break;
+              case 'lastMonth':
+                  orderDateFrom = lastMonthStart;
+                  orderDateTo = lastMonthEnd;
+                  break;
+              default:
+                  // Default case (today)
+                  orderDateFrom = today;
+                  orderDateTo = today;
+          }
+
+          // Update the input fields
+          $('#order_date_from').val(orderDateFrom);
+          $('#order_date_to').val(orderDateTo);
+
+          // Submit the form
+          $('form').submit();
+      });
     }); 
   </script>
 @endsection

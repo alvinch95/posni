@@ -86,6 +86,7 @@
                         @csrf
                         <button class="badge bg-danger border-0 hapus"><span data-feather="x-circle"></span></button>
                       </form>
+                      <a href="/dashboard/hampers/catalog/{{ $hamper->id }}" class="badge bg-secondary"><span data-feather="file"></span></a>
                   </td>
               </tr>
           @endforeach

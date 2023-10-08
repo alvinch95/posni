@@ -25,7 +25,7 @@ class DailyChart
 
         $data = SalesOrder::select(
             DB::raw('date_format(order_date,"%e %b %Y") as order_date_formatted'),
-            DB::raw('order_date'),
+            DB::raw('date(order_date) as order_date'),
             DB::raw('SUM(total_order) as total_order'),
             DB::raw('SUM(total_revenue) as total_revenue'),
             DB::raw('COUNT(*) as count_order')
@@ -35,15 +35,11 @@ class DailyChart
         ->orderBy('order_date')
         ->get();
 
-        // dd($data);
-
         $days = [];
         while($currentDate <= $endDate){
-            $days[] = $currentDate->format('j M Y');
-            $currentDate->addDays(1);
-
             if(!$data->contains('order_date_formatted',$currentDate->format('j M Y'))){
                 $newElement = [
+                    'order_date_formatted' => $currentDate->format('j M Y'),
                     'order_date' => $currentDate->format('Y-m-d'),
                     'total_order' => 0,   // Initialize total_order to 0
                     'total_revenue' => 0, // Initialize total_revenue to 0
@@ -51,10 +47,12 @@ class DailyChart
                 ];   
                 $data->push($newElement);
             }
+            $days[] = $currentDate->format('j M Y');
+            $currentDate->addDays(1);
         }
-        $data->sortBy('order_date');
+        $data = $data->sortBy('order_date');
         $dataArray = $data->toArray();
-        
+
         $total_order = array_column($dataArray, 'total_order');
         $total_revenue = array_column($dataArray, 'total_revenue');
         $count_order = array_column($dataArray, 'count_order');
