@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Charts\DailyChart;
+use App\Charts\InventoryValueChart;
 use Illuminate\Http\Request;
 use App\Models\SalesOrderDetail;
 use Illuminate\Support\Facades\DB;
@@ -10,7 +11,7 @@ use App\Charts\MonthlyTransactionsChart;
 
 class DashboardController extends Controller
 {
-    public function index(MonthlyTransactionsChart $chart, DailyChart $chart2)
+    public function index(MonthlyTransactionsChart $chart, DailyChart $chart2, InventoryValueChart $chart3)
     {
         $year = request('year',now()->format("Y"));
         $currentYear = now()->format("Y");
@@ -31,6 +32,7 @@ class DashboardController extends Controller
         return view('dashboard.index',[
             'monthly_chart' => $chart->build($year),
             'daily_chart' => $chart2->build($dateFrom, $dateTo),
+            'inventory_value_chart' => $chart3->build(),
             'currentYear' => $currentYear,
             'topSellingProducts' => $topSellingProducts
         ]);

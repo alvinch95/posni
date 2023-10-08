@@ -44,7 +44,7 @@
             <div class="card-header" style="background-color: #87CEEB; color: white;">
                 <b>Top Selling Products</b>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr style="background-color: #87CEEB; color: white;">
@@ -72,6 +72,16 @@
                         </tr>
                     </tfoot>
                 </table>
+            </div>
+        </div>
+
+        {{-- Inventory Value Chart --}}
+        <div class="card mt-3">
+            <div class="card-header" style="background-color: #C0C0C0; color: white;">
+                <b>Inventory Value</b>
+            </div>
+            <div class="card-body">
+                {!! $inventory_value_chart->container() !!}
             </div>
         </div>
     </div>
@@ -108,6 +118,7 @@
 
 <script src="{{ $monthly_chart->cdn() }}"></script>
 <script src="{{ $daily_chart->cdn() }}"></script>
+<script src="{{ $inventory_value_chart->cdn() }}"></script>
 
 <script>
 $(document).ready(function() {
@@ -117,4 +128,5 @@ $(document).ready(function() {
 
 {{ $monthly_chart->script() }}
 {{ $daily_chart->script() }}
+{{ $inventory_value_chart->script() }}
 @endsection
