@@ -29,7 +29,7 @@
         </div>
         <div class="mb-3">
           <label for="purchase_price" class="form-label">Purchase Price</label>
-          <input type="number" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_price" name="purchase_price" value="{{ old('purchase_price', $item->purchase_price) }}">
+          <input type="number" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_price" name="purchase_price" value="{{ old('purchase_price', $item->purchase_price) }}" min="1">
           @error('purchase_price')
             <div class="invalid-feedback">
               {{ $message }}

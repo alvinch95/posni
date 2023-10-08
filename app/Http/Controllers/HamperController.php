@@ -228,7 +228,8 @@ class HamperController extends Controller
             
             $hamper = Hamper::find($request->hamper_id);
             $hamper->selling_price = $request->newPrice;
-            $hamper->revenue_percentage = round(($request->newPrice-$hamper->capital_price)/$hamper->capital_price*100,2);
+            $modal = $hamper->capital_price==0?1:$hamper->capital_price;
+            $hamper->revenue_percentage = round(($request->newPrice-$hamper->capital_price)/$modal*100,2);
             $hamper->save();
             DB::commit();
             Alert::success('Success', 'Price has been updated');
