@@ -42,16 +42,15 @@
                                 </div>
                     
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <p class="fs-3 mb-0 text-wrap">{{ $hamper->name }}</p>
-                                    <p class="fs-6 text-success mb-0">{{ "Rp. ".number_format($hamper->selling_price, 0, ',', '.') }}</p>
+                                    <p class="fs-5 mb-0 text-wrap">{{ $hamper->name }}</p>
+                                    <p class="fs-7 text-success mb-0">{{ "Rp. ".number_format($hamper->selling_price, 0, ',', '.') }}</p>
                                 </div>
+                                <hr>
                     
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex flex-column justify-content-start">
-                                        <p class="text-muted mb-0">Available: <span class="fw-bold">{{ $hamper->getStock() }}</span></p>
-                                        <a href="#" class="update-price btn btn-warning btn-sm fw-bold py-0 px-0" data-bs-toggle="modal" data-bs-target="#updatePriceModal" data-hamper-id="{{ $hamper->id }}" data-hamper-name={{ $hamper->name }} data-hamper-price={{ $hamper->selling_price }}>Update price</a>
-                                    </div>
-                                    <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <p class="text-muted mb-0">Available: <span class="fw-bold">{{ $hamper->getStock() }}</span></p>
+                                    <a href="#" class="update-price btn btn-warning btn-sm fw-bold py-1 px-2" data-bs-toggle="modal" data-bs-target="#updatePriceModal" data-hamper-id="{{ $hamper->id }}" data-hamper-name={{ $hamper->name }} data-hamper-price={{ $hamper->selling_price }}>Update price</a>
+                                    {{-- <div>
                                         <div class="input-group input-group-sm">
                                             <button class="btn btn-outline-secondary btn-sm" type="button" id="decrement" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
                                             <input type="number" class="form-control form-control-sm" value="1" min="1" max="{{ $hamper->getStock() }}" id="quantity" name="qty">
@@ -62,6 +61,20 @@
                                         <input type="hidden" name="hamper_id" value="{{ $hamper->id }}">
                                         <input type="hidden" name="selling_price" value="{{ $hamper->selling_price }}">
                                         <button type="submit" class="btn btn-dark add-cart" id="add-cart" @if($hamper->getStock() <= 0) disabled @endif ><i class="bi bi-cart"></i></button>
+                                    </div> --}}
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex">
+                                        <div class="input-group input-group-sm">
+                                            <button class="btn btn-outline-secondary btn-sm" type="button" id="decrement" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
+                                            <input type="number" class="form-control form-control-sm" value="1" min="1" max="{{ $hamper->getStock() }}" id="quantity" name="qty">
+                                            <button class="btn btn-outline-secondary btn-sm" type="button" id="increment" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <input type="hidden" name="hamper_id" value="{{ $hamper->id }}">
+                                        <input type="hidden" name="selling_price" value="{{ $hamper->selling_price }}">
+                                        <button type="submit" class="btn btn-dark add-cart" id="add-cart" @if($hamper->getStock() <= 0) disabled @endif >Add to <i class="bi bi-cart"></i></button>
                                     </div>
                                 </div>
                             </div>
