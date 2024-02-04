@@ -74,6 +74,7 @@
                 </div>
           </div>
         </div>
+        {{-- Shopping Cart --}}
         <nav class="col-lg-3 shopping-cart">
             <div style="position: sticky; top: 100px;" class="border bg-light d-flex flex-column cart">
                 <h1 class="text-center fs-3 mt-2 mb-0">Checkout Carts</h1>

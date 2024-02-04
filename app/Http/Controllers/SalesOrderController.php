@@ -32,7 +32,7 @@ class SalesOrderController extends Controller
         $total_modal = 0;
         foreach($shopping_cart as $cart){
             $total_cart += $cart->selling_price*$cart->qty;
-            $total_modal += $cart->hamper->capital_price;
+            $total_modal += $cart->hamper->capital_price*$cart->qty;
         }
         $sortField = request('sort', 'created_at');
         $sortOrder = request('order', 'desc');
