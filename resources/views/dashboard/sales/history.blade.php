@@ -116,7 +116,7 @@
               <td><strong>{{ "Rp. ".number_format($totalBeforeDiscountSum, 0, ',', '.') }}</strong></td>
               <td><strong>{{ "Rp. ".number_format($totalOrderSum, 0, ',', '.') }}</strong></td>
               <td><strong>{{ "Rp. ".number_format($totalRevenueSum, 0, ',', '.') }}</strong></td>
-              <td></td>
+              <td><strong>{{ round(($totalRevenueSum/$totalBeforeDiscountSum)*100,1)."%" }}</strong></td>
           </tr>
       </tfoot>
       </table>
