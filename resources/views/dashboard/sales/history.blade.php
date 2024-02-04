@@ -81,6 +81,7 @@
         </thead>
         <tbody>
           @php
+            $totalBeforeDiscountSum = 0;
             $totalOrderSum = 0;
             $totalRevenueSum = 0;
           @endphp
@@ -103,6 +104,7 @@
                 </td>
               </tr>
           @php
+            $totalBeforeDiscountSum += $so->total_before_discount;
             $totalOrderSum += $so->total_order;
             $totalRevenueSum += $so->total_revenue;
           @endphp
@@ -110,7 +112,8 @@
         </tbody>
         <tfoot>
           <tr>
-              <td colspan="5"><strong>Total:</strong></td>
+              <td colspan="4"><strong>Total:</strong></td>
+              <td><strong>{{ "Rp. ".number_format($totalBeforeDiscountSum, 0, ',', '.') }}</strong></td>
               <td><strong>{{ "Rp. ".number_format($totalOrderSum, 0, ',', '.') }}</strong></td>
               <td><strong>{{ "Rp. ".number_format($totalRevenueSum, 0, ',', '.') }}</strong></td>
               <td></td>
