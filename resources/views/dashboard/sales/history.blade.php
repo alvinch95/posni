@@ -73,9 +73,9 @@
             <th scope="col">Sales Order No</th>
             <th scope="col">Date</th>
             <th scope="col">Customer</th>
-            <th scope="col">Remarks</th>
-            <th scope="col">Total Order</th>
-            <th scope="col">Revenue</th>
+            <th scope="col">Penjualan Kotor</th>
+            <th scope="col">Penjualan Bersih</th>
+            <th scope="col">Laba</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -90,7 +90,7 @@
                   <td>{{ $so->order_number }}</td>
                   <td>{{ $so->order_date }}</td>
                   <td>{{ $so->customer->name }}</td>
-                  <td>{{ $so->remarks }}</td>
+                  <td>{{ "Rp. ".number_format($so->total_before_discount, 0, ',', '.') }}</td>
                   <td>{{ "Rp. ".number_format($so->total_order, 0, ',', '.') }}</td>
                   <td>{{ "Rp. ".number_format($so->total_revenue, 0, ',', '.') }}</td>
                   <td>
