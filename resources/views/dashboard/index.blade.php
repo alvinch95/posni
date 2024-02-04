@@ -6,6 +6,8 @@
     <h1 class="h2">Welcome back, {{ auth()->user()->name }}</h1>
 </div>
 
+@can('admin')
+    
 <div class="row mb-3">
     <div class="col-md-8">
         <div class="card">
@@ -115,6 +117,7 @@
         </div>
     </div>
 </div>
+@endcan
 
 <script src="{{ $monthly_chart->cdn() }}"></script>
 <script src="{{ $daily_chart->cdn() }}"></script>

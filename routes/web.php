@@ -69,21 +69,21 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 
 
 //route resource artinya udah sepaket crud, tinggal diarahin sesuai dengan nama method di dalam controllernya
-Route::get('/dashboard/products/checkSlug',[DashboardProductController::class, 'checkSlug'])->middleware('auth');
-Route::resource('/dashboard/products', DashboardProductController::class)->middleware('auth');
+Route::get('/dashboard/products/checkSlug',[DashboardProductController::class, 'checkSlug'])->middleware('admin');
+Route::resource('/dashboard/products', DashboardProductController::class)->middleware('admin');
 
-Route::resource('/dashboard/items', ItemsController::class)->middleware('auth');
+Route::resource('/dashboard/items', ItemsController::class)->middleware('admin');
 
-Route::resource('/dashboard/suppliers', SupplierController::class)->middleware('auth');
-Route::resource('/dashboard/customers', CustomerController::class)->middleware('auth');
-Route::resource('/dashboard/series', SerieController::class)->except('show')->middleware('auth');
-Route::resource('/dashboard/variants', VariantController::class)->except('show')->middleware('auth');
+Route::resource('/dashboard/suppliers', SupplierController::class)->middleware('admin');
+Route::resource('/dashboard/customers', CustomerController::class)->middleware('admin');
+Route::resource('/dashboard/series', SerieController::class)->except('show')->middleware('admin');
+Route::resource('/dashboard/variants', VariantController::class)->except('show')->middleware('admin');
 
 Route::post('dashboard/hampers/copyHampers',[HamperController::class, 'copyHampers'])->middleware('auth')->name('dashboard.hampers.copy');
 Route::post('dashboard/hampers/updatePrice', [HamperController::class, 'updatePrice'])->middleware('auth')->name('dashboard.hampers.updatePrice');
 Route::get('dashboard/hampers/catalog/{hamper}', [HamperController::class, 'catalog'])->middleware('auth')->name('dashboard.hampers.catalog');
-Route::resource('/dashboard/hampers', HamperController::class)->middleware('auth');
-Route::resource('/dashboard/purchases', PurchaseController::class)->middleware('auth');
+Route::resource('/dashboard/hampers', HamperController::class)->middleware('admin');
+Route::resource('/dashboard/purchases', PurchaseController::class)->middleware('admin');
 
 Route::resource('/dashboard/categories', CategoryController::class)->except('show')->middleware('admin');
 
@@ -93,11 +93,11 @@ Route::post('dashboard/sales/removeCart', [SalesOrderController::class, 'removeC
 Route::get('dashboard/sales/history', [SalesOrderController::class, 'history'])->middleware('auth')->name('dashboard.sales.history');
 Route::resource('/dashboard/sales', SalesOrderController::class)->middleware('auth');
 
-Route::get('dashboard/stockopname', [StockOpnameController::class, 'index'])->middleware('auth')->name('dashboard.stockopname.create');
-Route::post('dashboard/stockopname/submit', [StockOpnameController::class, 'store'])->middleware('auth')->name('dashboard.stockopname.submit');
+Route::get('dashboard/stockopname', [StockOpnameController::class, 'index'])->middleware('admin')->name('dashboard.stockopname.create');
+Route::post('dashboard/stockopname/submit', [StockOpnameController::class, 'store'])->middleware('admin')->name('dashboard.stockopname.submit');
 
-Route::get('dashboard/stockin', [StockOpnameController::class, 'stockin'])->middleware('auth')->name('dashboard.stockopname.stockin');
-Route::get('dashboard/stockout', [StockOpnameController::class, 'stockout'])->middleware('auth')->name('dashboard.stockopname.stockout');
+Route::get('dashboard/stockin', [StockOpnameController::class, 'stockin'])->middleware('admin')->name('dashboard.stockopname.stockin');
+Route::get('dashboard/stockout', [StockOpnameController::class, 'stockout'])->middleware('admin')->name('dashboard.stockopname.stockout');
 
 
 // Route::get('/categories/{category:slug}', function(Category $category){
