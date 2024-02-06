@@ -38,7 +38,9 @@
                             <div class="card-body px-2">
                                 <div class="d-flex justify-content-between">
                                     <p class="small"><a href="#!" class="text-muted">{{ $hamper->serie->name }}</a></p>
-                                    <p class="small text-info">{{ "Rp. ".number_format($hamper->capital_price, 0, ',', '.') }}</p>
+                                    @can('admin')
+                                        <p class="small text-info">{{ "Rp. ".number_format($hamper->capital_price, 0, ',', '.') }}</p>
+                                    @endcan
                                 </div>
                     
                                 <div class="d-flex justify-content-between align-items-center mb-2">

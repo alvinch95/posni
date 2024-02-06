@@ -29,11 +29,16 @@
                   </div>
                   <hr>
                   <div class="row">
-                    {{-- <div class="col-md-1"></div> --}}
                     <div class="col-md-4">
                       <ul class="list-group list-group-flush">
                         <li class="list-group-item fs-6"><strong>Revenue:</strong> Rp. {{ number_format($sales_order->total_revenue, 0, ',', '.') }}</li>
                       </ul>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item fs-6"><strong>Keterangan:</strong> {{ $sales_order->remarks }}</li>
+                        </ul>
                     </div>
                   </div>
                 </div>
