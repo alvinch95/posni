@@ -61,12 +61,21 @@
   </div>
 </div>
 
-
-
 <div class="table-responsive col-lg-8">
     @if ($sales_orders->count())
       <table class="table table-bordered border-dark table-striped table-sm">
-        <caption>Sales Order History</caption>
+        <caption>
+          <div class="d-flex float-end">
+            <label for="page-size-select" class="mx-2">Page Size:</label>
+            <select id="page-size-select" class="form-select page-size-select">
+                <option value="10" {{ $pageSize==10?"selected":"" }}>10</option>
+                <option value="50" {{ $pageSize==50?"selected":"" }}>50</option>
+                <option value="50" {{ $pageSize==100?"selected":"" }}>100</option>
+                <option value="50" {{ $pageSize==200?"selected":"" }}>200</option>
+            </select>
+          </div>
+          Showing {{ $pageSize<=$totalData?$sales_orders->count():$totalData }} of {{ $totalData }} results
+        </caption>
         <thead class="table-dark border-dark">
           <tr>
             <th scope="col">#</th>
@@ -120,19 +129,44 @@
           </tr>
       </tfoot>
       </table>
-      <div class="d-flex justify-content-center">
-        {{ $sales_orders->links() }}
-      </div>
     @else
       <p class="text-center fs-4">No Sales Order Found.</p>
     @endif
 </div>
+<div class="d-flex justify-content-center">
+  {{ $sales_orders->links() }}
+</div>
 <style>
-  
+  /* Style the page size select */
+  .page-size-select {
+      padding: 4px 8px; /* Adjust padding as needed */
+      font-size: 12px; /* Adjust font size as needed */
+      width: 70px; /* Adjust width as needed */
+  }
 </style>
-
   <script>
     $(document).ready(function(){
+      $('#page-size-select').on('change', function() {
+          const selectedPageSize = $(this).val();
+          const currentUrl = window.location.href;
+
+          // Replace the "page_size" query parameter with the selected page size
+          const updatedUrl = updateQueryStringParameter(currentUrl, 'page_size', selectedPageSize);
+
+          // Redirect to the updated URL
+          window.location.href = updatedUrl;
+      });
+
+      // Function to update query parameters in URL
+      function updateQueryStringParameter(uri, key, value) {
+          const re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+          const separator = uri.indexOf('?') !== -1 ? "&" : "?";
+          if (uri.match(re)) {
+              return uri.replace(re, '$1' + key + "=" + value + '$2');
+          }
+          return uri + separator + key + "=" + value;
+      }
+
       $('.btn-filter-date').click(function(event) {
           event.preventDefault();
 

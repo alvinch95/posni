@@ -187,6 +187,7 @@ class SalesOrderController extends Controller
 
     public function history()
     {
+        $pageSize = request('page_size', 10); // Default page size is 10
         $sortField = request('sort', 'created_at');
         $sortOrder = request('order', 'desc');
 
@@ -206,7 +207,9 @@ class SalesOrderController extends Controller
         }
 
         return view('dashboard.sales.history', [
-            'sales_orders' => SalesOrder::with('customer')->whereRaw($whereRaw)->orderBy($sortField, $sortOrder)->filter(request(['search']))->paginate(10)->withQueryString()
+            'sales_orders' => SalesOrder::with('customer')->whereRaw($whereRaw)->orderBy($sortField, $sortOrder)->filter(request(['search']))->paginate($pageSize)->withQueryString(),
+            'pageSize' => $pageSize,
+            'totalData' => SalesOrder::with('customer')->whereRaw($whereRaw)->orderBy($sortField, $sortOrder)->filter(request(['search']))->count()
         ]);
     }
     public function show(SalesOrder $sale)
