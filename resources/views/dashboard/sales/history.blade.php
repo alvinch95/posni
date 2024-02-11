@@ -70,8 +70,8 @@
             <select id="page-size-select" class="form-select page-size-select">
                 <option value="10" {{ $pageSize==10?"selected":"" }}>10</option>
                 <option value="50" {{ $pageSize==50?"selected":"" }}>50</option>
-                <option value="50" {{ $pageSize==100?"selected":"" }}>100</option>
-                <option value="50" {{ $pageSize==200?"selected":"" }}>200</option>
+                <option value="100" {{ $pageSize==100?"selected":"" }}>100</option>
+                <option value="200" {{ $pageSize==200?"selected":"" }}>200</option>
             </select>
           </div>
           Showing {{ $pageSize<=$totalData?$sales_orders->count():$totalData }} of {{ $totalData }} results
