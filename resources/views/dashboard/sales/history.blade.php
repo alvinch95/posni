@@ -19,7 +19,7 @@
 
 <div class="row mb-3">
   <div class="col-md-8">
-      <form action="/dashboard/sales/history">
+      <form id="filterForm" action="/dashboard/sales/history">
           <div class="row mb-3 align-items-center">
             <div class="col-lg-3">
               <div class="form-floating mb-1">
@@ -210,7 +210,9 @@
           $('#order_date_to').val(orderDateTo);
 
           // Submit the form
-          $('form').submit();
+          var form = $('#filterForm');
+          // console.log(form);
+          form.submit();
       });
 
       $('.hapus').click(function(e) {
