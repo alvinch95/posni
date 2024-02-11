@@ -140,7 +140,7 @@ class SalesOrderController extends Controller
                     $sodi->item_name = $details->item->name;
                     $sodi->purchase_price = $details->item->purchase_price;
                     $sodi->selling_price = $details->item->selling_price;
-                    $sodi->qty = $details->qty;
+                    $sodi->qty = $details->qty * $cart['qty'];
                     $sodi->uom = $details->item->uom;
                     $sodi->save();
 
@@ -250,9 +250,47 @@ class SalesOrderController extends Controller
      * @param  \App\Models\SalesOrder  $salesOrder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SalesOrder $salesOrder)
+    public function destroy(SalesOrder $sale)
     {
-        //
+        // kenapa parameter pake $sale karena di routing kita pakainya dashboard/sales/{sale} (otomatis dari laravel karena di routing pakainya Resource), cek nama model binding bisa dari php artisan route:list
+        $salesOrder = $sale;
+        try{
+            DB::beginTransaction();
+            foreach($salesOrder->details as $detail){
+                foreach($detail->salesOrderDetailItems as $detailItem)
+                {
+                    //update item stock and insert each hampers detail to stock history
+                    $sh = new StockHistory;
+                    $item = Item::find($detailItem->item_id);
+                    $sh->item_id = $detailItem->item_id;
+                    $sh->transaction_date = now();
+                    $sh->transaction_type = 'Cancel Sales';
+                    $sh->initial_stock = $item->stock;
+                    $qtyAdd = $detailItem->qty;
+                    $sh->qty = $qtyAdd;
+                    $endStock = $item->stock + $qtyAdd;
+                    $sh->end_stock = $endStock;
+                    $sh->remark = 'Cancel '.$salesOrder->order_number;
+                    $sh->save();
+
+                    $item->stock = $endStock;
+                    $item->save();
+                    $detailItem->delete();
+
+                }
+                $detail->delete();
+            }
+            $salesOrder->delete();
+            DB::commit();
+            
+            Alert::success('Success', 'Transaction has been cancelled');
+            return redirect('/dashboard/sales/history');
+        }catch (\Exception $e) {
+            DB::rollback();
+            // Handle the exception (log, display error message, etc.)
+            Alert::error('Error', $e->getMessage());
+            return back()->with('error', 'An error occurred while cancelling transaction.');
+        }
     }
 
     private static function getCode()

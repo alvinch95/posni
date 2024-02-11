@@ -80,12 +80,17 @@
                   @endif
                   <td>
                       <a href="/dashboard/hampers/{{ $hamper->id }}" class="badge bg-primary"><span data-feather="eye"></span></a>
-                      <a href="/dashboard/hampers/{{ $hamper->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
-                      <form action="/dashboard/hampers/{{ $hamper->id }}" method="post" class="d-inline">
-                        @method('delete')
-                        @csrf
-                        <button class="badge bg-danger border-0 hapus"><span data-feather="x-circle"></span></button>
-                      </form>
+                      @if (!$hamper->from_item)
+                        <a href="/dashboard/hampers/{{ $hamper->id }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
+                        <form action="/dashboard/hampers/{{ $hamper->id }}" method="post" class="d-inline">
+                          @method('delete')
+                          @csrf
+                          <button class="badge bg-danger border-0 hapus"><span data-feather="x-circle"></span></button>
+                        </form>
+                      @else
+                        <span class="text-muted">From Item</span>
+                      @endif
+
                       <a href="/dashboard/hampers/catalog/{{ $hamper->id }}" class="badge bg-secondary"><span data-feather="file"></span></a>
                   </td>
               </tr>

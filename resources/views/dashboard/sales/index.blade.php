@@ -44,11 +44,10 @@
                                 </div>
                     
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <p class="fs-5 mb-0 text-wrap">{{ $hamper->name }}</p>
-                                    <p class="fs-7 text-success mb-0">{{ "Rp. ".number_format($hamper->selling_price, 0, ',', '.') }}</p>
+                                    <p class="fs-6 mb-0 text-wrap">{{ $hamper->name }}</p>
+                                    <p class="small text-success mb-0">{{ "Rp. ".number_format($hamper->selling_price, 0, ',', '.') }}</p>
                                 </div>
                                 <hr>
-                    
                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                     <p class="text-muted mb-0">Available: <span class="fw-bold">{{ $hamper->getStock() }}</span></p>
                                     <a href="#" class="update-price btn btn-warning btn-sm fw-bold py-1 px-2" data-bs-toggle="modal" data-bs-target="#updatePriceModal" data-hamper-id="{{ $hamper->id }}" data-hamper-name={{ $hamper->name }} data-hamper-price={{ $hamper->selling_price }}>Update price</a>
