@@ -145,7 +145,9 @@
                     <div>
                         <p class="fs-7 fw-bold mb-0 text-center" id="fee_customer_label">Fee Customer : </p>
                         <p class="fs-6 fw-bold mb-0 text-center" id="total_order_label">Total : {{ "Rp. ".number_format($total_cart, 0, ',', '.') }}</p>
+                        @can('admin')
                         <p class="fs-6 fw-bold mb-0 text-center" id="total_cuan_label">Cuan : {{ "Rp. ".number_format($total_cart-$total_modal, 0, ',', '.') }}</p>
+                        @endcan
                     </div>
                     <div>
                         <button type="submit" class="btn @if ($shopping_carts->count() <= 0)
