@@ -45,6 +45,11 @@ Route::get('/about', function () {
     ]);
 });
 
+Route::get('/trial',function(){
+    return view('trial', [
+        "title" => "Trial"
+    ]);
+});
 
 
 Route::get('/products', [ProductController::class, 'index']);
