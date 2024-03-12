@@ -32,7 +32,7 @@ class InventoryValueChart
         ->orderBy('record_date')
         ->get();
 
-        // dd($data);
+        dd($data);
 
         $days = [];
         while($currentDate <= $endDate){
