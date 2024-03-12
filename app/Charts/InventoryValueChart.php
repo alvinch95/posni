@@ -49,6 +49,7 @@ class InventoryValueChart
         }
         $data->sortBy('record_date');
         $dataArray = $data->toArray();
+        dd($dataArray);
         
         $total_inventory_value = array_column($dataArray, 'total');
         
