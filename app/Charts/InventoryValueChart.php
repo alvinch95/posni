@@ -18,9 +18,9 @@ class InventoryValueChart
 
     public function build(): \ArielMejiaDev\LarapexCharts\LineChart
     {
-        $currentDate = Carbon::parse(today()->subDays(6));
+        $currentDate = Carbon::parse(today()->subDays(7));
         $orderDateFromFormatted = $currentDate->format('j M Y');
-        $endDate = Carbon::parse(today());
+        $endDate = Carbon::parse(today()->subDays(1));
         $orderDateToFormatted = $endDate->format('j M Y');
 
         $data = InventoryValue::select(
