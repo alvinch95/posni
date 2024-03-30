@@ -88,17 +88,17 @@
       </li>
       <div class="child-row" style="display: none;">
         <li class="table-header child-header">
-                <div class="col">Item Name</div>
+                <div class="col">Item</div>
+                <div class="col">Model</div>
                 <div class="col">Item Qty</div>
-                <div class="col">Ori Price</div>
-                <div class="col">Disc Price</div>
+                <div class="col">Price</div>
         </li>
         @foreach (json_decode($sm->item_list, true) as $item)
         <li class="table-row child-table-row">
             <div class="col">{{ $item['item_name'] }}</div>
+            <div class="col">{{ $item['model_name'] }}</div>
             <div class="col">{{ $item['model_quantity_purchased'] }}</div>
-            <div class="col">{{ $item['model_original_price'] }}</div>
-            <div class="col">{{ $item['model_discounted_price'] }}</div>
+            <div class="col">{{ "Rp. ".number_format($item['model_discounted_price'], 0, ',', '.') }}</div>
         </li>
         @endforeach
       </div>
