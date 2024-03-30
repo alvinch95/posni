@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ShopeeReminder;
+use Illuminate\Support\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ShopeeReminderController extends Controller
@@ -15,7 +16,7 @@ class ShopeeReminderController extends Controller
      */
     public function index()
     {
-        $sortField = request('sort', 'created_at');
+        $sortField = request('sort', 'processed_date');
         $sortOrder = request('order', 'desc');
 
         if(request('sort')){
@@ -23,14 +24,21 @@ class ShopeeReminderController extends Controller
         }
 
         $whereRaw = '1 = 1';
+        $currentDate = Carbon::now()->format('Y-m-d');
         if(request('processed_date_from'))
         {
             $whereRaw .= " AND date(processed_date) >= '".request('processed_date_from')."'";
+        }
+        else{
+            $whereRaw .= " AND date(processed_date) >= '".$currentDate."'";
         }
 
         if(request('processed_date_to'))
         {
             $whereRaw .= " AND date(processed_date) <= '".request('processed_date_to')."'";
+        }
+        else{
+            $whereRaw .= " AND date(processed_date) <= '".$currentDate."'";
         }
 
         $shopeeReminders = ShopeeReminder::whereRaw($whereRaw)->orderBy($sortField, $sortOrder)->filter(request(['search']))->get();
