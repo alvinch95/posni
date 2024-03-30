@@ -41,6 +41,10 @@ class ShopeeReminderController extends Controller
             $whereRaw .= " AND date(processed_date) <= '".$currentDate."'";
         }
 
+        if(request('is_processed')){
+            $whereRaw .= " AND is_processed = ".request('is_processed');
+        }
+
         $shopeeReminders = ShopeeReminder::whereRaw($whereRaw)->orderBy($sortField, $sortOrder)->filter(request(['search']))->get();
         
         return view('dashboard.shopeereminder.index', [

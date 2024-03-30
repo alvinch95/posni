@@ -39,6 +39,16 @@
                 <label for="processed_date_to" class="form-label">End Date</label>
               </div>
             </div>
+            <div class="col-lg-2">
+              <div class="form-floating mb-1">
+                <select class="form-select" id="is_processed" name="is_processed">
+                  <option value="">-</option>
+                  <option value="true" {{ request('is_processed') == 'true' ? 'selected' : '' }}>Sudah</option>
+                  <option value="false" {{ request('is_processed') == 'false' ? 'selected' : '' }}>Belum</option>
+                </select>
+                <label for="is_processed" class="form-label">Status</label>
+              </div>
+            </div>
             <div class="col-lg-1">
               <button class="btn text-white" style="background-color: #966F33" type="submit">Search</button>
             </div>
@@ -72,13 +82,40 @@
           @endif
         </div>
         <div class="col col-6" data-label="Remark">{{ $sm->remarks }}</div>
-        <div class="col col-7" data-label="Item List">{{ $sm->remarks }}</div>
+        <div class="col col-7" data-label="Item List">
+          <button class="show-btn">Show</button>
+        </div>
       </li>
+      <div class="child-row" style="display: none;">
+        <li class="table-header child-header">
+                <div class="col">Item Name</div>
+                <div class="col">Item Qty</div>
+                <div class="col">Ori Price</div>
+                <div class="col">Disc Price</div>
+        </li>
+        @foreach (json_decode($sm->item_list, true) as $item)
+        <li class="table-row child-table-row">
+            <div class="col">{{ $item['item_name'] }}</div>
+            <div class="col">{{ $item['model_quantity_purchased'] }}</div>
+            <div class="col">{{ $item['model_original_price'] }}</div>
+            <div class="col">{{ $item['model_discounted_price'] }}</div>
+        </li>
+        @endforeach
+      </div>
     @endforeach
   </ul>
 </div>
 
 <style>
+  .child-row{
+    margin-left: 30px;
+  }
+  .child-header{
+    background-color: lightblue !important;
+  }
+  .child-table-row{
+    background-color: whitesmoke !important;
+  }
   .status {
       display: inline-block;
       width: 8px;
@@ -187,6 +224,14 @@
 
   <script>
     $(document).ready(function(){
+      $(".show-btn").click(function(){
+        // Find the parent table-row element
+        var tableRow = $(this).closest('.table-row');
+        // Find the sibling child-row element
+        var childRow = tableRow.next('.child-row');
+        // Toggle the display of the child-row
+        childRow.toggle();
+      });
       $('#page-size-select').on('change', function() {
           const selectedPageSize = $(this).val();
           const currentUrl = window.location.href;
