@@ -192,7 +192,7 @@ class SalesOrderController extends Controller
         $sortOrder = request('order', 'desc');
 
         if(request('sort')){
-            Alert::success('Success', 'Sort Stock In by ' . request('sort') . ' '. request('order'));
+            Alert::success('Success', 'Sort Order by ' . request('sort') . ' '. request('order'));
         }
 
         $whereRaw = '1 = 1';

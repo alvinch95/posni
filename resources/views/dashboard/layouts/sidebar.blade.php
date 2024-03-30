@@ -99,6 +99,12 @@
             Sales History
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {{ Request::is('dashboard/shopeereminder*') ? 'active' : '' }}" href="/dashboard/shopeereminder">
+            <span data-feather="check-square"></span>
+            Shopee Reminder
+          </a>
+        </li>
       </ul>
       @endcan
 

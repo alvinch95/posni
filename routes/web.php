@@ -19,6 +19,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\DashboardProductController;
+use App\Http\Controllers\ShopeeReminderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +104,8 @@ Route::post('dashboard/stockopname/submit', [StockOpnameController::class, 'stor
 
 Route::get('dashboard/stockin', [StockOpnameController::class, 'stockin'])->middleware('admin')->name('dashboard.stockopname.stockin');
 Route::get('dashboard/stockout', [StockOpnameController::class, 'stockout'])->middleware('admin')->name('dashboard.stockopname.stockout');
+
+Route::get('dashboard/shopeereminder', [ShopeeReminderController::class, 'index'])->middleware('admin')->name('dashboard.shopeereminder.index');
 
 
 // Route::get('/categories/{category:slug}', function(Category $category){
