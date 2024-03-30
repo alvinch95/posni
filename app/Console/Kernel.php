@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('inventory-value:calculate')->dailyAt('22:00'); // Runs at 10 PM (22:00)
+        $schedule->command('generate:shopee-reminder')->hourly();
     }
 
     /**
