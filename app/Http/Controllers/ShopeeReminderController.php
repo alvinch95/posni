@@ -157,7 +157,7 @@ class ShopeeReminderController extends Controller
             $so->discount_amount = null;
             $so->total_capital_price = $total_capital_price;
             $so->total_order = $total_amount;
-            $so->total_revenue = $total_amount - $total_capital_price;
+            $so->total_revenue = $total_amount - $total_capital_price - $customer_fee;
             $so->remarks = $request->remark;
             $so->save();
 
