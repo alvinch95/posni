@@ -86,7 +86,7 @@
         <div class="col col-6" data-label="Item List">
           <button class="show-btn btn btn-dark btn-sm">Show</button>
           @if(!$sm->is_processed)
-            <a href="#" class="convert-btn btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#convertModal" data-shopee-reminder-id="{{ $sm->id }}" data-order-date="{{ $sm->processed_date }}">Convert to Order</a>
+            <a href="#" class="convert-btn btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#convertModal" data-shopee-reminder-id="{{ $sm->id }}" data-order-date="{{ $sm->processed_date }}" data-remark="{{ $sm->ordersn.' || '.$sm->customer_name }}">Convert to Order</a>
           @endif
         </div>
       </li>
