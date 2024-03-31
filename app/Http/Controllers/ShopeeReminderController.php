@@ -100,24 +100,16 @@ class ShopeeReminderController extends Controller
             $barang = explode("/", $itemName);
 
             $firstString = strlen($model[0])>1 ? $model[0] : (isset($barang[0]) ? $barang[0] : $itemName);
-            $secondString = isset($model[1]) ? $model[1] : (isset($barang[1]) ? $barang[1] : $itemName);
-            $hamper = Hamper::whereRaw("name like'%".$firstString."%'")->get();
-            if($hamper->count() > 1){
-                //lebih dari 1 berarti antara ada Grafir atau tidak
-                if (stripos($secondString, "GRAFIR") !== false) {
-                    // kata ke 2 mengandung grafir
-                    $grafirHamper = $hamper->where(function ($query) {
-                        $query->whereRaw("name like '%Grafir%'");
-                    })->first();
+            $secondString = isset($model[1]) ? str_ireplace("Tanpa Grafir","Polos",$model[1]) : (isset($barang[1]) ? $barang[1] : $itemName);
 
-                    $dataname = $grafirHamper ? $grafirHamper->name : $hamper->last()->name;
-                    $dataid = $grafirHamper ? $grafirHamper->id : $hamper->last()->id;
-                }
-                else
-                {
-                    $dataname = $hamper->first()->name ?? "";
-                    $dataid = $hamper->first()->id ?? "";
-                }
+            $whereRaw = "name like '%".$firstString."%'";
+            $hamper = Hamper::whereRaw($whereRaw)->get();
+            
+            if($hamper->count() > 1){
+                $whereRaw .= " AND name like '%".$secondString."%'";
+                $desiredHamper = Hamper::whereRaw($whereRaw)->get();
+                $dataname = $desiredHamper->first()->name ?? "";
+                $dataid = $desiredHamper->first()->id ?? "";
             }
             else {
                 $dataname = $hamper->first()->name ?? "";
