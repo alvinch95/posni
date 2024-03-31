@@ -284,7 +284,7 @@ class SalesOrderController extends Controller
             DB::commit();
             
             Alert::success('Success', 'Transaction has been cancelled');
-            return redirect('/dashboard/sales/history');
+            return back();
         }catch (\Exception $e) {
             DB::rollback();
             // Handle the exception (log, display error message, etc.)
