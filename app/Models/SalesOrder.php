@@ -16,7 +16,8 @@ class SalesOrder extends Model
         $query->when($filters['search'] ?? false, function($query, $search) {
             return $query->where(function($query) use ($search) {
                 $query->where('order_number', 'like', '%' . $search . '%')
-                  ->orWhereHas('customer', function ($query) use ($search) {
+                    ->orWhere('remarks', 'like', '%' . $search . '%')
+                    ->orWhereHas('customer', function ($query) use ($search) {
                       $query->where('name', 'like', '%' . $search . '%');
                   });
              });

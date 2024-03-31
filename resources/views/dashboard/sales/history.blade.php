@@ -85,6 +85,7 @@
             <th scope="col">Penjualan Kotor</th>
             <th scope="col">Penjualan Bersih</th>
             <th scope="col">Laba</th>
+            <th scope="col">Keterangan</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -103,6 +104,7 @@
                   <td>{{ "Rp. ".number_format($so->total_before_discount, 0, ',', '.') }}</td>
                   <td>{{ "Rp. ".number_format($so->total_order, 0, ',', '.') }}</td>
                   <td>{{ "Rp. ".number_format($so->total_revenue, 0, ',', '.') }}</td>
+                  <td>{{ $so->remarks }}</td>
                   <td>
                     <a href="/dashboard/sales/{{ $so->id }}" class="badge bg-primary" title="View Order Detail"><span data-feather="eye"></span></a>
                     <form action="/dashboard/sales/{{ $so->id }}" method="post" class="d-inline">
