@@ -2,13 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use App\Models\Item;
+use App\Models\Hamper;
+use App\Models\SalesOrder;
+use App\Models\ShoppingCart;
+use App\Models\StockHistory;
 use Illuminate\Http\Request;
+use App\Models\RunningNumber;
 use App\Models\ShopeeReminder;
 use Illuminate\Support\Carbon;
+use App\Models\SalesOrderDetail;
+use Illuminate\Support\Facades\DB;
+use App\Models\SalesOrderDetailItem;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ShopeeReminderController extends Controller
 {
+    private static $transaction_code = "PJ";
     /**
      * Display a listing of the resource.
      *
@@ -46,9 +57,12 @@ class ShopeeReminderController extends Controller
         }
 
         $shopeeReminders = ShopeeReminder::whereRaw($whereRaw)->orderBy($sortField, $sortOrder)->filter(request(['search']))->get();
+        $shopping_cart = ShoppingCart::with('hamper')->where('user_id',auth()->user()->id)->get();
         
         return view('dashboard.shopeereminder.index', [
-            'shopee_reminders' => $shopeeReminders
+            'shopee_reminders' => $shopeeReminders,
+            'shopping_carts' => ShoppingCart::with('hamper')->where('user_id',auth()->user()->id)->get(),
+            'hampers' => Hamper::with('serie')->orderBy('name', 'asc')->get()
         ]);
     }
 
@@ -71,6 +85,152 @@ class ShopeeReminderController extends Controller
     public function store(Request $request)
     {
         //
+    }
+
+    public function openConvert(Request $request){
+        $shopeeReminder = ShopeeReminder::find($request->shopeeReminderID);
+        $itemLists = json_decode($shopeeReminder->item_list);
+        $data = [];
+        foreach($itemLists as $item){
+            $dataname = "";
+            $dataid = 0;
+            $modelName = $item->model_name;
+            $itemName = $item->item_name;
+            $model = explode(",", $modelName);
+            $barang = explode("/", $itemName);
+
+            $firstString = strlen($model[0])>1 ? $model[0] : (isset($barang[0]) ? $barang[0] : $itemName);
+            $secondString = isset($model[1]) ? $model[1] : (isset($barang[1]) ? $barang[1] : $itemName);
+            $hamper = Hamper::whereRaw("name like'%".$firstString."%'")->get();
+            if($hamper->count() > 1){
+                //lebih dari 1 berarti antara ada Grafir atau tidak
+                if (stripos($secondString, "GRAFIR") !== false) {
+                    // kata ke 2 mengandung grafir
+                    $grafirHamper = $hamper->where(function ($query) {
+                        $query->whereRaw("name like '%Grafir%'");
+                    })->first();
+
+                    $dataname = $grafirHamper ? $grafirHamper->name : $hamper->last()->name;
+                    $dataid = $grafirHamper ? $grafirHamper->id : $hamper->last()->id;
+                }
+                else
+                {
+                    $dataname = $hamper->first()->name ?? "";
+                    $dataid = $hamper->first()->id ?? "";
+                }
+            }
+            else {
+                $dataname = $hamper->first()->name ?? "";
+                $dataid = $hamper->first()->id ?? "";
+            }
+            $data[] = [
+                'id' => $dataid,
+                'name' => $dataname,
+                'price' => $item->model_discounted_price,
+                'qty' => $item->model_quantity_purchased 
+            ];
+        }
+        return $data;
+    }
+
+    public function convertOrder(Request $request){
+        try{
+            DB::beginTransaction();
+            $shoppingCartsArray = json_decode($request->shopping_carts, true);
+            $orderNumber = Self::getCode();
+            $customer = Customer::whereRaw("name like '%Shopee%'")->first();
+            
+            $hamperIDs = $request->hamper_id;
+            $unitPrices = $request->unit_price;
+            $qtys = $request->qty;
+            $totals = $request->total;
+            $total_amount = 0;
+            $total_capital_price = 0;
+            
+            //count all total
+            foreach($hamperIDs as $index => $hamperid){
+                $total_amount += (int)$totals[$index];
+                $hamper = Hamper::find($hamperid);
+                $total_capital_price += $hamper->capital_price;
+            }
+            $customer_fee = $customer->fee/100 * $total_amount;
+
+            //save header
+            $so = new SalesOrder;
+            $so->customer_id = $customer->id;
+            $so->order_number = $orderNumber;
+            $so->order_date = $request->order_date;
+            $so->customer_fee = $customer_fee;
+            $so->total_before_discount = $total_amount;
+            $so->discount_amount = null;
+            $so->total_capital_price = $total_capital_price;
+            $so->total_order = $total_amount;
+            $so->total_revenue = $total_amount - $total_capital_price;
+            $so->remarks = $request->remark;
+            $so->save();
+
+            $salesOrderID = $so->id;
+
+            foreach($hamperIDs as $index => $hamperId){
+                $hamper = Hamper::find($hamperid);
+                //save order detail
+                $sod = new SalesOrderDetail;
+                $sod->sales_order_id = $salesOrderID;
+                $sod->hamper_id = $hamperId;
+                $sod->capital_price = $hamper->capital_price;
+                $sod->selling_price = $unitPrices[$index];
+                $sod->qty = $qtys[$index];
+                $sod->save();
+
+                $salesOrderDetailID = $sod->id;
+
+                foreach($hamper->details as $details){
+                    //save order detail items
+                    $sodi = new SalesOrderDetailItem;
+                    $sodi->sales_order_detail_id = $salesOrderDetailID;
+                    $sodi->item_id = $details->item->id; 
+                    $sodi->item_name = $details->item->name;
+                    $sodi->purchase_price = $details->item->purchase_price;
+                    $sodi->selling_price = $details->item->selling_price;
+                    $sodi->qty = $details->qty * $qtys[$index];
+                    $sodi->uom = $details->item->uom;
+                    $sodi->save();
+
+                    //update item stock and insert each hampers detail to stock history
+                    $sh = new StockHistory;
+                    $item = Item::find($details->item_id);
+                    $sh->item_id = $details->item_id;
+                    $sh->transaction_date = $request->order_date;
+                    $sh->transaction_type = 'Sales';
+                    $sh->initial_stock = $item->stock;
+                    $qtyDeduct = $details->qty * $qtys[$index];
+                    $sh->qty = $qtyDeduct;
+                    $endStock = $item->stock - $qtyDeduct;
+                    $sh->end_stock = $endStock;
+                    $sh->remark = $orderNumber;
+                    $sh->save();
+
+                    $item->stock = $endStock;
+                    $item->save();
+                }
+
+                //update shopee reminder
+                $shopeeReminder = ShopeeReminder::find($request->shopee_reminder_id);
+                $shopeeReminder->is_processed = true;
+                $shopeeReminder->remarks = $orderNumber;
+                $shopeeReminder->updated_at = now();
+                $shopeeReminder->save();
+            }
+
+            DB::commit();
+            Alert::success('Success', 'Convert to Order Successs !');
+            return redirect()->back();
+        }catch (\Exception $e) {
+            DB::rollback();
+            // Handle the exception (log, display error message, etc.)
+            Alert::error('Error', $e->getMessage());
+            return back()->with('error', 'An error occurred while converting to sales order.');
+        }
     }
 
     /**
@@ -116,5 +276,35 @@ class ShopeeReminderController extends Controller
     public function destroy(ShopeeReminder $shopeeReminder)
     {
         //
+    }
+
+    private static function getCode()
+    {
+        $code = "";
+        $month = now()->month;
+        $monthFormatted = str_pad($month, 2, '0', STR_PAD_LEFT);
+        $year = now()->year;
+        $day = now()->day;
+        $dayFormatted = str_pad($day, 2, '0', STR_PAD_LEFT);
+        $iteration = 0;
+        $running_number = RunningNumber::where([['bulan',$month],['tahun',$year],['code',self::$transaction_code]])->first();
+
+        if($running_number){
+            $iteration = $running_number->next_number;
+            $running_number->next_number = $iteration+1;
+        }else{
+            //insert the first one
+            $running_number = new RunningNumber;
+            $running_number->code = self::$transaction_code;
+            $running_number->bulan = $month;
+            $running_number->tahun = $year;
+            $running_number->next_number = 2;
+            $iteration = 1;
+        }
+        $running_number->save();
+
+        $iterationFormatted = str_pad($iteration, 4, '0', STR_PAD_LEFT);
+        $code = self::$transaction_code."/".$dayFormatted.$monthFormatted.$year."/".$iterationFormatted;
+        return $code;
     }
 }

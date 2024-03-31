@@ -198,12 +198,12 @@ class SalesOrderController extends Controller
         $whereRaw = '1 = 1';
         if(request('order_date_from'))
         {
-            $whereRaw .= " AND order_date >= '".request('order_date_from')."'";
+            $whereRaw .= " AND date(order_date) >= '".request('order_date_from')."'";
         }
 
         if(request('order_date_to'))
         {
-            $whereRaw .= " AND order_date <= '".request('order_date_to')."'";
+            $whereRaw .= " AND date(order_date) <= '".request('order_date_to')."'";
         }
 
         return view('dashboard.sales.history', [

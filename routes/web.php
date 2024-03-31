@@ -106,6 +106,8 @@ Route::get('dashboard/stockin', [StockOpnameController::class, 'stockin'])->midd
 Route::get('dashboard/stockout', [StockOpnameController::class, 'stockout'])->middleware('admin')->name('dashboard.stockopname.stockout');
 
 Route::get('dashboard/shopeereminder', [ShopeeReminderController::class, 'index'])->middleware('admin')->name('dashboard.shopeereminder.index');
+Route::post('dashboard/shopeereminder/openConvert',[ShopeeReminderController::class, 'openConvert'])->middleware('auth')->name('dashboard.shopeereminder.openConvert');
+Route::post('dashboard/shopeereminder/convertOrder', [ShopeeReminderController::class, 'convertOrder'])->middleware('auth')->name('dashboard.shopeereminder.convertOrder');
 
 
 // Route::get('/categories/{category:slug}', function(Category $category){

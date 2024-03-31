@@ -4,6 +4,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;1,100;1,500&family=REM:wght@100&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 @endsection
 
 @section('container')
@@ -65,8 +68,7 @@
       <div class="col col-3">Customer</div>
       <div class="col col-4">Total</div>
       <div class="col col-5">Status</div>
-      <div class="col col-6">Remark</div>
-      <div class="col col-7">Item List</div>
+      <div class="col col-6">Item List</div>
     </li>
     @foreach ($shopee_reminders as $sm)
       <li class="table-row">
@@ -81,9 +83,11 @@
               <span class="status status-red"></span><span class="status-label">BELUM</span>
           @endif
         </div>
-        <div class="col col-6" data-label="Remark">{{ $sm->remarks }}</div>
-        <div class="col col-7" data-label="Item List">
-          <button class="show-btn">Show</button>
+        <div class="col col-6" data-label="Item List">
+          <button class="show-btn btn btn-dark btn-sm">Show</button>
+          @if(!$sm->is_processed)
+            <a href="#" class="convert-btn btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#convertModal" data-shopee-reminder-id="{{ $sm->id }}" data-order-date="{{ $sm->processed_date }}">Convert to Order</a>
+          @endif
         </div>
       </li>
       <div class="child-row" style="display: none;">
@@ -105,8 +109,67 @@
     @endforeach
   </ul>
 </div>
+<div class="modal fade" id="convertModal" tabindex="-1" aria-labelledby="convertModalLabel" aria-hidden="false">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="updatePriceModalLabel">Confirmation</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="convertForm" method="POST" action="{{ route('dashboard.shopeereminder.convertOrder') }}">
+              @csrf
+              <input type="hidden" name="shopee_reminder_id" id="shopee_reminder_id">
+              <input type="hidden" name="order_date" id="order_date">
+              <input type="hidden" name="remark" id="remark">
+              <div class="modal-body">
+                <p class="fs-5">This will create the following orders : </p>
+                <hr>
+                <div class="item_details">
+                  <div class="row item-detail-row mb-2">
+                    <div class="col-lg-3">
+                      <label for="item_id" class="form-label">Hampers</label>
+                      <select class="form-select select2" name="hamper_id[]" required>
+                        <option value="" disabled selected hidden>Select a hampers</option>
+                        @foreach ($hampers as $hamper)
+                          <option value="{{ $hamper->id }}" data-unit-price="{{ $hamper->selling_price }}">{{ $hamper->name }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    <div class="col-lg-3">
+                      <label for="unit_price" class="form-label">Harga Jual</label>
+                      <input type="number" class="unit_price form-control @error('unit_price') is-invalid @enderror" name="unit_price[]">
+                    </div>
+                    <div class="col-lg-2">
+                      <label for="qty" class="form-label">Jumlah</label>
+                      <input type="number" class="qty form-control @error('qty') is-invalid @enderror" name="qty[]" step="1" required>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="row">
+                          <div class="col-12 pe-0">
+                              <label for="total" class="form-label">Total</label>
+                              <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" readonly>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-3"><button type="button" class="btn btn-warning add-row">Add row</button></div>
+                <hr>
+                <p class="fs-4 text-center"><b>Please double check, Are you sure ?</b></p>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                  <button type="submit" class="btn btn-primary">Yes, Submit !</button>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
 
 <style>
+  .modal-dialog{ 
+    max-width: 800px;
+  }
   .child-row{
     margin-left: 30px;
   }
@@ -135,14 +198,11 @@
   .status-label {
       vertical-align: middle;
   }
-  .page-size-select {
-      padding: 4px 8px; /* Adjust padding as needed */
-      font-size: 12px; /* Adjust font size as needed */
-      width: 70px; /* Adjust width as needed */
-  }
+
   body {
     font-family: 'lato', sans-serif;
   }
+  
   .container {
     max-width: 100%;
     margin-left: 0px;
@@ -188,136 +248,159 @@
       flex-basis: 10%;
     }
     .col-6 {
-      flex-basis: 10%;
-    }
-    .col-7 {
       flex-basis: 30%;
-    }
-    
-    @media all and (max-width: 767px) {
-      .table-header {
-        display: none;
-      }
-      .table-row{
-        
-      }
-      li {
-        display: block;
-      }
-      .col {
-        flex-basis: 100%;
-      }
-      .col {
-        display: flex;
-        padding: 10px 0;
-        &:before {
-          color: #6C7A89;
-          padding-right: 10px;
-          content: attr(data-label);
-          flex-basis: 50%;
-          text-align: right;
-        }
-      }
     }
   }
 </style>
 
-  <script>
-    $(document).ready(function(){
-      $(".show-btn").click(function(){
-        // Find the parent table-row element
-        var tableRow = $(this).closest('.table-row');
-        // Find the sibling child-row element
-        var childRow = tableRow.next('.child-row');
-        // Toggle the display of the child-row
-        childRow.toggle();
-      });
-      $('#page-size-select').on('change', function() {
-          const selectedPageSize = $(this).val();
-          const currentUrl = window.location.href;
+<script>
+  //to make search field autofocus when selecting the dropdown
+  $(document).on('select2:open', () => {
+    document.querySelector('.select2-search__field').focus();
+  });
 
-          // Replace the "page_size" query parameter with the selected page size
-          const updatedUrl = updateQueryStringParameter(currentUrl, 'page_size', selectedPageSize);
+  $(document).ready(function(){
+    $(".add-row").on("click", function() {
+      addRows();
+    });
 
-          // Redirect to the updated URL
-          window.location.href = updatedUrl;
-      });
+    $(".show-btn").click(function(){
+      var tableRow = $(this).closest('.table-row');
+      var childRow = tableRow.next('.child-row');
+      childRow.slideToggle("fast");
+    });
 
-      // Function to update query parameters in URL
-      function updateQueryStringParameter(uri, key, value) {
-          const re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-          const separator = uri.indexOf('?') !== -1 ? "&" : "?";
-          if (uri.match(re)) {
-              return uri.replace(re, '$1' + key + "=" + value + '$2');
-          }
-          return uri + separator + key + "=" + value;
-      }
+    $(".convert-btn").click(function(){
+      var shopeeReminderID = $(this).data('shopee-reminder-id');
+      var orderDate = $(this).data('order-date');
+      var remark = $(this).data('remark');
+      initializeSelect2($('select[name="hamper_id[]"]'));
 
-      $('.btn-filter-date').click(function(event) {
-          event.preventDefault();
+      $("#loading-container").show();
 
-          // Define the date ranges (you can modify these)
-          var today = new Date().toISOString().split('T')[0];
-          var last7Days = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-          var thisMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 2).toISOString().split('T')[0];
-          var lastMonthStart = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 2).toISOString().split('T')[0];
-          var lastMonthEnd = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
-
-          // Get the clicked button's data attribute to determine the date range
-          var dateRange = $(this).data('date-range');
-          var orderDateFrom, orderDateTo;
-
-          // Set orderDateFrom and orderDateTo based on the selected date range
-          switch (dateRange) {
-              case 'today':
-                  orderDateFrom = today;
-                  orderDateTo = today;
-                  break;
-              case 'last7days':
-                  orderDateFrom = last7Days;
-                  orderDateTo = today;
-                  break;
-              case 'thisMonth':
-                  orderDateFrom = thisMonthStart;
-                  orderDateTo = today;
-                  break;
-              case 'lastMonth':
-                  orderDateFrom = lastMonthStart;
-                  orderDateTo = lastMonthEnd;
-                  break;
-              default:
-                  // Default case (today)
-                  orderDateFrom = today;
-                  orderDateTo = today;
-          }
-
-          // Update the input fields
-          $('#order_date_from').val(orderDateFrom);
-          $('#order_date_to').val(orderDateTo);
-
-          // Submit the form
-          var form = $('#filterForm');
-          // console.log(form);
-          form.submit();
+      $.ajax({
+        type: "POST",
+        url: "{{ route('dashboard.shopeereminder.openConvert') }}", // Replace with your actual route URL
+        data: {
+            "_token": "{{ csrf_token() }}",
+            shopeeReminderID: shopeeReminderID
+        },
+        success: function(response) {
+            addRowsFromResponse(response);
+            $("#shopee_reminder_id").val(shopeeReminderID);
+            $("#order_date").val(orderDate);
+            $("#remark").val(remark);
+            $("#loading-container").hide();
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: "Generate form success"
+            })
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            $("#loading-container").hide();
+            // Extract the error message from the server response
+            var errorMessage = xhr.responseText;
+            // Display the error message using SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage
+            });
+        }
       });
 
-      $('.hapus').click(function(e) {
-        e.preventDefault();
-        var form = $(this).parents('form');
-        Swal.fire({
-            title: 'Are you sure to cancel this transaction?',
-            text: "Please double check!",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, cancel it!'
-        }).then((result) => {
-            if (result.value) {
-                form.submit();
+      var form = $('#convertForm');
+      // $("#loading-container").show();
+      // form.submit();
+    });
+
+    $(".item_details").on("change", "[name='hamper_id[]']", function() {
+      var selectedOption = $(this).find(":selected");
+      var unitPrice = selectedOption.data("unit-price");
+      $(this).closest(".row").find(".unit_price").val(unitPrice);
+    });
+
+    $(".item_details").on("change", ".qty", function() {
+      var qty = $(this).val();
+      var unitPrice = $(this).closest(".row").find(".unit_price").val();
+      $(this).closest(".row").find(".total").val(unitPrice*qty);
+    });
+
+    $(".item_details").on("change", ".unit_price", function() {
+      var unitPrice = $(this).val();
+      var qty = $(this).closest(".row").find(".qty").val();
+      $(this).closest(".row").find(".total").val(unitPrice*qty);
+    });
+    
+    function addRowsFromResponse(response) {
+        if (response && response.length > 0) {
+            // Remove all existing rows
+            $('.item_details .row').remove();
+
+            response.forEach(function(item) {
+              addRows(); // Add a new empty row
+              // Set values for the new row
+              var newSelect = $('.item_details select[name="hamper_id[]"]').last();
+              newSelect.val(item.id);
+              newSelect.trigger('change');
+              var newPrice = $('.item_details .unit_price').last();
+              newPrice.val(item.price);
+              var newQty = $('.item_details .qty').last();
+              newQty.val(item.qty);
+              newQty.trigger('change');
+
+              if (item.id == 0) {
+                // Change row color to light red
+                var newRow = newSelect.closest('.row');
+                newRow.css('background-color', '#ffcccc'); // Light red color
             }
+            });
+        }
+    }
+    
+    function addRows(){
+      var newRow = `
+      <div class="row item-detail-row mb-2">
+        <div class="col-lg-3">
+          <label for="item_id" class="form-label">Hampers</label>
+          <select class="form-select select2" name="hamper_id[]" required>
+            <option value="" disabled selected hidden>Select a hampers</option>
+            @foreach ($hampers as $hamper)
+              <option value="{{ $hamper->id }}" data-unit-price="{{ $hamper->selling_price }}">{{ $hamper->name }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-lg-3">
+          <label for="unit_price" class="form-label">Harga Jual</label>
+          <input type="number" class="unit_price form-control @error('unit_price') is-invalid @enderror" name="unit_price[]">
+        </div>
+        <div class="col-lg-2">
+          <label for="qty" class="form-label">Jumlah</label>
+          <input type="number" class="qty form-control @error('qty') is-invalid @enderror" name="qty[]" step="1" required>
+        </div>
+        <div class="col-lg-3">
+          <div class="row">
+              <div class="col-12 pe-0">
+                  <label for="total" class="form-label">Total</label>
+                  <input type="number" class="total form-control @error('total') is-invalid @enderror" name="total[]" readonly>
+              </div>
+          </div>
+        </div>
+      </div>
+      `;
+      $(".item_details").append(newRow);
+
+      // Initialize Select2 for the newly added item
+      initializeSelect2($('select[name="hamper_id[]"]').last());
+    }
+
+    function initializeSelect2(element) {
+        element.select2({
+            theme: "bootstrap-5",
+            dropdownParent: $(element).closest('.modal')
         });
-      });
-    }); 
-  </script>
+    }
+  });
+</script>
 @endsection
