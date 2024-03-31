@@ -61,7 +61,7 @@
   </div>
 </div>
 
-<div class="table-responsive col-lg-8">
+<div class="table-responsive col-lg-10">
     @if ($sales_orders->count())
       <table class="table table-bordered border-dark table-striped table-sm">
         <caption>
