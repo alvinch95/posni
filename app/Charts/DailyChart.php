@@ -31,8 +31,8 @@ class DailyChart
             DB::raw('COUNT(*) as count_order')
         )
         ->whereRaw('date(order_date) >= "'.$currentDate->format('Y-m-d').'" and date(order_date) <= "'.$endDate->format('Y-m-d').'"')
-        ->groupBy('date(order_date)')
-        ->orderBy('order_date')
+        ->groupByRaw('date(order_date)')
+        ->orderByRaw('date(order_date)')
         ->get();
 
         $days = [];
