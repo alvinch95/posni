@@ -30,8 +30,8 @@ class DailyChart
             DB::raw('SUM(total_revenue) as total_revenue'),
             DB::raw('COUNT(*) as count_order')
         )
-        ->whereRaw('order_date >= "'.$currentDate->format('Y-m-d').'" and order_date <= "'.$endDate->format('Y-m-d').'"')
-        ->groupBy('order_date')
+        ->whereRaw('date(order_date) >= "'.$currentDate->format('Y-m-d').'" and date(order_date) <= "'.$endDate->format('Y-m-d').'"')
+        ->groupBy('date(order_date)')
         ->orderBy('order_date')
         ->get();
 
