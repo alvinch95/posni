@@ -58,6 +58,11 @@
           </div>
       </form>
   </div>
+  <div class="col-md-1"></div>
+  <div class="col-md-3 border border-secondary border-3">
+    <p class="fs-6 mb-0">Jumlah Order : {{ $totalOrder }}</p>
+    <p class="fs-6 mt-0">Total Gross Penjualan : {{ "Rp. ".number_format($totalAmount, 0, ',', '.') }}</p>
+  </div>
 </div>
 
 <div class="container">

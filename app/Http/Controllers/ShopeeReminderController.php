@@ -58,11 +58,17 @@ class ShopeeReminderController extends Controller
 
         $shopeeReminders = ShopeeReminder::whereRaw($whereRaw)->orderBy($sortField, $sortOrder)->filter(request(['search']))->get();
         $shopping_cart = ShoppingCart::with('hamper')->where('user_id',auth()->user()->id)->get();
+        $totalAmount = 0;
+        foreach($shopeeReminders as $s){
+            $totalAmount += $s->total_amount;
+        }
+        $totalOrder = $shopeeReminders->count();
         
         return view('dashboard.shopeereminder.index', [
             'shopee_reminders' => $shopeeReminders,
-            'shopping_carts' => ShoppingCart::with('hamper')->where('user_id',auth()->user()->id)->get(),
-            'hampers' => Hamper::with('serie')->orderBy('name', 'asc')->get()
+            'hampers' => Hamper::with('serie')->orderBy('name', 'asc')->get(),
+            'totalAmount' => $totalAmount,
+            'totalOrder' => $totalOrder
         ]);
     }
 
