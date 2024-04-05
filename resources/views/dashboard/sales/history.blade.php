@@ -103,7 +103,7 @@
                   <td>{{ $so->order_date }}</td>
                   <td>{{ $so->customer->name }}</td>
                   <td>{{ "Rp. ".number_format($so->total_before_discount, 0, ',', '.') }}</td>
-                  <td>{{ "Rp. ".number_format($so->total_order, 0, ',', '.') }}</td>
+                  <td>{{ "Rp. ".number_format($so->total_order-$so->customer_fee, 0, ',', '.') }}</td>
                   <td>{{ "Rp. ".number_format($so->total_revenue, 0, ',', '.') }}</td>
                   <td>{{ $so->remarks }}</td>
                   <td>

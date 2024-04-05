@@ -149,7 +149,7 @@ class ShopeeReminderController extends Controller
             foreach($hamperIDs as $index => $hamperid){
                 $total_amount += (int)$totals[$index];
                 $hamper = Hamper::find($hamperid);
-                $total_capital_price += $hamper->capital_price;
+                $total_capital_price += $hamper->capital_price*$qtys[$index];
             }
             $customer_fee = $customer->fee/100 * $total_amount;
 
