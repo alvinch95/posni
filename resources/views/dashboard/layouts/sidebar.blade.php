@@ -58,7 +58,7 @@
           <span class="arrow-up" data-feather="arrow-up" style="display: none;"></span>
         </button>
       </div>
-      <ul id="transactionSubmenu" class="nav flex-column collapse">
+      <ul id="transactionSubmenu" class="nav flex-column collapse {{ Request::is('dashboard/purchases*') ? 'show' : '' }}{{ Request::is('dashboard/sales') ? 'show' : '' }}">
         @can('admin')
         <li class="nav-item">
           <a class="nav-link {{ Request::is('dashboard/purchases*') ? 'active' : '' }}" href="/dashboard/purchases">
@@ -68,7 +68,7 @@
         </li>
         @endcan
         <li class="nav-item">
-          <a class="nav-link {{ Request::is('dashboard/sales*') ? 'active' : '' }}" href="/dashboard/sales">
+          <a class="nav-link {{ Request::is('dashboard/sales') ? 'active' : '' }}" href="/dashboard/sales">
             <span data-feather="dollar-sign"></span>
             Sales
           </a>
@@ -83,7 +83,7 @@
           <span class="arrow-up" data-feather="arrow-up" style="display: none;"></span>
         </button>
       </div>
-      <ul id="stockOpnameSubmenu" class="nav flex-column collapse">
+      <ul id="stockOpnameSubmenu" class="nav flex-column collapse {{ Request::is('dashboard/stock*') ? 'show' : '' }}">
         <li class="nav-item">
           <a class="nav-link {{ Request::is('dashboard/stockopname*') ? 'active' : '' }}" href="/dashboard/stockopname">
             <span data-feather="database"></span>
@@ -111,15 +111,15 @@
           <span class="arrow-up" data-feather="arrow-up" style="display: none;"></span>
         </button>
       </div>
-      <ul id="cashBalanceSubmenu" class="nav flex-column collapse">
+      <ul id="cashBalanceSubmenu" class="nav flex-column collapse {{ Request::is('dashboard/cashbalances*') ? 'show' : '' }}">
         <li class="nav-item">
-          <a class="nav-link {{ Request::is('dashboard/stockin*') ? 'active' : '' }}" href="/dashboard/cashbalances/create">
+          <a class="nav-link {{ Request::is('dashboard/cashbalances/create*') ? 'active' : '' }}" href="/dashboard/cashbalances/create">
             <span data-feather="check-circle" style="stroke: black;"></span>
             New Transaction
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ Request::is('dashboard/cashbalances*') ? 'active' : '' }}" href="/dashboard/cashbalances">
+          <a class="nav-link {{ Request::is('dashboard/cashbalances') ? 'active' : '' }}" href="/dashboard/cashbalances">
             <span data-feather="book"></span>
             Cash History
           </a>
@@ -133,7 +133,7 @@
           <span class="arrow-up" data-feather="arrow-up" style="display: none;"></span>
         </button>
       </div>
-      <ul id="reportSubmenu" class="nav flex-column collapse">
+      <ul id="reportSubmenu" class="nav flex-column collapse {{ Request::is('dashboard/sales/history*') ? 'show' : '' }}{{ Request::is('dashboard/shopeereminder*') ? 'show' : '' }}">
         <li class="nav-item">
           <a class="nav-link {{ Request::is('dashboard/sales/history*') ? 'active' : '' }}" href="/dashboard/sales/history">
             <span data-feather="clipboard"></span>
