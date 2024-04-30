@@ -8,9 +8,16 @@
             Dashboard
           </a>
         </li>
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+      </ul>
+
+      <div class="sidebar-heading mt-4">
+        <button class="btn btn-link text-left px-3 text-muted" data-bs-toggle="collapse" data-bs-target="#masterDataSubmenu" aria-expanded="false" aria-controls="masterDataSubmenu">
           <span>Master Data</span>
-        </h6>
+          <span class="arrow-down" data-feather="arrow-down" style="display: inline;"></span>
+          <span class="arrow-up" data-feather="arrow-up" style="display: none;"></span>
+        </button>
+      </div>
+      <ul id="masterDataSubmenu" class="nav flex-column collapse">
         <li class="nav-item">
           <a class="nav-link {{ Request::is('dashboard/series*') ? 'active' : '' }}" href="/dashboard/series">
             <span data-feather="grid"></span>
@@ -44,10 +51,14 @@
       </ul>
       @endcan
 
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span>Transaction</span>
-      </h6>
-      <ul class="nav flex-column">
+      <div class="sidebar-heading mt-3">
+        <button class="btn btn-link text-left px-3 text-muted" data-bs-toggle="collapse" data-bs-target="#transactionSubmenu" aria-expanded="false" aria-controls="transactionSubmenu">
+          <span>Transaction</span>
+          <span class="arrow-down" data-feather="arrow-down" style="display: inline;"></span>
+          <span class="arrow-up" data-feather="arrow-up" style="display: none;"></span>
+        </button>
+      </div>
+      <ul id="transactionSubmenu" class="nav flex-column collapse">
         @can('admin')
         <li class="nav-item">
           <a class="nav-link {{ Request::is('dashboard/purchases*') ? 'active' : '' }}" href="/dashboard/purchases">
@@ -65,10 +76,14 @@
       </ul>
 
       @can('admin')
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span>Stock Opname</span>
-      </h6>
-      <ul class="nav flex-column">
+      <div class="sidebar-heading mt-3">
+        <button class="btn btn-link text-left px-3 text-muted" data-bs-toggle="collapse" data-bs-target="#stockOpnameSubmenu" aria-expanded="false" aria-controls="stockOpnameSubmenu">
+          <span>Stock Opname</span>
+          <span class="arrow-down" data-feather="arrow-down" style="display: inline;"></span>
+          <span class="arrow-up" data-feather="arrow-up" style="display: none;"></span>
+        </button>
+      </div>
+      <ul id="stockOpnameSubmenu" class="nav flex-column collapse">
         <li class="nav-item">
           <a class="nav-link {{ Request::is('dashboard/stockopname*') ? 'active' : '' }}" href="/dashboard/stockopname">
             <span data-feather="database"></span>
@@ -88,11 +103,37 @@
           </a>
         </li>
       </ul>
+      
+      <div class="sidebar-heading mt-3">
+        <button class="btn btn-link text-left px-3 text-muted" data-bs-toggle="collapse" data-bs-target="#cashBalanceSubmenu" aria-expanded="false" aria-controls="cashBalanceSubmenu">
+          <span>Cash Balance</span>
+          <span class="arrow-down" data-feather="arrow-down" style="display: inline;"></span>
+          <span class="arrow-up" data-feather="arrow-up" style="display: none;"></span>
+        </button>
+      </div>
+      <ul id="cashBalanceSubmenu" class="nav flex-column collapse">
+        <li class="nav-item">
+          <a class="nav-link {{ Request::is('dashboard/stockin*') ? 'active' : '' }}" href="/dashboard/cashbalances/create">
+            <span data-feather="check-circle" style="stroke: black;"></span>
+            New Transaction
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ Request::is('dashboard/cashbalances*') ? 'active' : '' }}" href="/dashboard/cashbalances">
+            <span data-feather="book"></span>
+            Cash History
+          </a>
+        </li>
+      </ul>
 
-      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span>Report</span>
-      </h6>
-      <ul class="nav flex-column">
+      <div class="sidebar-heading mt-3">
+        <button class="btn btn-link text-left px-3 text-muted" data-bs-toggle="collapse" data-bs-target="#reportSubmenu" aria-expanded="false" aria-controls="reportSubmenu">
+          <span>Report</span>
+          <span class="arrow-down" data-feather="arrow-down" style="display: inline;"></span>
+          <span class="arrow-up" data-feather="arrow-up" style="display: none;"></span>
+        </button>
+      </div>
+      <ul id="reportSubmenu" class="nav flex-column collapse">
         <li class="nav-item">
           <a class="nav-link {{ Request::is('dashboard/sales/history*') ? 'active' : '' }}" href="/dashboard/sales/history">
             <span data-feather="clipboard"></span>
@@ -115,3 +156,62 @@
       </form>
     </div>
 </nav>
+
+<script>
+  // Change arrow direction on collapse/expand
+  var reportSubmenu = document.getElementById('reportSubmenu');
+  reportSubmenu.addEventListener('show.bs.collapse', function() {
+    document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-down').style.display = 'none';
+    document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-up').style.display = 'inline';
+  });
+
+  reportSubmenu.addEventListener('hide.bs.collapse', function() {
+    document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-down').style.display = 'inline';
+    document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-up').style.display = 'none';
+  });
+
+  var cashBalanceSubmenu = document.getElementById('cashBalanceSubmenu');
+  cashBalanceSubmenu.addEventListener('show.bs.collapse', function() {
+    document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-down').style.display = 'none';
+    document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-up').style.display = 'inline';
+  });
+
+  cashBalanceSubmenu.addEventListener('hide.bs.collapse', function() {
+    document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-down').style.display = 'inline';
+    document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-up').style.display = 'none';
+  });
+
+  var stockOpnameSubmenu = document.getElementById('stockOpnameSubmenu');
+  stockOpnameSubmenu.addEventListener('show.bs.collapse', function() {
+    document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-down').style.display = 'none';
+    document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-up').style.display = 'inline';
+  });
+
+  stockOpnameSubmenu.addEventListener('hide.bs.collapse', function() {
+    document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-down').style.display = 'inline';
+    document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-up').style.display = 'none';
+  });
+
+  var transactionSubmenu = document.getElementById('transactionSubmenu');
+  transactionSubmenu.addEventListener('show.bs.collapse', function() {
+    document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-down').style.display = 'none';
+    document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-up').style.display = 'inline';
+  });
+
+  transactionSubmenu.addEventListener('hide.bs.collapse', function() {
+    document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-down').style.display = 'inline';
+    document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-up').style.display = 'none';
+  });
+
+  var masterDataSubmenu = document.getElementById('masterDataSubmenu');
+  masterDataSubmenu.addEventListener('show.bs.collapse', function() {
+    document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-down').style.display = 'none';
+    document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-up').style.display = 'inline';
+  });
+
+  masterDataSubmenu.addEventListener('hide.bs.collapse', function() {
+    document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-down').style.display = 'inline';
+    document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-up').style.display = 'none';
+  });
+
+</script>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CashBalanceController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemsController;
@@ -108,6 +109,8 @@ Route::get('dashboard/stockout', [StockOpnameController::class, 'stockout'])->mi
 Route::get('dashboard/shopeereminder', [ShopeeReminderController::class, 'index'])->middleware('admin')->name('dashboard.shopeereminder.index');
 Route::post('dashboard/shopeereminder/openConvert',[ShopeeReminderController::class, 'openConvert'])->middleware('auth')->name('dashboard.shopeereminder.openConvert');
 Route::post('dashboard/shopeereminder/convertOrder', [ShopeeReminderController::class, 'convertOrder'])->middleware('auth')->name('dashboard.shopeereminder.convertOrder');
+
+Route::resource('/dashboard/cashbalances', CashBalanceController::class)->except('show')->middleware('admin');
 
 
 // Route::get('/categories/{category:slug}', function(Category $category){
