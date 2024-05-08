@@ -170,7 +170,7 @@ class ShopeeReminderController extends Controller
             $salesOrderID = $so->id;
 
             foreach($hamperIDs as $index => $hamperId){
-                $hamper = Hamper::find($hamperid);
+                $hamper = Hamper::find($hamperId);
                 //save order detail
                 $sod = new SalesOrderDetail;
                 $sod->sales_order_id = $salesOrderID;
