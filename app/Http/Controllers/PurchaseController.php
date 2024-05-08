@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\Purchase;
-use App\Models\PurchaseDetail;
-use App\Models\RunningNumber;
-use App\Models\StockHistory;
 use App\Models\Supplier;
+use App\Models\CashBalance;
+use App\Models\StockHistory;
 use Illuminate\Http\Request;
+use App\Models\RunningNumber;
+use App\Models\PurchaseDetail;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -80,6 +81,21 @@ class PurchaseController extends Controller
 
             // Step 2: Retrieve the ID of the newly created Purchases record
             $purchaseId = $purchases->id;
+
+            // Step 2.5: Insert to Cash Balance as CashOut
+            $lastCash = CashBalance::orderBy('id','desc')->first();
+            $currentBalance = $lastCash?$lastCash->end_balance:0;
+
+            $cashBalance = new CashBalance;
+            $cashBalance->transaction_date = $request->purchase_date;
+            $cashBalance->cash_type = "CashOut";
+            $cashBalance->related_to = "Purchase";
+            $cashBalance->current_balance = $currentBalance;
+            $cashBalance->amount = ($request->grand_total + ($request->additional_fee?$request->additional_fee:0));
+            $cashBalance->end_balance = $currentBalance-($request->grand_total + ($request->additional_fee?$request->additional_fee:0));            
+            $cashBalance->remark = $orderNumber;
+            $cashBalance->created_by = auth()->user()->id;
+            $cashBalance->save();
 
             // Step 3: Loop through the rows and save to PurchaseDetails table
             $itemIds = $request->item_id;

@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Hamper;
 use App\Models\Customer;
 use App\Models\SalesOrder;
+use App\Models\CashBalance;
 use App\Models\ShoppingCart;
 use App\Models\StockHistory;
 use Illuminate\Http\Request;
@@ -117,6 +118,21 @@ class SalesOrderController extends Controller
             $so->save();
 
             $salesOrderID = $so->id;
+
+            //save to cash balances
+            $lastCash = CashBalance::orderBy('id','desc')->first();
+            $currentBalance = $lastCash?$lastCash->end_balance:0;
+
+            $cashBalance = new CashBalance;
+            $cashBalance->transaction_date = $request->order_date;
+            $cashBalance->cash_type = "CashIn";
+            $cashBalance->related_to = "Sales";
+            $cashBalance->current_balance = $currentBalance;
+            $cashBalance->amount = ($request->total_order - $request->fee_customer);
+            $cashBalance->end_balance = $currentBalance+($request->total_order - $request->fee_customer);            
+            $cashBalance->remark = $orderNumber;
+            $cashBalance->created_by = auth()->user()->id;
+            $cashBalance->save();
 
             foreach($shoppingCartsArray as $cart){
                 $sc = ShoppingCart::find($cart['id']);
@@ -281,6 +297,24 @@ class SalesOrderController extends Controller
                 $detail->delete();
             }
             $salesOrder->delete();
+
+            //insert CashBalance baru untuk balikin saldo transaksi cancel 
+            $lastCash = CashBalance::orderBy('id','desc')->first();
+            $currentBalance = $lastCash?$lastCash->end_balance:0;
+
+            $cancelCash = CashBalance::where('remark','=',$salesOrder->order_number)->first();
+            if($cancelCash){
+                $cashBalance = new CashBalance;
+                $cashBalance->transaction_date = now();
+                $cashBalance->cash_type = "CashOut";
+                $cashBalance->related_to = "Cancel Sales";
+                $cashBalance->current_balance = $currentBalance;
+                $cashBalance->amount = $cancelCash->amount;
+                $cashBalance->end_balance = $currentBalance-$cancelCash->amount;     
+                $cashBalance->remark = 'Cancel '.$salesOrder->order_number;
+                $cashBalance->created_by = auth()->user()->id;
+                $cashBalance->save();
+            }
             DB::commit();
             
             Alert::success('Success', 'Transaction has been cancelled');

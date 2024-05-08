@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashBalance;
 use App\Models\Customer;
 use App\Models\Item;
 use App\Models\Hamper;
@@ -168,6 +169,21 @@ class ShopeeReminderController extends Controller
             $so->save();
 
             $salesOrderID = $so->id;
+
+            //save to cash balances
+            $lastCash = CashBalance::orderBy('id','desc')->first();
+            $currentBalance = $lastCash?$lastCash->end_balance:0;
+
+            $cashBalance = new CashBalance;
+            $cashBalance->transaction_date = $request->order_date;
+            $cashBalance->cash_type = "CashIn";
+            $cashBalance->related_to = "Sales";
+            $cashBalance->current_balance = $currentBalance;
+            $cashBalance->amount = $total_amount - $customer_fee;
+            $cashBalance->end_balance = $currentBalance+($total_amount - $customer_fee);            
+            $cashBalance->remark = $orderNumber;
+            $cashBalance->created_by = auth()->user()->id;
+            $cashBalance->save();
 
             foreach($hamperIDs as $index => $hamperId){
                 $hamper = Hamper::find($hamperId);
