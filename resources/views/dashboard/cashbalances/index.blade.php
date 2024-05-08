@@ -62,7 +62,7 @@
 
 <div class="table-responsive col-lg-10">
     @if ($cash_balances->count())
-      <table class="table table-bordered border-dark table-striped table-sm">
+      <table class="table table-bordered border-dark table-striped table-sm w-auto table-hover">
         <caption>
           <div class="d-flex float-end">
             <label for="page-size-select" class="mx-2">Page Size:</label>
@@ -78,33 +78,32 @@
         </caption>
         <thead class="table-dark border-dark">
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">Tanggal</th>
-            <th scope="col">Tipe</th>
-            <th scope="col">Saldo Awal</th>
-            <th scope="col">Jumlah</th>
-            <th scope="col">Saldo Akhir</th>
-            <th scope="col">Keterangan</th>
-            <th scope="col">Action</th>
+            <th class="p-2" scope="col">#</th>
+            <th class="p-2" scope="col">Tanggal</th>
+            <th class="p-2" scope="col">Debet</th>
+            <th class="p-2" scope="col">Kredit</th>
+            <th class="p-2" scope="col">Saldo</th>
+            <th class="p-2" scope="col">Keterangan</th>
+            {{-- <th scope="col">Action</th> --}}
           </tr>
         </thead>
         <tbody>
           @foreach ($cash_balances as $cb)
               <tr>
-                  <td>{{ $loop->iteration }}</td>
-                  <td>{{ Carbon::parse($cb->transaction_date)->format('d M Y H:i:s') }}</td>
-                  <td>{{ $cb->cash_type=="CashIn"?"Cash In":"Cash Out" }}</td>
-                  <td>{{ "Rp. ".number_format($cb->current_balance, 0, ',', '.') }}</td>
-                  <td>{{ "Rp. ".number_format($cb->amount, 0, ',', '.') }}</td>
-                  <td>{{ "Rp. ".number_format($cb->end_balance, 0, ',', '.') }}</td>
-                  <td>{{ $cb->remark }}</td>
-                  <td>
-                    {{-- <form action="/dashboard/cash/{{ $cb->id }}" method="post" class="d-inline">
+                  <td class="p-2">{{ $loop->iteration }}</td>
+                  <td class="p-2">{{ Carbon::parse($cb->transaction_date)->format('d M Y H:i:s') }}</td>
+                  {{-- <td>{{ $cb->cash_type=="CashIn"?"Cash In":"Cash Out" }}</td> --}}
+                  <td class="p-2">{{ $cb->cash_type=="CashOut"?"- Rp. ".number_format($cb->amount, 0, ',', '.'):"" }}</td>
+                  <td class="p-2">{{ $cb->cash_type=="CashIn"?"Rp. ".number_format($cb->amount, 0, ',', '.'):"" }}</td>
+                  <td class="p-2">{{ "Rp. ".number_format($cb->end_balance, 0, ',', '.') }}</td>
+                  <td class="p-2">{{ $cb->remark }}</td>
+                  {{-- <td>
+                    <form action="/dashboard/cash/{{ $cb->id }}" method="post" class="d-inline">
                       @method('delete')
                       @csrf
                       <button class="badge bg-danger border-0 hapus" title="Cancel Cash"><span data-feather="x-circle"></span></button>
-                    </form> --}}
-                </td>
+                    </form>
+                </td> --}}
               </tr>
           @endforeach
         </tbody>
