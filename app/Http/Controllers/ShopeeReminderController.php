@@ -115,7 +115,7 @@ class ShopeeReminderController extends Controller
             
             if($hamper->count() > 1){
                 $whereRaw .= " AND name like '%".$secondString."%'";
-                $desiredHamper = Hamper::whereRaw($whereRaw)->get();
+                $desiredHamper = Hamper::whereRaw($whereRaw)->orderBy('name', 'asc')->get();
                 $dataname = $desiredHamper->first()->name ?? "";
                 $dataid = $desiredHamper->first()->id ?? "";
             }
