@@ -291,6 +291,7 @@
             shopeeReminderID: shopeeReminderID
         },
         success: function(response) {
+            // console.log(response);
             addRowsFromResponse(response);
             $("#shopee_reminder_id").val(shopeeReminderID);
             $("#order_date").val(orderDate);

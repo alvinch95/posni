@@ -106,8 +106,9 @@ class ShopeeReminderController extends Controller
             $model = explode(",", $modelName);
             $barang = explode("/", $itemName);
 
-            $firstString = strlen($model[0])>1 ? $model[0] : (isset($barang[0]) ? $barang[0] : $itemName);
-            $secondString = isset($model[1]) ? str_ireplace("Tanpa Grafir","Polos",$model[1]) : (isset($barang[1]) ? $barang[1] : $itemName);
+            $firstString = strlen($model[0])>1 ? str_ireplace(":","",$model[0]) : (isset($barang[0]) ? $barang[0] : $itemName);
+            // $secondString = isset($model[1]) ? str_ireplace("Tanpa Grafir","Polos",$model[1]) : (isset($barang[1]) ? $barang[1] : $itemName);
+            $secondString = isset($model[1]) ? str_ireplace(":","",$model[1]) : (isset($barang[1]) ? $barang[1] : $itemName);
 
             $whereRaw = "name like '%".$firstString."%'";
             $hamper = Hamper::whereRaw($whereRaw)->get();
