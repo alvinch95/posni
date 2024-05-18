@@ -27,7 +27,7 @@ class GenerateShopeeReminder extends Command
      *
      * @var string
      */
-    protected $description = 'Command to generate Shopee Reminder. Will be run daily by cron';
+    protected $description = 'Command to generate Shopee Reminder. Will be run every 1 hour by cron';
 
     /**
      * Create a new command instance.
