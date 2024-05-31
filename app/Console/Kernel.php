@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('inventory-value:calculate')->dailyAt('22:00'); // Runs at 10 PM (22:00)
+        $schedule->command('inventory-value:calculate')->dailyAt('17:00'); // Runs at 5 PM (17:00)
         $schedule->command('generate:shopee-reminder')->hourly();
     }
 
