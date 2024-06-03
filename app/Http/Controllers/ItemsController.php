@@ -29,11 +29,14 @@ class ItemsController extends Controller
         $previousSort = session('sort_items');
         session(['sort_items' => $sortField.$sortOrder]);
         if(request('sort') && ($sortField.$sortOrder) != $previousSort){
-            Alert::success('Success', 'Sort Item by ' . request('sort') . ' '. request('order'));
+            if ($sortField == '(stock*purchase_price)')
+                Alert::success('Success', 'Sort Item by value '. request('order'));
+            else
+                Alert::success('Success', 'Sort Item by ' . request('sort') . ' '. request('order'));
         }
 
         return view('dashboard.items.index', [
-            'items' => Item::orderBy($sortField, $sortOrder)->filter(request(['search']))->paginate($pageSize)->withQueryString(),
+            'items' => Item::orderBy(DB::raw($sortField), $sortOrder)->filter(request(['search']))->paginate($pageSize)->withQueryString(),
             'pageSize' => $pageSize,
             'totalData' => Item::orderBy($sortField, $sortOrder)->filter(request(['search']))->count()
         ]);

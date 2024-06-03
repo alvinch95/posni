@@ -33,6 +33,9 @@
 
         <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'order' => 'asc']) }}" class="btn btn-warning mb-1 btn-sm mx-1">Stock (ASC)</a>
         <a href="{{ request()->fullUrlWithQuery(['sort' => 'stock', 'order' => 'desc']) }}" class="btn btn-outline-warning mb-1 btn-sm mx-1">Stock (DESC)</a>
+
+        <a href="{{ request()->fullUrlWithQuery(['sort' => '(stock*purchase_price)', 'order' => 'asc']) }}" class="btn btn-info mb-1 btn-sm mx-1">Value (ASC)</a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => '(stock*purchase_price)', 'order' => 'desc']) }}" class="btn btn-outline-info mb-1 btn-sm mx-1">Value (DESC)</a>
       </div>
   </div>
 </div>
