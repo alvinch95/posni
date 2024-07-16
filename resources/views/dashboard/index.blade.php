@@ -42,8 +42,8 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card" style="min-height: 344px;">
-            <div class="card-header" style="background-color: #87CEEB; color: white;">
+        <div class="card" style="min-height: 344px; overflow:auto;">
+            <div class="card-header bg-info text-white sticky-top">
                 <b>Top Selling Products</b>
             </div>
             <div class="card-body p-0">
@@ -67,7 +67,7 @@
                     <tfoot>
                         <tr>
                             <td colspan="3">
-                                <div class="d-flex justify-content-center">
+                                <div class="justify-content-center">
                                     {{ $topSellingProducts->links() }}
                                 </div>
                             </td>
