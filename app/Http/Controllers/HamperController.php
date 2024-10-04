@@ -242,6 +242,36 @@ class HamperController extends Controller
         }
     }
 
+    public function updateSellingPrice(Request $request){
+        
+        try{
+            DB::beginTransaction();
+            $hamper = Hamper::find($request->id);
+            $hamper->selling_price = $request->sellingPrice;
+            $hamper->revenue_percentage = $request->revenue;
+            $hamper->save();
+            DB::commit();
+
+            // Return a JSON response on success
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Selling price and revenue updated successfully!',
+                'data' => $hamper
+            ], 200);
+        }catch (\Exception $e) {
+            DB::rollback();
+            // Log the exception or handle it as needed
+            // Log::error($e->getMessage());
+            
+            // Return a JSON response on error
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update selling price',
+                'error' => $e->getMessage()  // You can include this for debugging purposes
+            ], 500);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *

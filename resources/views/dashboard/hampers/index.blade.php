@@ -2,7 +2,7 @@
 
 @section('container')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Hampersss</h1>
+    <h1 class="h2">Hampers</h1>
 </div>
 
 @if (session()->has('success'))
@@ -38,6 +38,7 @@
         <button class="btn btn-primary toggle-button" data-toggle="column-visibility" data-column="col-stock"><span class="eye-off" data-feather="eye-off"></span><span class="eye-on" data-feather="eye" display="none"></span> Stok</button>
         <button class="btn btn-primary toggle-button" data-toggle="column-visibility" data-column="col-image"><span class="eye-off" data-feather="eye-off"></span><span class="eye-on" data-feather="eye" display="none"></span> Image</button>
     </div>
+    <div id="alert-placeholder" class="mt-2"></div>  <!-- This is where the alert will appear -->
       <table class="table table-striped table-sm">
         <caption>
           <div class="d-flex float-end">
@@ -53,6 +54,7 @@
         <thead>
           <tr>
             <th scope="col">#</th>
+            <th scope="col" class="col-id" style="display: none;">#</th>
             <th scope="col" class="col-name">Nama </th>
             <th scope="col" class="col-seri">Seri</th>
             <th scope="col" class="col-modal-price">Harga Modal</th>
@@ -67,11 +69,12 @@
           @foreach ($hampers as $hamper)
               <tr>
                   <td>{{ $loop->iteration }}</td>
+                  <td class="col-id" style="display: none;">{{ $hamper->id }}</td>
                   <td class="col-name">{{ $hamper->name }}</td>
                   <td class="col-seri">{{ $hamper->serie->name }}</td>
                   <td class="col-modal-price">{{ "Rp. ".number_format($hamper->capital_price, 0, ',', '.') }}</td>
                   <td class="col-selling-price">{{ "Rp. ".number_format($hamper->selling_price, 0, ',', '.') }}</td>
-                  <td class="col-revenue">{{ $hamper->revenue_percentage }}%</td>
+                  <td class="col-revenue" contenteditable="false">{{ $hamper->revenue_percentage }}%</td>
                   <td class="col-stock">{{ $hamper->getStock() }}</td>
                   @if ($hamper->image)
                   <td class="col-image"><img src="{{ asset('storage/' . $hamper->image) }}" alt="{{ $hamper->name }}" class="img-fluid" style="max-width: 50px; max-height: 50px;"></td>
@@ -87,6 +90,8 @@
                           @csrf
                           <button class="badge bg-danger border-0 hapus"><span data-feather="x-circle"></span></button>
                         </form>
+                        <button class="badge bg-primary edit-btn">Edit</button>
+                        <button class="badge bg-success save-btn d-none">Save</button>
                       @else
                         <span class="text-muted">From Item</span>
                       @endif
@@ -193,6 +198,79 @@
             }
         });
       });
+
+      $('.edit-btn').click(function(e) {
+          let revenueCell = $(this).closest('tr').find('.col-revenue');
+          revenueCell.attr('contenteditable', 'true').focus();
+          revenueCell.css('background-color', 'LightYellow');
+
+          $(this).siblings('.save-btn').removeClass('d-none');  // Show Save button
+          $(this).addClass('d-none');  // Hide Edit button
+      });
+
+      $('.save-btn').click(function(e) {
+        let row = $(this).closest('tr');
+        let revenueCell = row.find('.col-revenue');
+        let sellingPriceCell = row.find('.col-selling-price');
+        let idCell = row.find('.col-id');
+        let revenue = revenueCell.text();  // Get updated value
+        let idHamper = idCell.text();
+
+        // Calculate new selling price based on the revenue value (adjust this calculation to your needs)
+        let capitalPrice = parseFloat(row.find('.col-modal-price').text().replace(/[^0-9-]+/g, ""));  // Remove currency formatting
+        let newSellingPrice = Math.round(capitalPrice + (capitalPrice * (parseFloat(revenue) / 100)));
+        $.ajax({
+            url: '/dashboard/hampers/updateSellingPrice',
+            method: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: idHamper,
+                revenue: revenue,
+                sellingPrice: newSellingPrice
+            },
+            success: function(response) {
+              // Handle success response
+              $('#alert-placeholder').html(`
+                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                      <strong>Success!</strong> ${response.message}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+              `);
+
+              // Auto-dismiss the alert after 2 seconds
+              setTimeout(function() {
+                  $('.alert').fadeOut(500, function() {
+                      $(this).remove();
+                  });
+              }, 1000);  // 1-second delay before fading out
+
+              // Update the selling price column and format it with currency\
+              sellingPriceCell.text("Rp. " + newSellingPrice.toLocaleString('id-ID'));
+
+              // Highlight and then fade out the updated selling price cell
+              sellingPriceCell.css('background-color', '#ffff99').fadeOut(500).fadeIn(500, function() {
+                  // After fade in, reset the background color after 2 seconds
+                  setTimeout(function() {
+                      sellingPriceCell.css('background-color', '');
+                  }, 100);
+              });
+
+              row.find('.col-revenue').removeAttr('contenteditable');  // Disable editing
+              $(this).siblings('.edit-btn').removeClass('d-none');  // Show Edit button again
+              $(this).addClass('d-none');  // Hide Save button
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              // Handle error
+              $('#alert-placeholder').html(`
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                      <strong>Error!</strong> ${jqXHR.responseJSON ? jqXHR.responseJSON.message : 'An error occurred.'}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+              `);
+            }
+        });
+      });
+
     }); 
   </script>
 @endsection
