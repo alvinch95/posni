@@ -260,14 +260,12 @@ class HamperController extends Controller
             ], 200);
         }catch (\Exception $e) {
             DB::rollback();
-            // Log the exception or handle it as needed
-            // Log::error($e->getMessage());
             
             // Return a JSON response on error
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to update selling price',
-                'error' => $e->getMessage()  // You can include this for debugging purposes
+                'error' => $e->getMessage()  //include this for debugging purposes
             ], 500);
         }
     }

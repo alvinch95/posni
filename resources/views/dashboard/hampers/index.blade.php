@@ -200,9 +200,12 @@
       });
 
       $('.edit-btn').click(function(e) {
-          let revenueCell = $(this).closest('tr').find('.col-revenue');
-          revenueCell.attr('contenteditable', 'true').focus();
-          revenueCell.css('background-color', 'LightYellow');
+          let sellingPriceCell = $(this).closest('tr').find('.col-selling-price');
+          let sellingPrice = parseFloat(sellingPriceCell.text().replace(/[^0-9-]+/g, ""));  // Remove currency formatting
+        
+          sellingPriceCell.text(sellingPrice);
+          sellingPriceCell.attr('contenteditable', 'true').focus();
+          sellingPriceCell.css('background-color', 'LightYellow');
 
           $(this).siblings('.save-btn').removeClass('d-none');  // Show Save button
           $(this).addClass('d-none');  // Hide Edit button
@@ -213,20 +216,21 @@
         let revenueCell = row.find('.col-revenue');
         let sellingPriceCell = row.find('.col-selling-price');
         let idCell = row.find('.col-id');
-        let revenue = revenueCell.text();  // Get updated value
+        let sellingPrice = sellingPriceCell.text();  // Get updated value
         let idHamper = idCell.text();
 
-        // Calculate new selling price based on the revenue value (adjust this calculation to your needs)
+        // Calculate new revenue based on the new selling price value
         let capitalPrice = parseFloat(row.find('.col-modal-price').text().replace(/[^0-9-]+/g, ""));  // Remove currency formatting
-        let newSellingPrice = Math.round(capitalPrice + (capitalPrice * (parseFloat(revenue) / 100)));
+        let newRevenue = ((parseFloat(sellingPrice)-capitalPrice)/capitalPrice*100).toFixed(2);
+
         $.ajax({
             url: '/dashboard/hampers/updateSellingPrice',
             method: 'POST',
             data: {
                 _token: "{{ csrf_token() }}",
                 id: idHamper,
-                revenue: revenue,
-                sellingPrice: newSellingPrice
+                revenue: newRevenue,
+                sellingPrice: sellingPrice
             },
             success: function(response) {
               // Handle success response
@@ -244,20 +248,17 @@
                   });
               }, 1000);  // 1-second delay before fading out
 
-              // Update the selling price column and format it with currency\
-              sellingPriceCell.text("Rp. " + newSellingPrice.toLocaleString('id-ID'));
+              // Update the selling price column and format it with currency
+              sellingPriceCell.text("Rp. " + parseFloat(sellingPrice).toLocaleString('id-ID'));
+              revenueCell.text(newRevenue+"%");
 
               // Highlight and then fade out the updated selling price cell
-              sellingPriceCell.css('background-color', '#ffff99').fadeOut(500).fadeIn(500, function() {
+              revenueCell.css('background-color', '#ffff99').fadeOut(500).fadeIn(500, function() {
                   // After fade in, reset the background color after 2 seconds
                   setTimeout(function() {
-                      sellingPriceCell.css('background-color', '');
+                    revenueCell.css('background-color', '');
                   }, 100);
               });
-
-              row.find('.col-revenue').removeAttr('contenteditable');  // Disable editing
-              $(this).siblings('.edit-btn').removeClass('d-none');  // Show Edit button again
-              $(this).addClass('d-none');  // Hide Save button
             },
             error: function(jqXHR, textStatus, errorThrown) {
               // Handle error
@@ -269,8 +270,11 @@
               `);
             }
         });
-      });
 
+        row.find('.col-revenue').removeAttr('contenteditable');  // Disable editing
+        $(this).siblings('.edit-btn').removeClass('d-none');  // Show Edit button again
+        $(this).addClass('d-none');  // Hide Save button
+      });
     }); 
   </script>
 @endsection
