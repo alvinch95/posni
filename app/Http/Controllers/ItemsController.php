@@ -63,7 +63,7 @@ class ItemsController extends Controller
         try{
             DB::beginTransaction();
             $validatedData = $request->validate([
-                'name' => 'required|max:255|unique:items',
+                'name' => ['required', 'max:255', 'unique:items', 'regex:/^[a-zA-Z0-9\s\-]+$/'],
                 'purchase_price' => 'required|numeric',
                 'selling_price' => 'required|numeric|gt:purchase_price',
                 'stock' => 'required|numeric',
