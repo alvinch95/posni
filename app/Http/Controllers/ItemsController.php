@@ -63,7 +63,7 @@ class ItemsController extends Controller
         try{
             DB::beginTransaction();
             $validatedData = $request->validate([
-                'name' => ['required', 'max:255', 'unique:items', 'regex:/^[a-zA-Z0-9\s\-]+$/'],
+                'name' => ['required', 'max:255', 'unique:items', 'regex:/^[a-zA-Z0-9\s\-]+$/u'],
                 'purchase_price' => 'required|numeric',
                 'selling_price' => 'required|numeric|gt:purchase_price',
                 'stock' => 'required|numeric',
@@ -110,7 +110,11 @@ class ItemsController extends Controller
             return redirect('/dashboard/items');
         }catch (\Exception $e) {
             DB::rollback();
-            // Handle the exception (log, display error message, etc.)
+            if($e instanceof \Illuminate\Validation\ValidationException) {
+                // Handle validation errors
+                return back()->withErrors($e->validator->errors())->withInput();
+            }
+            
             Alert::error('Error', $e->getMessage());
             return back()->with('error', 'An error occurred while submitting item.');
         }
