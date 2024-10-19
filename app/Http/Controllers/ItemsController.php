@@ -199,6 +199,9 @@ class ItemsController extends Controller
             Storage::delete($item->image);
         }
 
+        //delete dulu Hampers yg berasal dari item ini
+        Hamper::where('from_item',$item->id)->delete();
+
         // Item::destroy($item->id);
         Item::where('id',$item->id)->delete();
 
