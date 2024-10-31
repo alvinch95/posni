@@ -18,10 +18,14 @@ class DashboardController extends Controller
     public function index(DailyChart $chart2, InventoryValueChart $chart3)
     {
         $year = request('year',now()->format("Y"));
-        $currentYear = now()->format("Y");
-        $currentMonth = now()->format("m");
-        $previousMonth = now()->subMonth()->format("m");
-        $previousMonthYear = now()->subMonth()->format("Y");
+        $currentDate = now();
+        $currentYear = $currentDate->format("Y");
+        $currentMonth = $currentDate->format("m");
+
+        // Create a separate instance for the previous month
+        $previousDate = Carbon::create($currentYear, $currentMonth, 1)->subMonth();
+        $previousMonth = $previousDate->format("m");
+        $previousMonthYear = $previousDate->format("Y");
 
         $dateFrom = request('order_date_from', today()->subDays(6));
         $dateTo = request('order_date_to', today());
