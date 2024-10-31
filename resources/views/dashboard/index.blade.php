@@ -190,11 +190,11 @@
         }
         
         .card-title {
-            font-size: 1rem; /* Adjust as needed */
+            font-size: 0.8rem; /* Adjust as needed */
         }
 
         .card-text {
-            font-size: 1rem; /* Adjust as needed */
+            font-size: 0.8rem; /* Adjust as needed */
         }
     }
 </style>
