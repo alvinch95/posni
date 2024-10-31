@@ -10,7 +10,7 @@
 <!-- Top Metrics Row -->
 <div class="row mb-3">
     <!-- Total Revenue Card -->
-    <div class="col-md-2 col-6 mb-3">
+    <div class="col-6 col-md-3 mb-3">
         <div class="card" style="background-color: #AEDFF7; color: #333; height: 140px;">
             <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
@@ -23,7 +23,7 @@
     </div>
 
     <!-- Total Orders Card -->
-    <div class="col-md-2 col-6 mb-3">
+    <div class="col-6 col-md-3 mb-3">
         <div class="card" style="background-color: #D5E8D4; color: #333; height: 140px;">
             <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
@@ -36,7 +36,7 @@
     </div>
 
     <!-- Average Order Value Card -->
-    <div class="col-md-2 col-6 mb-3">
+    <div class="col-6 col-md-3 mb-3">
         <div class="card" style="background-color: #F9E7C7; color: #333; height: 140px;">
             <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
@@ -49,7 +49,7 @@
     </div>
 
     <!-- Cash In Card -->
-    <div class="col-md-2 col-6 mb-3">
+    <div class="col-6 col-md-3 mb-3">
         <div class="card" style="background-color: #FFE6CC; color: #333; height: 140px;">
             <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
@@ -63,7 +63,7 @@
     </div>
 
     <!-- Cash Out Card -->
-    <div class="col-md-2 col-6 mb-3">
+    <div class="col-6 col-md-3 mb-3">
         <div class="card" style="background-color: #FFCCCC; color: #333; height: 140px;">
             <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
@@ -76,6 +76,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Daily Report and Top Selling Products Row -->
 <div class="row mb-3">
@@ -135,9 +136,9 @@
                         @endforeach
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-center mt-2">
+                <div class="d-flex justify-content-center overflow-auto">
                     {{ $topSellingProducts->links() }}
-                </div>
+                </div>                
             </div>
         </div>
 
@@ -179,6 +180,24 @@
     </div>
 </div>
 @endcan
+
+<style>
+    @media (max-width: 576px) {
+        .card-body small {
+            white-space: normal;
+            font-size: 0.8rem;
+            display: block;
+        }
+        
+        .card-title {
+            font-size: 1rem; /* Adjust as needed */
+        }
+
+        .card-text {
+            font-size: 1rem; /* Adjust as needed */
+        }
+    }
+</style>
 
 <!-- ApexCharts Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.36.0/dist/apexcharts.min.js"></script>
