@@ -66,7 +66,7 @@ class MonthlyTransactionsChart
         $months = array_column($dataArray, 'month');
         $total_order = array_column($dataArray, 'total_order');
         $total_revenue = array_column($dataArray, 'total_revenue');
-        
+
         return $this->chart->barChart()
             ->setTitle('Monthly Transactions')
             ->setSubtitle($year)

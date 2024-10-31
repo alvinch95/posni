@@ -37,7 +37,7 @@
                         </div>
                     </form>
                 </div>
-            {!! $daily_chart->container() !!}
+                <div id="daily-chart" style="width: 100%; height: 400px;"></div>
             </div>
         </div>
     </div>
@@ -83,7 +83,7 @@
                 <b>Inventory Value</b>
             </div>
             <div class="card-body">
-                {!! $inventory_value_chart->container() !!}
+                <div id="inventory-chart" style="width: 100%; height: 400px;"></div>
             </div>
         </div>
     </div>
@@ -110,18 +110,12 @@
                         <button type="submit" class="btn btn-primary ms-2">Apply</button>
                     </form>
                 </div>
-                <div id="chart-container">
-                    {!! $monthly_chart->container() !!}
-                </div>
+                <div id="monthly-chart" style="width: 100%; height: 400px;"></div>
             </div>
         </div>
     </div>
 </div>
 @endcan
-
-<script src="{{ $monthly_chart->cdn() }}"></script>
-<script src="{{ $daily_chart->cdn() }}"></script>
-<script src="{{ $inventory_value_chart->cdn() }}"></script>
 
 <script>
 $(document).ready(function() {
@@ -129,7 +123,47 @@ $(document).ready(function() {
 });
 </script>
 
-{{ $monthly_chart->script() }}
-{{ $daily_chart->script() }}
-{{ $inventory_value_chart->script() }}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.36.0/dist/apexcharts.min.js"></script>
+<script>
+    console.log("Daily Totals:", @json($dailyTotalOrders));
+    console.log("Inventory Values:", @json($totalInventoryValue));
+    document.addEventListener('DOMContentLoaded', function () {
+        // Monthly Transactions Chart
+        var monthlyOptions = {
+            chart: { type: 'bar', height: 400 },
+            series: [
+                { name: 'Total Orders', data: @json($monthlyTotalOrders) },
+                { name: 'Total Revenue', data: @json($monthlyTotalRevenue) }
+            ],
+            xaxis: { categories: @json($months) },
+            title: { text: 'Monthly Transactions for {{ $year }}' }
+        };
+        var monthlyChart = new ApexCharts(document.querySelector("#monthly-chart"), monthlyOptions);
+        monthlyChart.render();
+
+        // Daily Report Chart
+        var dailyOptions = {
+            chart: { type: 'line', height: 400 },
+            series: [
+                { name: 'Total Orders', data: @json($dailyTotalOrders) },
+                { name: 'Total Revenue', data: @json($dailyTotalRevenue) },
+                { name: 'Count Orders', data: @json($dailyCountOrder) }
+            ],
+            xaxis: { categories: @json($dailyDays) },
+            title: { text: 'Daily Report' }
+        };
+        var dailyChart = new ApexCharts(document.querySelector("#daily-chart"), dailyOptions);
+        dailyChart.render();
+
+        // Inventory Value Chart
+        var inventoryOptions = {
+            chart: { type: 'line', height: 400 },
+            series: [{ name: 'Inventory Value', data: @json($totalInventoryValue) }],
+            xaxis: { categories: @json($inventoryValueDays) },
+            title: { text: 'Inventory Value' }
+        };
+        var inventoryChart = new ApexCharts(document.querySelector("#inventory-chart"), inventoryOptions);
+        inventoryChart.render();
+    });
+</script>
 @endsection
