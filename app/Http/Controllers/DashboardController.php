@@ -20,8 +20,8 @@ class DashboardController extends Controller
         $year = request('year',now()->format("Y"));
         $currentYear = now()->format("Y");
         $currentMonth = now()->format("m");
-        $previousMonth = now()->subMonth()->month;
-        $previousMonthYear = now()->subMonth()->year;
+        $previousMonth = now()->subMonth()->format("m");
+        $previousMonthYear = now()->subMonth()->format("Y");
 
         $dateFrom = request('order_date_from', today()->subDays(6));
         $dateTo = request('order_date_to', today());
@@ -44,22 +44,22 @@ class DashboardController extends Controller
         $totalCashOut = CashBalance::whereYear('transaction_date', $currentYear)
         ->whereMonth('transaction_date', $currentMonth)
         ->where('cash_type','=','CashOut')
-        ->sum('amount');  // Replace 'credit' with your actual column name
+        ->sum('amount'); 
 
         $totalCashIn = CashBalance::whereYear('transaction_date', $currentYear)
         ->whereMonth('transaction_date', $currentMonth)
         ->where('cash_type','=','CashIn')
-        ->sum('amount');  // Replace 'debit' with your actual column name
+        ->sum('amount'); 
 
         $totalCashOutLastMonth = CashBalance::whereYear('transaction_date', $previousMonthYear)
         ->whereMonth('transaction_date', $previousMonth)
         ->where('cash_type','=','CashOut')
-        ->sum('amount');  // Replace 'credit' with your actual column name
+        ->sum('amount');  
 
         $totalCashInLastMonth = CashBalance::whereYear('transaction_date', $previousMonthYear)
         ->whereMonth('transaction_date', $previousMonth)
         ->where('cash_type','=','CashIn')
-        ->sum('amount');  // Replace 'debit' with your actual column name
+        ->sum('amount');  
 
         return view('dashboard.index',[
             'currentYear' => $currentYear,
