@@ -194,7 +194,7 @@
         }
 
         .card-text {
-            font-size: 0.8rem; /* Adjust as needed */
+            font-size: 0.6rem; /* Adjust as needed */
         }
     }
 </style>
