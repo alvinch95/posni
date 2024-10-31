@@ -11,6 +11,7 @@ use App\Models\SalesOrderDetail;
 use Illuminate\Support\Facades\DB;
 use App\Charts\InventoryValueChart;
 use App\Charts\MonthlyTransactionsChart;
+use App\Models\CashBalance;
 
 class DashboardController extends Controller
 {
@@ -18,6 +19,9 @@ class DashboardController extends Controller
     {
         $year = request('year',now()->format("Y"));
         $currentYear = now()->format("Y");
+        $currentMonth = now()->format("m");
+        $previousMonth = now()->subMonth()->month;
+        $previousMonthYear = now()->subMonth()->year;
 
         $dateFrom = request('order_date_from', today()->subDays(6));
         $dateTo = request('order_date_to', today());
@@ -31,13 +35,43 @@ class DashboardController extends Controller
         ->orderByDesc('Qty_Sold')
         ->paginate(5);
 
+        // Calculate the total revenue and orders for the metric cards
+        $totalRevenueSum = SalesOrder::sum('total_revenue');
+        $totalOrdersSum = SalesOrder::sum('total_order');
+        $averageOrderValue = $totalOrdersSum ? $totalRevenueSum / $totalOrdersSum : 0;
+
+        // Calculate credit and debit for the current month
+        $totalCashOut = CashBalance::whereYear('transaction_date', $currentYear)
+        ->whereMonth('transaction_date', $currentMonth)
+        ->where('cash_type','=','CashOut')
+        ->sum('amount');  // Replace 'credit' with your actual column name
+
+        $totalCashIn = CashBalance::whereYear('transaction_date', $currentYear)
+        ->whereMonth('transaction_date', $currentMonth)
+        ->where('cash_type','=','CashIn')
+        ->sum('amount');  // Replace 'debit' with your actual column name
+
+        $totalCashOutLastMonth = CashBalance::whereYear('transaction_date', $previousMonthYear)
+        ->whereMonth('transaction_date', $previousMonth)
+        ->where('cash_type','=','CashOut')
+        ->sum('amount');  // Replace 'credit' with your actual column name
+
+        $totalCashInLastMonth = CashBalance::whereYear('transaction_date', $previousMonthYear)
+        ->whereMonth('transaction_date', $previousMonth)
+        ->where('cash_type','=','CashIn')
+        ->sum('amount');  // Replace 'debit' with your actual column name
+
         return view('dashboard.index',[
-            // 'monthly_chart' => $chart->build($year),
-            // 'daily_chart' => $chart2->build($dateFrom, $dateTo),
-            // 'inventory_value_chart' => $chart3->build(),
             'currentYear' => $currentYear,
             'topSellingProducts' => $topSellingProducts,
             'year' => $year,
+            'totalRevenueSum' => $totalRevenueSum,
+            'totalOrdersSum' => $totalOrdersSum,
+            'averageOrderValue' => $averageOrderValue,
+            'totalCashOut' => $totalCashOut,
+            'totalCashIn' => $totalCashIn,
+            'totalCashOutLastMonth' => $totalCashOutLastMonth,
+            'totalCashInLastMonth' => $totalCashInLastMonth,
             'months' => $this->getMonthlyTransactions($year)['months'],
             'monthlyTotalOrders' => $this->getMonthlyTransactions($year)['totalOrders'],
             'monthlyTotalRevenue' => $this->getMonthlyTransactions($year)['totalRevenue'],
