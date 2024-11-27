@@ -73,7 +73,7 @@ class Hamper extends Model
                 $itemStock = $itemStock - ($cart->hampers_qty*$cart->qty);
             }
 
-            $available = $itemStock > 0 ? intdiv($itemStock, $detail->qty) : 0;
+            $available = $itemStock > 0 ? intdiv($itemStock, abs($detail->qty)) : 0;
             if(is_null($lowestStock) || $available < $lowestStock){
                 $lowestStock = $available;
             }
