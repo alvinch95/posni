@@ -74,7 +74,7 @@
                                     @foreach ($detail->salesOrderDetailItems as $item)
                                     <tr class="bg-light border border-1 border-secondary fs-7">
                                         <td class="px-4">{{ $item->item_name }}</td>
-                                        <td>{{ $item->qty*$detail->qty }}</td>
+                                        <td>{{ $item->qty }}</td>
                                         <td>Rp. {{ number_format($item->selling_price, 0, ',', '.') }}</td>
                                         {{-- <td>Rp. {{ number_format($item->qty*$detail->qty*$item->selling_price, 0, ',', '.') }}</td> --}}
                                         <td class="bg-secondary border border-secondary"></td>
