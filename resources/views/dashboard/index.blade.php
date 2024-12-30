@@ -203,6 +203,13 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.36.0/dist/apexcharts.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        function formatToRupiah(number) {
+            return 'Rp. ' + parseFloat(number).toLocaleString('id-ID', {
+                style: 'decimal', 
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            });
+        }
         // Monthly Transactions Chart
         var monthlyOptions = {
             chart: { type: 'bar', height: 400 },
@@ -211,6 +218,30 @@
                 { name: 'Total Revenue', data: @json($monthlyTotalRevenue) }
             ],
             xaxis: { categories: @json($months) },
+            yaxis: { 
+                labels: {
+                    formatter: function (val) {
+                        return formatToRupiah(val);
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: true, // Enable data labels
+                formatter: function (val) {
+                    return formatToRupiah(val); // Format the displayed data labels
+                },
+                style: {
+                    fontSize: '10px', // Optional: Adjust font size if needed
+                    colors: ['gray']  // Optional: Adjust label colors
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return formatToRupiah(val);
+                    }
+                }
+            },
             title: { text: 'Monthly Transactions for {{ $year }}' }
         };
         var monthlyChart = new ApexCharts(document.querySelector("#monthly-chart"), monthlyOptions);
