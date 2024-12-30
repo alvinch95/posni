@@ -256,6 +256,13 @@
                 { name: 'Count Orders', data: @json($dailyCountOrder) }
             ],
             xaxis: { categories: @json($dailyDays) },
+            yaxis: { 
+                labels: {
+                    formatter: function (val) {
+                        return formatToRupiah(val);
+                    }
+                }
+            },
             title: { text: 'Daily Report' }
         };
         var dailyChart = new ApexCharts(document.querySelector("#daily-chart"), dailyOptions);
@@ -266,6 +273,13 @@
             chart: { type: 'line', height: 400 },
             series: [{ name: 'Inventory Value', data: @json($totalInventoryValue) }],
             xaxis: { categories: @json($inventoryValueDays) },
+            yaxis: { 
+                labels: {
+                    formatter: function (val) {
+                        return formatToRupiah(val);
+                    }
+                }
+            },
             title: { text: 'Inventory Value' }
         };
         var inventoryChart = new ApexCharts(document.querySelector("#inventory-chart"), inventoryOptions);
