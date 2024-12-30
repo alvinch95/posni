@@ -46,8 +46,8 @@
               <div class="form-floating mb-1">
                 <select class="form-select" id="is_processed" name="is_processed">
                   <option value="">-</option>
-                  <option value="true" {{ request('is_processed') == 'true' ? 'selected' : '' }}>Processed</option>
-                  <option value="false" {{ request('is_processed') == 'false' ? 'selected' : '' }}>Not Processed</option>
+                  <option value="true" {{ request('is_processed') == 'true' ? 'selected' : '' }}>Sudah</option>
+                  <option value="false" {{ request('is_processed') == 'false' ? 'selected' : '' }}>Belum</option>
                 </select>
                 <label for="is_processed" class="form-label">Status</label>
               </div>
