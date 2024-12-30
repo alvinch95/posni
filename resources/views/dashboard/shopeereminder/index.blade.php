@@ -248,8 +248,8 @@
 
   /* General styles for the responsive table */
   .responsive-table-container .responsive-table {
-      width: 100%;
-      margin: 0;
+      width: 85%;
+      margin: 10px;
       padding: 0;
       list-style: none;
   }
@@ -267,8 +267,7 @@
 
   .responsive-table-container .responsive-table .table-row {
       display: flex;
-      justify-content: space-between;
-      padding: 10px;
+      justify-content: right;
       border-bottom: 1px solid #ddd;
       background-color: white;
   }
@@ -278,8 +277,6 @@
       padding: 5px;
       text-align: left;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
   }
 
   /* Child row styles */
@@ -305,14 +302,12 @@
       height: 8px;
       border-radius: 50%;
       margin-right: 5px; /* Space between the dot and the text */
-      background-color: green; /* Example: Adjust as needed */
       vertical-align: middle; /* Align with the text */
   }
 
   .status-label {
       display: inline-block; /* Keep it inline */
       vertical-align: middle; /* Align with the dot */
-      margin-left: 0; /* Ensure there's no extra margin */
   }
 
   /* Responsive styles for mobile devices */
@@ -325,14 +320,14 @@
           display: flex;
           flex-direction: column;
           border: 1px solid #ddd;
-          margin-bottom: 10px;
+          margin-bottom: 1px;
           padding: 15px;
       }
 
       .responsive-table-container .responsive-table .col {
           display: flex;
           justify-content: space-between;
-          padding: 10px 0;
+          padding: 5px 0;
           width: 100%;
       }
 
@@ -344,13 +339,13 @@
       }
 
       .responsive-table-container .child-row {
-          padding: 10px;
+          padding: 5px;
           margin-left: 0;
       }
 
       .responsive-table-container .child-header {
-          display: flex;
-          flex-direction: column;
+          display: column;
+          flex-direction: row;
           padding: 5px 0;
       }
 
