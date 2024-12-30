@@ -24,35 +24,35 @@
   <div class="col-md-8">
       <form id="filterForm" action="/dashboard/shopeereminder">
           <div class="row mb-3 align-items-center">
-            <div class="col-lg-3">
+            <div class="col-lg-3 col-12">
               <div class="form-floating mb-1">
                 <input type="text" class="form-control" placeholder="Search items.." name="search" value="{{ request('search') }}">
                 <label for="search" class="form-label text-muted">Search keyword</label>
               </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-3 col-12">
               <div class="form-floating mb-1">
                 <input type="date" class="form-control" id="processed_date_from" name="processed_date_from" value="{{ request('processed_date_from') }}">
                 <label for="processed_date_from" class="form-label">Start Date</label>
               </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-3 col-12">
               <div class="form-floating mb-1">
                 <input type="date" class="form-control" id="processed_date_to" name="processed_date_to" value="{{ request('processed_date_to') }}">
                 <label for="processed_date_to" class="form-label">End Date</label>
               </div>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-2 col-12">
               <div class="form-floating mb-1">
                 <select class="form-select" id="is_processed" name="is_processed">
                   <option value="">-</option>
-                  <option value="true" {{ request('is_processed') == 'true' ? 'selected' : '' }}>Sudah</option>
-                  <option value="false" {{ request('is_processed') == 'false' ? 'selected' : '' }}>Belum</option>
+                  <option value="true" {{ request('is_processed') == 'true' ? 'selected' : '' }}>Processed</option>
+                  <option value="false" {{ request('is_processed') == 'false' ? 'selected' : '' }}>Not Processed</option>
                 </select>
                 <label for="is_processed" class="form-label">Status</label>
               </div>
             </div>
-            <div class="col-lg-1">
+            <div class="col-lg-1 col-12">
               <button class="btn text-white" style="background-color: #966F33" type="submit">Search</button>
             </div>
           </div>
@@ -65,7 +65,7 @@
   </div>
 </div>
 
-<div class="container">
+<div class="responsive-table-container">
   <ul class="responsive-table">
     <li class="table-header">
       <div class="col col-1">Date</div>
@@ -184,13 +184,6 @@
   .child-table-row{
     background-color: whitesmoke !important;
   }
-  .status {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 5px;
-  }
 
   .status-green {
       background-color: #4CAF50; /* Green */
@@ -198,10 +191,6 @@
 
   .status-red {
       background-color: #F44336; /* Red */
-  }
-
-  .status-label {
-      vertical-align: middle;
   }
 
   body {
@@ -255,6 +244,120 @@
     .col-6 {
       flex-basis: 30%;
     }
+  }
+
+  /* General styles for the responsive table */
+  .responsive-table-container .responsive-table {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+  }
+
+  .responsive-table-container .responsive-table .table-header {
+      display: flex;
+      justify-content: space-between;
+      background-color: #966F33;
+      color: white;
+      padding: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      text-transform: uppercase;
+  }
+
+  .responsive-table-container .responsive-table .table-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      background-color: white;
+  }
+
+  .responsive-table-container .responsive-table .col {
+      flex: 1;
+      padding: 5px;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
+
+  /* Child row styles */
+  .responsive-table-container .child-row {
+      margin-left: 15px;
+      background-color: #f9f9f9;
+  }
+
+  .responsive-table-container .child-header {
+      font-weight: bold;
+      background-color: lightblue;
+      padding: 5px;
+  }
+
+  .responsive-table-container .child-table-row {
+      padding: 5px;
+      background-color: whitesmoke;
+  }
+  
+  .status {
+      display: inline-block; /* Ensure the dot is inline */
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 5px; /* Space between the dot and the text */
+      background-color: green; /* Example: Adjust as needed */
+      vertical-align: middle; /* Align with the text */
+  }
+
+  .status-label {
+      display: inline-block; /* Keep it inline */
+      vertical-align: middle; /* Align with the dot */
+      margin-left: 0; /* Ensure there's no extra margin */
+  }
+
+  /* Responsive styles for mobile devices */
+  @media (max-width: 768px) {
+      .responsive-table-container .responsive-table .table-header {
+          display: none;
+      }
+
+      .responsive-table-container .responsive-table .table-row {
+          display: flex;
+          flex-direction: column;
+          border: 1px solid #ddd;
+          margin-bottom: 10px;
+          padding: 15px;
+      }
+
+      .responsive-table-container .responsive-table .col {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px 0;
+          width: 100%;
+      }
+
+      .responsive-table-container .responsive-table .col::before {
+          content: attr(data-label);
+          font-weight: bold;
+          color: #555;
+          flex-shrink: 0;
+      }
+
+      .responsive-table-container .child-row {
+          padding: 10px;
+          margin-left: 0;
+      }
+
+      .responsive-table-container .child-header {
+          display: flex;
+          flex-direction: column;
+          padding: 5px 0;
+      }
+
+      .responsive-table-container .child-table-row .col {
+          display: block;
+          padding: 5px 0;
+      }
   }
 </style>
 

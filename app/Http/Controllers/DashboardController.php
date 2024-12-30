@@ -42,7 +42,8 @@ class DashboardController extends Controller
         // Calculate the total revenue and orders for the metric cards
         $totalRevenueSum = SalesOrder::sum('total_revenue');
         $totalOrdersSum = SalesOrder::sum('total_order');
-        $averageOrderValue = $totalOrdersSum ? $totalRevenueSum / $totalOrdersSum : 0;
+        $totalCountOrder = SalesOrder::count();
+        $averageOrderValue = $totalOrdersSum ? $totalOrdersSum / $totalCountOrder : 0;
 
         // Calculate credit and debit for the current month
         $totalCashOut = CashBalance::whereYear('transaction_date', $currentYear)
