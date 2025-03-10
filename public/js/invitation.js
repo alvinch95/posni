@@ -219,19 +219,30 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 
-    //Gallery
-    const gallerySlider = document.querySelector(".gallery-slider");
+    //Gallery Slider
+    let slider = document.querySelector(".gallery-slider");
+    let slides = document.querySelectorAll(".gallery-slide");
+    let totalSlides = slides.length;
     let index = 0;
+    let interval;
 
-    function slideGallery() {
-        index++;
-        if (index >= gallerySlider.children.length) {
-            index = 0;
-        }
-        gallerySlider.style.transform = `translateX(-${index * 100}%)`;
+    function updateSlider() {
+        slider.style.transform = `translateX(-${index * 100}%)`;
     }
 
-    setInterval(slideGallery, 3000); // Change image every 3 seconds
+    function nextSlide() {
+        index++;
+        if (index >= totalSlides) {
+            index = 0; // Jump back to the first image
+        }
+        updateSlider();
+    }
+
+    function startAutoSlide() {
+        interval = setInterval(nextSlide, 3000);
+    }
+
+    startAutoSlide();
 });
 
 function openInvitation() {
