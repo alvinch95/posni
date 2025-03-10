@@ -1,0 +1,838 @@
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* Force Mobile View */
+.mobile-container {
+    width: 375px; /* Standard mobile width */
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Optional: Adds a slight frame */
+}
+
+body {
+    font-family: "Dancing Script", cursive;
+    background-color: #f8f1e5;
+    color: black;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f8f1e5;
+}
+
+/* Cover Page */
+.cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    /* background: url("/img/autumn-forest.jpg") center/cover no-repeat; */
+    background: url("/img/OLA00492.jpg") center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    z-index: 10;
+    padding: 20px;
+    color: white;
+    transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+}
+
+.cover.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+}
+
+/* Cover Card */
+.cover-card {
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: black; /* Dark brown for better readability */
+}
+
+/* Adjust Text Spacing */
+.cover-title {
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.cover-names {
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.cover-date {
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 30px;
+}
+
+/* Open Invitation Button */
+.open-invitation {
+    padding: 14px 28px;
+    font-size: 20px;
+    background: linear-gradient(45deg, black, silver);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: "Poppins", cursive;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    animation: pulse 2s infinite;
+}
+
+/* Pulsing Animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.04);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Main Content (Initially Hidden) */
+.content {
+    display: none;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+}
+
+.content.visible {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Floating Music Button */
+.music-btn {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(139, 69, 19, 0.8); /* Semi-transparent brown */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.music-btn:hover {
+    background-color: rgba(139, 69, 19, 1);
+}
+
+/* Floating Menu */
+.floating-menu {
+    position: fixed;
+    bottom: -60px; /* Hidden by default */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 30px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    gap: 10px;
+    transition: bottom 0.3s ease-in-out;
+}
+
+/* Menu Buttons */
+.menu-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 50%;
+    transition: background 0.2s ease-in-out;
+    color: #8b4513; /* Brown color */
+}
+
+.menu-btn:hover {
+    background: rgba(139, 69, 19, 0.2);
+}
+
+/* Icon Styling */
+.menu-btn i {
+    font-size: 22px;
+}
+
+/* Groom & Bride Section */
+.section {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+/* Section Title with Blur Effect */
+.section-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #8b4513; /* Warm brown */
+    position: relative;
+    padding: 5px 10px;
+}
+
+/* Blurred Background Effect */
+.section-title::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6);
+    filter: blur(5px);
+    z-index: -1;
+    border-radius: 10px;
+}
+
+/* Profile Container */
+.bride-groom-container {
+    display: flex;
+    flex-direction: column; /* Stack profiles vertically */
+    align-items: center;
+    gap: 30px;
+}
+
+/* Profile Card */
+.profile {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+    max-width: 320px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Profile Picture Frame */
+.profile-frame {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 250px;
+}
+
+/* Adjust Photo frame zoom */
+.profile-frame img[alt="Frame"] {
+    transform: scale(0.85) translateY(5px); /* Adjust zoom and position */
+}
+
+/* Frame Overlay */
+.frame-overlay {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Profile Image */
+.profile-img {
+    width: 85%; /* Increase size slightly */
+    max-width: 160px; /* Adjust max size */
+    height: auto;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+    object-fit: cover; /* Ensures proper scaling */
+    transform: scale(1.1) translateY(5px); /* Zoom in and shift */
+}
+
+/* Name */
+.profile-name {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 45px;
+    color: #5a3e2b;
+}
+
+/* Message Frame */
+.message-frame {
+    position: relative;
+    margin-top: 3px;
+    width: 100%;
+    max-width: 280px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Message Frame Overlay */
+.message-overlay {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Profile Message */
+.profile-message {
+    font-size: 16px;
+    color: #3e2723;
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+    padding: 10px;
+    text-align: center;
+    max-width: 240px;
+}
+
+/* Full-Screen Frame (Positioned More Outside) */
+.screen-frame {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 375px; /* Match the mobile container width */
+    height: 100vh;
+    pointer-events: none; /* Ensures it does not block interactions */
+    z-index: -1; /* Keeps it above all other elements */
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.screen-frame img {
+    width: 100%; /* Slightly larger than the screen */
+    height: 110%;
+    object-fit: cover;
+    animation: sway-frame 6s infinite alternate ease-in-out;
+}
+
+/* Subtle Wind Animation */
+@keyframes sway-frame {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(0.3deg) scale(1.02);
+    }
+    100% {
+        transform: rotate(-0.3deg) scale(1);
+    }
+}
+
+/* Center Autumn Background */
+.center-background {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 305px; /* Match the mobile container width */
+    height: 100vh;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Ensures it does not block interactions */
+    z-index: -2; /* Behind all elements but above the main background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background Image */
+.center-background img {
+    width: 100%;
+    height: auto;
+    opacity: 0.7; /* Slight transparency */
+    animation: sway-bg 45s infinite alternate ease-in-out;
+}
+
+/* Wind Effect Animation */
+@keyframes sway-bg {
+    0% {
+        transform: rotate(0deg) scale(1.3);
+    }
+    50% {
+        transform: rotate(20deg) scale(1.35);
+    }
+    100% {
+        transform: rotate(-0.5deg) scale(1.3);
+    }
+}
+
+/* Countdown Timer Section */
+.countdown-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.countdown-item {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    min-width: 80px;
+}
+
+.countdown-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #8b4513;
+    display: block;
+}
+
+.countdown-label {
+    font-size: 16px;
+    color: #5a3e2b;
+}
+
+/* Scroll Reveal Animation - Initially Hidden */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateX(-50px); /* Move from left */
+    transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+/* When Visible */
+.scroll-reveal.visible {
+    opacity: 1;
+    transform: translateX(0); /* Slide into place */
+}
+
+/* Wrapper for Each Event */
+.event-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 375px;
+    margin: 20px auto;
+}
+
+/* Wedding Gate Decoration (Covers Both Cards) */
+.wedding-gate {
+    position: absolute;
+    width: 130%;
+    max-width: 420px; /* Adjust width to fit both cards */
+    height: 103%; /* Ensure it spans across the section */
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%); /* Center align */
+    pointer-events: none;
+    z-index: 1; /* Keep it behind the cards */
+}
+
+/* Event Container to Stack Both Cards */
+.event-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Space between cards */
+    align-items: center;
+    width: 100%;
+    margin-top: 90px;
+}
+
+/* Event Location Box */
+.event-location {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 280px;
+    position: relative;
+    z-index: -1;
+}
+
+/* Titles */
+.event-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #8b4513;
+    margin-bottom: 5px;
+}
+
+.event-date {
+    font-size: 16px;
+    font-weight: 600;
+    color: #5a3e2b;
+    margin-bottom: 5px;
+}
+
+.event-venue {
+    font-size: 16px;
+    color: #3e2723;
+    margin-bottom: 10px;
+}
+
+/* Map Link Button */
+.map-link {
+    display: inline-block;
+    background: #8b4513;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.3s ease-in-out;
+}
+
+.map-link i {
+    margin-right: 5px;
+}
+
+.map-link:hover {
+    background: #a0522d;
+}
+
+/* Bank Account Section */
+.bank-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 320px;
+    margin: 15px auto;
+    gap: 15px;
+}
+
+/* Bank Logo */
+.bank-logo {
+    width: auto;
+    height: 50px;
+}
+
+/* Bank Details */
+.bank-details {
+    text-align: left;
+}
+
+.bank-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #8b4513;
+}
+
+.account-number {
+    font-size: 16px;
+    font-weight: 600;
+    color: #5a3e2b;
+}
+
+.account-holder {
+    font-size: 14px;
+    color: #3e2723;
+}
+
+.bank-description {
+    font-size: 18px;
+    color: #5a3e2b;
+    text-align: center;
+    margin-bottom: 20px;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: bold;
+    background: rgba(255, 245, 230, 0.9);
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Account Info Wrapper */
+.account-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Copy Button */
+.copy-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #8b4513; /* Brown to match the theme */
+    transition: color 0.2s ease-in-out;
+}
+
+.copy-btn:hover {
+    color: #a0522d; /* Slightly lighter brown */
+}
+
+/* ==================== Wishes Section ==================== */
+#wishes {
+    padding: 40px 20px;
+    text-align: center;
+    position: relative;
+}
+
+/* Section Title Enhancement */
+#wishes .section-title {
+    font-size: 26px;
+    font-weight: bold;
+    position: relative;
+    padding: 10px 20px;
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.7); /* Light background */
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Wishes Form */
+#wishes-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 320px;
+    margin: auto;
+}
+
+/* Form Input Fields */
+#wishes-form input,
+#wishes-form textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #d8a47f;
+    font-size: 14px;
+    background: #fff;
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Wish Message Field */
+#wishes-form textarea {
+    height: 80px;
+    resize: none;
+}
+
+/* Send Wish Button */
+#wishes-form button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(45deg, #8b4513, #a0522d);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Button Hover Effect */
+#wishes-form button:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Success Message */
+.wish-success {
+    background: rgba(144, 238, 144, 0.9);
+    color: #2e7d32;
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 320px;
+    margin: 10px auto;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ==================== Wishes List (Card Style) ==================== */
+#wishes-list {
+    margin-top: 20px;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 250px; /* Adjusted for better display */
+    overflow-y: auto; /* Enables vertical scrolling */
+    border-radius: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Scrollbar */
+#wishes-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+#wishes-list::-webkit-scrollbar-thumb {
+    background: rgba(139, 69, 19, 0.7);
+    border-radius: 3px;
+}
+
+/* Wish Card */
+.wish-item {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;
+    text-align: left;
+}
+
+/* Wish Header */
+.wish-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #8b4513;
+    margin-bottom: 6px;
+}
+
+/* Wish Message */
+.wish-message {
+    font-size: 14px;
+    color: #3e2723;
+    font-style: italic;
+}
+
+/* Fade-in Effect */
+.wish-item.appear {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.wish-item {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+/* RSVP Section */
+.rsvp-description {
+    font-size: 16px;
+    color: #5a3e2b;
+    text-align: center;
+    margin-bottom: 15px;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* RSVP Form */
+.rsvp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.rsvp-form input,
+.rsvp-form select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #d3a27c;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.rsvp-form button {
+    padding: 10px;
+    background: linear-gradient(45deg, #8b4513, #a0522d);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.rsvp-form button:hover {
+    background: linear-gradient(45deg, #a0522d, #8b4513);
+}
+
+/* Gallery Section */
+.gallery-container {
+    overflow: hidden;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Gallery Slider */
+.gallery-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Gallery Slide */
+.gallery-slide {
+    min-width: 100%;
+}
+
+.gallery-slide img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* Footer */
+.footer {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px 20px; /* Increased padding */
+    text-align: center;
+    font-size: 16px;
+    color: #5a3e2b;
+    box-shadow: 0px -2px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 30px; /* Extra space before footer */
+}
+
+/* Ensures floating menu doesn't cover the footer */
+.footer::after {
+    content: "";
+    display: block;
+    height: 60px; /* Pushes content up to prevent overlap */
+}
+
+.footer-text {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.footer-subtext {
+    font-size: 14px;
+    font-style: italic;
+}

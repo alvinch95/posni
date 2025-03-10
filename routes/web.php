@@ -21,6 +21,7 @@ use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\DashboardProductController;
 use App\Http\Controllers\ShopeeReminderController;
+use App\Http\Controllers\WeddingInvitationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,19 +114,10 @@ Route::post('dashboard/shopeereminder/convertOrder', [ShopeeReminderController::
 
 Route::resource('/dashboard/cashbalances', CashBalanceController::class)->except('show')->middleware('admin');
 
+Route::resource('/dashboard/cashbalances', CashBalanceController::class)->except('show')->middleware('admin');
 
-// Route::get('/categories/{category:slug}', function(Category $category){
-//     return view('products', [
-//         'title' => "Products By Category : $category->name",
-//         "active" => "categories",
-//         'products' => $category->products->load('author','category')
-//     ]);
-// });
+Route::get('/wedding-invitation', [WeddingInvitationController::class, 'index']);
+Route::post('/rsvp-submit', [WeddingInvitationController::class, 'storeRSVP'])->name('rsvp.submit');
+Route::post('/wishes-submit', [WeddingInvitationController::class, 'storeWish'])->name('wishes.submit');
+Route::get('/wishes-list', [WeddingInvitationController::class, 'getWishes'])->name('wishes.list');
 
-// Route::get('/authors/{author:username}',function(User $author){
-//     return view('products', [
-//         'title' => "Products By Author : $author->name",
-//         "active" => "products",
-//         'products' => $author->products->load('category','author')
-//     ]);
-// });
