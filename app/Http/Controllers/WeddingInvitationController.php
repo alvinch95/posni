@@ -16,7 +16,7 @@ class WeddingInvitationController extends Controller
     public function storeRSVP(Request $request)
     {
         // Save RSVP data
-        RSVP::create([
+        Rsvp::create([
             'name' => $request->guest_name,
             'pax' => $request->guest_pax,
             'attendance' => $request->attendance_status,
