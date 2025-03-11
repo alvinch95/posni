@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RSVP;
+use App\Models\Rsvp;
 use App\Models\Wish;
 use Illuminate\Http\Request;
 
