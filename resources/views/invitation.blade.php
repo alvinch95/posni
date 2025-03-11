@@ -20,7 +20,7 @@
 <div class="mobile-container">
     <!-- Center Background Decoration -->
     <div class="center-background">
-        <img src="/img/autumn-background.png" alt="Autumn Leaves">
+        <img src="/img/autumn-background.png" alt="Autumn Leaves" class="bgimg">
     </div>
 
     <!-- Full-Screen Frame -->
@@ -31,13 +31,12 @@
     <!-- Cover Page -->
     <div class="cover">
         <div class="cover-card">
-            <h1 class="cover-title">The Wedding of</h1>
+            <p class="guest-name">To: <span id="guest-name">Dear Guest</span></p>
+            <h1 class="cover-title">Join Us To Celebrate Our Wedding</h1>
             <h2 class="cover-names">Alvin & Stevani</h2>
-            <h3 class="cover-date">01 - 06 - 2025</h3>
-            <button class="open-invitation" onclick="openInvitation()">
-                Open Invitation
-            </button>
-        </div>
+            <h3 class="cover-date">Sunday, 1 June 2025</h3>
+            <button class="open-invitation" onclick="openInvitation()">Open Invitation</button>
+        </div>        
     </div>
 
     <!-- Main Content -->

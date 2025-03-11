@@ -18,8 +18,20 @@ function openInvitation() {
     }, 1000);
 }
 
+function getQueryParam(param) {
+    let urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
 // Music Toggle Button
 document.addEventListener("DOMContentLoaded", function () {
+    let guestName = getQueryParam("to"); // Get 'to' parameter from URL
+    let guestElement = document.getElementById("guest-name");
+
+    if (guestName) {
+        guestElement.textContent = guestName;
+    }
+
     let music = document.getElementById("bg-music");
     let musicBtn = document.getElementById("music-toggle");
     let musicIcon = musicBtn.querySelector("i");
@@ -249,23 +261,34 @@ function openInvitation() {
     let cover = document.querySelector('.cover');
     let content = document.querySelector('.content');
     let frame = document.querySelector('.screen-frame'); // Get the frame
+    let background = document.querySelector('.bgimg'); // Get the background image
 
     // Play music when opening the invitation
     let music = document.getElementById('bg-music');
     music.play().catch(error => console.log("Auto-play blocked:", error));
 
+    //Hide cover
     cover.classList.add('hidden');
 
     setTimeout(() => {
         cover.style.display = 'none';
-        content.style.display = 'block';
-
-        // Show the frame after the cover disappears
         frame.style.display = 'flex';
 
         setTimeout(() => {
+            // Show the frame after the cover disappears
+            frame.classList.add('visible');
+        }, 1000);
+
+        setTimeout(() => {
+            background.classList.add('move');
+            background.style.display = 'block';
+        }, 1200);
+
+        content.style.display = 'block';
+
+        setTimeout(() => {
             content.classList.add('visible');
-        }, 300);
+        }, 3000);
     }, 1000);
 }
 

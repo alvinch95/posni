@@ -32,7 +32,6 @@ body {
     left: 0;
     width: 100%;
     height: 100vh;
-    /* background: url("/img/autumn-forest.jpg") center/cover no-repeat; */
     background: url("/img/OLA00492.jpg") center/cover no-repeat;
     display: flex;
     align-items: center;
@@ -45,71 +44,117 @@ body {
     transition: transform 1s ease-in-out, opacity 1s ease-in-out;
 }
 
+/* When the cover disappears */
 .cover.hidden {
-    transform: translateY(-100%);
+    transform: scale(1.5); /* Zoom in slightly */
     opacity: 0;
+}
+
+/* Guest Name Styling */
+.guest-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #3e2723;
+    margin-bottom: 30px;
 }
 
 /* Cover Card */
 .cover-card {
-    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
-    padding: 20px;
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px; /* Increased padding */
+    border-radius: 12px;
     text-align: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: black; /* Dark brown for better readability */
+    color: #3e2723;
+    max-width: 300px; /* Slightly wider */
 }
 
-/* Adjust Text Spacing */
-.cover-title {
-    font-size: 24px;
+/* Small Serif Title */
+.cover-card h1 {
+    font-family: "Playfair Display", serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #6d4c41;
+    margin-bottom: 12px; /* Increased space */
+}
+
+/* Elegant Handwritten Names */
+.cover-card h2 {
+    font-family: "Great Vibes", cursive;
+    font-size: 50px;
     font-weight: 400;
-    margin-bottom: 10px;
+    color: #3e2723;
+    margin-bottom: 8px; /* Added space */
 }
 
-.cover-names {
-    font-size: 40px;
-    font-weight: 700;
-    margin-bottom: 15px;
-}
-
-.cover-date {
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 30px;
+/* Simple Date Styling */
+.cover-card h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #6d4c41;
+    margin-bottom: 20px; /* More spacing */
 }
 
 /* Open Invitation Button */
 .open-invitation {
-    padding: 14px 28px;
-    font-size: 20px;
-    background: linear-gradient(45deg, black, silver);
-    color: white;
-    border: none;
-    border-radius: 8px;
+    margin-top: 10px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-family: "Playfair Display", serif;
+    background: none;
+    border: 2px solid #3e2723;
+    color: #3e2723;
+    border-radius: 6px;
     cursor: pointer;
-    font-family: "Poppins", cursive;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
     position: relative;
     overflow: hidden;
-    animation: pulse 2s infinite;
+    transition: all 0.3s ease-in-out;
 }
 
-/* Pulsing Animation */
-@keyframes pulse {
+/* Thinner & Faster Gold Shine Effect */
+.open-invitation::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 50px; /* Thinner shine */
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        rgba(255, 215, 100, 0.3) 0%,
+        rgba(23, 23, 22, 0.9) 50%,
+        rgba(255, 215, 100, 0.3) 100%
+    );
+    transform: skewX(-20deg);
+    animation: shine 3s infinite ease-in-out; /* Faster animation */
+}
+
+/* Keyframes for Smooth, Fast Shine */
+@keyframes shine {
     0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.04);
+        left: -150%;
     }
     100% {
-        transform: scale(1);
+        left: 150%;
     }
+}
+
+/* Button Hover Effect */
+.open-invitation:hover {
+    background: #3e2723;
+    color: white;
+}
+
+/* Button Hover Effect */
+.open-invitation:hover {
+    background: #3e2723;
+    color: white;
 }
 
 /* Main Content (Initially Hidden) */
@@ -121,7 +166,6 @@ body {
 }
 
 .content.visible {
-    display: block;
     opacity: 1;
     transform: scale(1);
 }
@@ -336,18 +380,26 @@ body {
     transform: translateX(-50%);
     width: 375px; /* Match the mobile container width */
     height: 100vh;
-    pointer-events: none; /* Ensures it does not block interactions */
-    z-index: -1; /* Keeps it above all other elements */
+    pointer-events: none;
+    z-index: -1;
     display: none;
     align-items: center;
     justify-content: center;
+    opacity: 0; /* Initially invisible */
+    transition: opacity 1.5s ease-in-out; /* Smooth fade-in effect */
+}
+
+/* When the frame becomes visible */
+.screen-frame.visible {
+    opacity: 1;
 }
 
 .screen-frame img {
     width: 100%; /* Slightly larger than the screen */
-    height: 110%;
+    height: 105%;
     object-fit: cover;
     animation: sway-frame 6s infinite alternate ease-in-out;
+    opacity: 0.8;
 }
 
 /* Subtle Wind Animation */
@@ -356,10 +408,10 @@ body {
         transform: rotate(0deg) scale(1);
     }
     50% {
-        transform: rotate(3deg) scale(1.05);
+        transform: rotate(3deg) scale(1.15);
     }
     100% {
-        transform: rotate(-0.3deg) scale(1);
+        transform: rotate(-1deg) scale(1);
     }
 }
 
@@ -382,8 +434,14 @@ body {
 .center-background img {
     width: 100%;
     height: auto;
-    opacity: 0.5; /* Slight transparency */
-    animation: sway-bg 45s infinite alternate ease-in-out;
+    opacity: 0; /* Initially invisible */
+    transition: opacity 1.5s ease-in-out; /* Smooth fade-in effect */
+    display: none;
+}
+
+.bgimg.move {
+    animation: falling-leaves 20s infinite linear;
+    opacity: 1;
 }
 
 /* Wind Effect Animation */
@@ -396,6 +454,36 @@ body {
     }
     100% {
         transform: rotate(-0.5deg) scale(1.3);
+    }
+}
+
+@keyframes falling-leaves {
+    0% {
+        transform: translateY(-60%) translateX(0) rotate(0deg) scale(1.2);
+        opacity: 0.8;
+    }
+    10% {
+        transform: translateY(-50%) translateX(-10%) rotate(10deg) scale(1.25);
+    }
+    25% {
+        transform: translateY(-30%) translateX(15%) rotate(-5deg) scale(1.3);
+    }
+    40% {
+        transform: translateY(-10%) translateX(-10%) rotate(8deg) scale(1.35);
+    }
+    55% {
+        transform: translateY(10%) translateX(12%) rotate(-12deg) scale(1.4);
+        opacity: 0.7;
+    }
+    70% {
+        transform: translateY(30%) translateX(-18%) rotate(5deg) scale(1.45);
+    }
+    85% {
+        transform: translateY(85%) translateX(10%) rotate(-8deg) scale(1.5);
+    }
+    100% {
+        transform: translateY(100%) translateX(0) rotate(0deg) scale(1.55);
+        opacity: 0;
     }
 }
 
