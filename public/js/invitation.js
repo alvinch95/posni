@@ -231,30 +231,29 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 
-    //Gallery Slider
-    let slider = document.querySelector(".gallery-slider");
-    let slides = document.querySelectorAll(".gallery-slide");
-    let totalSlides = slides.length;
-    let index = 0;
-    let interval;
-
-    function updateSlider() {
-        slider.style.transform = `translateX(-${index * 100}%)`;
-    }
-
-    function nextSlide() {
-        index++;
-        if (index >= totalSlides) {
-            index = 0; // Jump back to the first image
-        }
-        updateSlider();
-    }
-
-    function startAutoSlide() {
-        interval = setInterval(nextSlide, 3000);
-    }
-
-    startAutoSlide();
+    // Initialize Swiper for the gallery
+    new Swiper(".gallery-swiper", {
+        effect: "cube",
+        grabCursor: true,
+        loop: true,
+        autoplay: {
+            delay: 2000,
+            disableOnInteraction: false
+        },
+        cardsEffect: {
+            perSlideOffset: 8,
+            perSlideRotate: 2,
+            rotate: true,
+            slideShadows: true,
+        },
+        cubeEffect: {
+            shadow: true,
+            shadowOffset: 20,
+            shadowScale: 0.94,
+            slideShadows: true
+        },
+        speed: 600,
+    });
 });
 
 function openInvitation() {

@@ -8,12 +8,16 @@
         <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Parisienne&display=swap" rel="stylesheet">
     
         <link rel="stylesheet" href="{{ asset('css/invitation.css') }}">
 
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+        <!-- Swiper CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     </head>    
 <body>
@@ -72,30 +76,31 @@
         </section>
 
         <!-- Countdown Timer Section -->
-        <section id="countdown" class="section scroll-reveal">
-            <h2 class="section-title">Countdown to Our Wedding</h2>
+        <section id="countdown" class="section scroll-reveal reveal-fade">
+            <h1 class="section-title">Countdown to<br/> the Wedding</h1>
             <div class="countdown-container">
-                <div class="countdown-item">
-                    <span id="days" class="countdown-number">00</span>
-                    <span class="countdown-label">Days</span>
+                <div class="countdown-box">
+                    <div class="countdown-number" id="days">00</div>
+                    <div class="countdown-label">Days</div>
                 </div>
-                <div class="countdown-item">
-                    <span id="hours" class="countdown-number">00</span>
-                    <span class="countdown-label">Hours</span>
+                <div class="countdown-box">
+                    <div class="countdown-number" id="hours">00</div>
+                    <div class="countdown-label">Hours</div>
                 </div>
-                <div class="countdown-item">
-                    <span id="minutes" class="countdown-number">00</span>
-                    <span class="countdown-label">Minutes</span>
+                <div class="countdown-box">
+                    <div class="countdown-number" id="minutes">00</div>
+                    <div class="countdown-label">Minutes</div>
                 </div>
-                <div class="countdown-item">
-                    <span id="seconds" class="countdown-number">00</span>
-                    <span class="countdown-label">Seconds</span>
+                <div class="countdown-box">
+                    <div class="countdown-number" id="seconds">00</div>
+                    <div class="countdown-label">Seconds</div>
                 </div>
             </div>
         </section>
+          
 
         <!-- Location Section -->
-        <section id="location" class="section scroll-reveal">
+        <section id="location" class="section scroll-reveal reveal-left">
             <h2 class="section-title">Wedding Venue</h2>
             <div class="event-wrapper">
                 <img src="/img/wedding-gate.png" alt="Wedding Gate" class="wedding-gate">
@@ -129,7 +134,7 @@
         </section>
 
         <!-- Bank Account Information Section -->
-        <section id="bank-info" class="section scroll-reveal">
+        <section id="bank-info" class="section scroll-reveal reveal-right">
             <h2 class="section-title">Gift & Bank Transfer</h2>
             
             <!-- Gift Message -->
@@ -169,7 +174,7 @@
         </section>
 
         <!-- Wishes Section -->
-        <section id="wishes" class="section scroll-reveal">
+        <section id="wishes" class="section scroll-reveal reveal-up">
             <h2 class="section-title">Guest Wishes</h2>
 
             <!-- Wishes Form -->
@@ -189,7 +194,7 @@
 
 
         <!-- RSVP Section -->
-        <section id="rsvp" class="section scroll-reveal">
+        <section id="rsvp" class="section scroll-reveal reveal-right">
             <h2 class="section-title">RSVP</h2>
 
             <p class="rsvp-description">
@@ -210,16 +215,16 @@
         </section>
 
         <!-- Gallery Section -->
-        <section id="gallery" class="section scroll-reveal">
-            <h2 class="section-title">Our Memories</h2>
+        <section id="gallery" class="section scroll-reveal reveal-up">
+            <h2 class="section-title">Photo Gallery</h2>
 
-            <div class="gallery-container">
-                <div class="gallery-slider">
-                    <div class="gallery-slide"><img src="/img/gallery/1.jpg" alt="Gallery 1"></div>
-                    <div class="gallery-slide"><img src="/img/gallery/2.jpg" alt="Gallery 1"></div>
-                    <div class="gallery-slide"><img src="/img/gallery/3.jpg" alt="Gallery 1"></div>
-                    <div class="gallery-slide"><img src="/img/gallery/4.jpg" alt="Gallery 1"></div>
-                    <div class="gallery-slide"><img src="/img/gallery/5.jpg" alt="Gallery 1"></div>
+            <div class="swiper gallery-swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"><img src="/img/gallery/1.jpg" alt="Gallery 1"></div>
+                    <div class="swiper-slide"><img src="/img/gallery/2.jpg" alt="Gallery 2"></div>
+                    <div class="swiper-slide"><img src="/img/gallery/3.jpg" alt="Gallery 3"></div>
+                    <div class="swiper-slide"><img src="/img/gallery/4.jpg" alt="Gallery 4"></div>
+                    <div class="swiper-slide"><img src="/img/gallery/5.jpg" alt="Gallery 5"></div>
                 </div>
             </div>
         </section>
@@ -235,10 +240,12 @@
 
     <script src="{{ asset('js/invitation.js') }}"></script>
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 
     <!-- Background Music -->
     <audio id="bg-music" loop>
-        <source src="/audio/wedding-music.mp3" type="audio/mpeg">
+        <source src="/audio/wedding-music2.mp3" type="audio/mpeg">
         Your browser does not support the audio tag.
     </audio>
 

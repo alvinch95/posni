@@ -14,7 +14,7 @@
 }
 
 body {
-    font-family: "Dancing Script", cursive;
+    font-family: "Parisienne", cursive;
     background-color: #f8f1e5;
     color: black;
     text-align: center;
@@ -432,7 +432,7 @@ body {
 
 /* Background Image */
 .center-background img {
-    width: 100%;
+    width: 120%;
     height: auto;
     opacity: 0; /* Initially invisible */
     transition: opacity 1.5s ease-in-out; /* Smooth fade-in effect */
@@ -441,7 +441,7 @@ body {
 
 .bgimg.move {
     animation: falling-leaves 20s infinite linear;
-    opacity: 1;
+    opacity: 0.9;
 }
 
 /* Wind Effect Animation */
@@ -488,45 +488,100 @@ body {
 }
 
 /* Countdown Timer Section */
-.countdown-container {
+#countdown {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    gap: 15px;
+    padding: 40px 20px;
+}
+
+/* 2x2 Countdown Layout */
+.countdown-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-items: center;
+    max-width: 300px;
     margin-top: 20px;
 }
 
-.countdown-item {
-    background: rgba(255, 255, 255, 0.8);
-    padding: 20px;
+/* Countdown Box */
+.countdown-box {
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 15px 20px;
     border-radius: 10px;
-    text-align: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    min-width: 80px;
+    width: 100px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
+/* Trigger animation when visible */
+.scroll-reveal.visible .countdown-box {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Number & Label Styling */
 .countdown-number {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: bold;
-    color: #8b4513;
-    display: block;
+    color: #5a3e2b;
 }
 
 .countdown-label {
-    font-size: 16px;
-    color: #5a3e2b;
+    font-size: 14px;
+    color: #8b4513;
 }
 
 /* Scroll Reveal Animation - Initially Hidden */
 .scroll-reveal {
     opacity: 0;
-    transform: translateX(-50px); /* Move from left */
-    transition: opacity 1s ease-out, transform 1s ease-out;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
 }
 
-/* When Visible */
 .scroll-reveal.visible {
     opacity: 1;
-    transform: translateX(0); /* Slide into place */
+    transform: none;
+}
+
+/* Slide from Left */
+.reveal-left {
+    transform: translateX(-50px);
+}
+
+.reveal-left.visible {
+    transform: translateX(0);
+}
+
+/* Slide from Right */
+.reveal-right {
+    transform: translateX(50px);
+}
+
+.reveal-right.visible {
+    transform: translateX(0);
+}
+
+/* Slide from Bottom */
+.reveal-up {
+    transform: translateY(50px);
+}
+
+.reveal-up.visible {
+    transform: translateY(0);
+}
+
+/* Simple Fade */
+.reveal-fade {
+    transform: scale(0.75);
+}
+
+.reveal-fade.visible {
+    transform: scale(1);
 }
 
 /* Wrapper for Each Event */
@@ -884,26 +939,23 @@ body {
     background: linear-gradient(45deg, #a0522d, #8b4513);
 }
 
-/* ==================== Photo Slider ==================== */
-.gallery-container {
-    position: relative;
-    width: 100%;
+/* Swiper Gallery */
+.swiper-slide {
+    border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.gallery-slider {
-    display: flex;
-    transition: transform 0.8s ease-in-out;
-}
-
-.gallery-slide {
-    flex: 0 0 100%; /* Each image takes full width */
-}
-
-.gallery-slide img {
+.gallery-swiper {
     width: 100%;
-    height: auto;
-    object-fit: cover;
+    max-width: 360px;
+    margin: 20px auto;
+}
+
+.swiper-slide img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
 }
 
 /* Footer */
