@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Initialize Swiper for the gallery
-    new Swiper(".gallery-swiper", {
+    const swiper = new Swiper(".gallery-swiper", {
         effect: "cube",
         grabCursor: true,
         loop: true,
@@ -252,9 +252,8 @@ document.addEventListener("DOMContentLoaded", function () {
             shadowScale: 0.94,
             slideShadows: true
         },
-        speed: 600,
+        speed: 1000,
     });
-
 });
 
 function openInvitation() {

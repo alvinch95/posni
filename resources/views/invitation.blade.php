@@ -8,7 +8,7 @@
         <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Parisienne&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Parisienne&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
     
         <link rel="stylesheet" href="{{ asset('css/invitation.css') }}">
 
@@ -34,14 +34,29 @@
         <div class="cover-card">
             <p class="guest-name">To: <span id="guest-name">Dear Guest</span></p>
             <h1 class="cover-title">Join Us To Celebrate Our Wedding</h1>
-            <h2 class="cover-names">Alvin & Stevani</h2>
+            <h2 class="cover-names">Alvin </h2>
+            <h2 class="cover-names">&</h2>
+            <h2 class="cover-names">Stevani</h2>
             <h3 class="cover-date">Sunday, 1 June 2025</h3>
             <button class="open-invitation" onclick="openInvitation()">Open Invitation</button>
+            <br/>
+            <p class="footer-subtext" style="font-family: Arial, Helvetica, sans-serif">#VINallywithVAN</p>
         </div>        
     </div>
 
     <!-- Main Content -->
     <div class="content">
+
+        <!-- Bible Verse Section -->
+        <section id="quote-section" class="section">
+            <div class="quote-card">
+                <blockquote class="quote-text animate-verse">
+                    “Two are better than one... If either of them falls down, one can help the other up.”
+                </blockquote>
+                <span class="quote-author">— Ecclesiastes 4:9–10</span>
+            </div>
+        </section>
+
         <!-- Groom & Bride Section -->
         <section id="groom-bride" class="section">
             <h1 class="section-title">The Groom & The Bride</h1>
@@ -230,8 +245,8 @@
         <footer class="footer">
             <p class="footer-text">Thank you for celebrating with us! 💕</p>
             <p class="footer-subtext">Your presence means the world to us.</p>
-            <p class="footer-subtext">With love, Alvin & Stevani</p>
-            <p class="footer-subtext">#VINallywithVAN</p>
+            <p class="footer-subtext">With love, Alvin & Stevani</p><br/>
+            <p class="footer-subtext" style="font-family: Arial, Helvetica, sans-serif">#VINallywithVAN</p>
         </footer>
 
     </div>

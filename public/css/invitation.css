@@ -14,7 +14,7 @@
 }
 
 body {
-    font-family: "Parisienne", cursive;
+    font-family: "Tangerine", cursive;
     background-color: #f8f1e5;
     color: black;
     text-align: center;
@@ -52,7 +52,7 @@ body {
 
 /* Guest Name Styling */
 .guest-name {
-    font-size: 18px;
+    font-size: 30px;
     font-weight: bold;
     color: #3e2723;
     margin-bottom: 30px;
@@ -227,6 +227,51 @@ body {
 /* Icon Styling */
 .menu-btn i {
     font-size: 22px;
+}
+
+/* Quote Wrapper */
+.quote-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* Card-style Background */
+.quote-card {
+    background: rgba(255, 255, 255, 1);
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 320px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Bible Verse */
+.quote-text {
+    font-size: 28px;
+    font-style: italic;
+    color: #5a3e2b;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Verse Author */
+.quote-author {
+    font-size: 22px;
+    color: #8b4513;
+}
+
+/* Trigger animation */
+.animate-verse {
+    animation: verseFadeIn 1.5s ease-out forwards;
+}
+
+@keyframes verseFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Groom & Bride Section */
@@ -941,6 +986,15 @@ body {
 }
 
 /* Swiper Gallery */
+.swiper {
+    width: 240px;
+    height: 380px;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 .swiper-slide {
     border-radius: 12px;
     overflow: hidden;
@@ -955,8 +1009,9 @@ body {
 
 .swiper-slide img {
     width: 100%;
-    display: block;
-    border-radius: 10px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
 }
 
 /* Footer */
