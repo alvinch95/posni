@@ -276,13 +276,14 @@ body {
 
 /* Groom & Bride Section */
 .section {
-    padding: 40px 20px;
+    padding: 100px 20px;
     text-align: center;
+    position: relative;
 }
 
 /* ==================== Section Titles with Blur & Decorative Frame ==================== */
 .section-title {
-    font-size: 28px;
+    font-size: 40px;
     font-weight: bold;
     margin-bottom: 30px;
     color: #8b4513; /* Warm brown */
@@ -301,7 +302,7 @@ body {
     left: 50%;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.7);
     filter: blur(5px);
     z-index: -2;
     transform: translateX(-50%);
@@ -320,6 +321,18 @@ body {
     transform: translateX(-50%);
     z-index: -1; /* Keep behind the text but above the blur */
     opacity: 0.9;
+}
+
+.section:not(:last-child)::after {
+    content: "";
+    display: block;
+    width: 280px; /* Increase width */
+    height: 100px; /* Adjust height to match image proportion */
+    margin: 60px auto 0;
+    background: url("/img/leaf-divider.png") center/cover no-repeat;
+    position: relative;
+    z-index: 2;
+    opacity: 0.8;
 }
 
 /* Profile Container */
@@ -572,13 +585,13 @@ body {
 
 /* Number & Label Styling */
 .countdown-number {
-    font-size: 28px;
+    font-size: 36px;
     font-weight: bold;
     color: #5a3e2b;
 }
 
 .countdown-label {
-    font-size: 14px;
+    font-size: 24px;
     color: #8b4513;
 }
 
@@ -680,23 +693,23 @@ body {
 
 /* Titles */
 .event-title {
-    font-size: 20px;
+    font-size: 26px;
     font-weight: bold;
     color: #8b4513;
     margin-bottom: 5px;
 }
 
 .event-date {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 600;
     color: #5a3e2b;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
 }
 
 .event-venue {
-    font-size: 16px;
+    font-size: 20px;
     color: #3e2723;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 /* Map Link Button */
@@ -706,7 +719,7 @@ body {
     color: white;
     padding: 8px 12px;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 20px;
     text-decoration: wavy;
 }
 
@@ -942,13 +955,14 @@ body {
 
 /* RSVP Section */
 .rsvp-description {
-    font-size: 16px;
+    font-size: 22px;
     color: #5a3e2b;
     text-align: center;
     margin-bottom: 15px;
     max-width: 320px;
     margin-left: auto;
     margin-right: auto;
+    font-weight: bold;
 }
 
 /* RSVP Form */
@@ -966,7 +980,7 @@ body {
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #d3a27c;
-    font-size: 16px;
+    font-size: 18px;
     font-family: inherit;
 }
 
@@ -979,6 +993,7 @@ body {
     cursor: pointer;
     font-size: 18px;
     font-weight: bold;
+    font-family: "Tangerine", cursive;
 }
 
 .rsvp-form button:hover {
@@ -1033,12 +1048,12 @@ body {
 }
 
 .footer-text {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: bold;
 }
 
 .footer-subtext {
-    font-size: 14px;
+    font-size: 20px;
     font-style: italic;
 }
 

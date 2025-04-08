@@ -110,7 +110,6 @@
             </div>
         </section>
           
-
         <!-- Location Section -->
         <section id="location" class="section scroll-reveal reveal-left">
             <h2 class="section-title">Wedding Venue</h2>
@@ -119,7 +118,7 @@
                 <div class="event-container">
                     <!-- Holy Matrimony -->
                    <div class="event-location">
-                       <h3 class="event-title">Holy Matrimony</h3>
+                       <h1 class="event-title">Holy Matrimony</h1>
                        <p class="event-date">Sunday, 1 June 2025</p>
                        <p class="event-date">13:00 WIB</p>
                        <p class="event-venue">Gereja Katolik Santo Matias Rasul</p>
@@ -129,7 +128,7 @@
                    </div>
                    <!-- Reception -->
                    <div class="event-location">
-                       <h3 class="event-title">Reception</h3>
+                       <h1 class="event-title">Reception</h1>
                        <p class="event-date">Sunday, 1 June 2025</p>
                        <p class="event-date">18:00 WIB</p>
                        <p class="event-venue">Hotel Santika Premiere Slipi</p>
@@ -138,11 +137,7 @@
                        </a>
                    </div>
                 </div>
-            </div>
-
-            
-            
-                
+            </div> 
         </section>
 
         <!-- Bank Account Information Section -->
@@ -204,7 +199,6 @@
             <div id="wishes-list"></div>
         </section>
 
-
         <!-- RSVP Section -->
         <section id="rsvp" class="section scroll-reveal reveal-right">
             <h2 class="section-title">RSVP</h2>
@@ -222,7 +216,7 @@
                     <option value="yes">Yes, I will attend</option>
                     <option value="no">Sorry, I can't make it</option>
                 </select>
-                <button type="submit">Submit RSVP</button>
+                <button type="submit">Submit</button>
             </form>
         </section>
 
