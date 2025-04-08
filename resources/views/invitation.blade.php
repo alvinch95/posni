@@ -18,14 +18,11 @@
         <!-- Swiper CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
     </head>    
 <body>
 <div class="mobile-container">
-    <!-- Center Background Decoration -->
-    <div class="center-background">
-        <img src="/img/autumn-background.png" alt="Autumn Leaves" class="bgimg">
-    </div>
+    {{-- Autumn leaf with particle js --}}
+    <div id="leaf-bg"></div>
 
     <!-- Full-Screen Frame -->
     <div class="screen-frame">
@@ -234,14 +231,15 @@
             <p class="footer-text">Thank you for celebrating with us! 💕</p>
             <p class="footer-subtext">Your presence means the world to us.</p>
             <p class="footer-subtext">With love, Alvin & Stevani</p>
+            <p class="footer-subtext">#VINallywithVAN</p>
         </footer>
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
     <script src="{{ asset('js/invitation.js') }}"></script>
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
 
     <!-- Background Music -->
     <audio id="bg-music" loop>
@@ -271,5 +269,6 @@
         </button>
     </div>
 </div>
+
 </body>
 </html>

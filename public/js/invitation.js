@@ -254,13 +254,14 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         speed: 600,
     });
+
 });
 
 function openInvitation() {
     let cover = document.querySelector('.cover');
     let content = document.querySelector('.content');
     let frame = document.querySelector('.screen-frame'); // Get the frame
-    let background = document.querySelector('.bgimg'); // Get the background image
+    // let background = document.querySelector('.bgimg'); // Get the background image
 
     // Play music when opening the invitation
     let music = document.getElementById('bg-music');
@@ -279,8 +280,47 @@ function openInvitation() {
         }, 1000);
 
         setTimeout(() => {
-            background.classList.add('move');
-            background.style.display = 'block';
+            //Initialize particle background
+            tsParticles.load("leaf-bg", {
+                particles: {
+                    number: { value: 15 },
+                    shape: {
+                        type: "image",
+                        image: [
+                            { src: "/img/leaf1.png", width: 32, height: 32 },
+                            { src: "/img/leaf2.png", width: 32, height: 32 }
+                        ]
+                    },
+                    size: {
+                        value: 24,
+                        random: { enable: true, minimumValue: 16 }
+                    },
+                    opacity: {
+                        value: 0.8,
+                        random: { enable: true, minimumValue: 0.5 }
+                    },
+                    move: {
+                        enable: true,
+                        speed: 1,
+                        direction: "bottom",
+                        straight: false,
+                        outModes: "out",
+                        random: true
+                    },
+                    rotate: {
+                        value: { min: 0, max: 180 },
+                        animation: { enable: true, speed: 2 }
+                    }
+                },
+                background: {
+                    color: "transparent"
+                },
+                detectRetina: true
+            }).then(container => {
+                // Force pointer-events: none on the canvas
+                const canvas = container.canvas.element;
+                if (canvas) canvas.style.pointerEvents = "none";
+            });
         }, 1200);
 
         content.style.display = 'block';
