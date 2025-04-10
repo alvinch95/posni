@@ -6,7 +6,7 @@
 }
 /* Force Mobile View */
 .mobile-container {
-    width: 375px; /* Standard mobile width */
+    width: 100vh;
     max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
@@ -69,7 +69,7 @@ body {
     flex-direction: column;
     align-items: center;
     color: #3e2723;
-    max-width: 300px; /* Slightly wider */
+    /* max-width: 300px; */
 }
 
 /* Small Serif Title */
@@ -229,11 +229,11 @@ body {
     font-size: 22px;
 }
 
-/* Quote Wrapper */
-.quote-wrapper {
+#quote-section {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     padding: 40px 20px;
 }
 
@@ -244,7 +244,7 @@ body {
     border-radius: 12px;
     max-width: 320px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    text-align: center;
+    text-align: left;
 }
 
 /* Bible Verse */
@@ -350,47 +350,37 @@ body {
     border-radius: 15px;
     text-align: center;
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
-    max-width: 320px;
+    /* max-width: 320px; */
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* Profile Picture Frame */
 .profile-frame {
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 250px;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
 }
 
-/* Adjust Photo frame zoom */
-.profile-frame img[alt="Frame"] {
-    transform: scale(0.85) translateY(5px); /* Adjust zoom and position */
-}
-
-/* Frame Overlay */
-.frame-overlay {
+.profile-frame .frame-overlay {
     position: absolute;
-    width: 100%;
-    height: auto;
+    top: -20px;
+    left: -18px;
+    width: 220px;
+    height: 220px;
     z-index: 2;
     pointer-events: none;
 }
 
-/* Profile Image */
-.profile-img {
-    width: 85%; /* Increase size slightly */
-    max-width: 160px; /* Adjust max size */
-    height: auto;
-    border-radius: 50%;
-    position: relative;
+.profile-frame .profile-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* Make image circular */
+    object-fit: cover;
     z-index: 1;
-    object-fit: cover; /* Ensures proper scaling */
-    transform: scale(1.1) translateY(5px); /* Zoom in and shift */
+    position: relative;
 }
 
 /* Name */
@@ -406,7 +396,7 @@ body {
     position: relative;
     margin-top: 3px;
     width: 100%;
-    max-width: 280px;
+    /* max-width: 280px; */
     display: flex;
     justify-content: center;
 }
@@ -429,16 +419,17 @@ body {
     z-index: 1;
     padding: 10px;
     text-align: center;
-    max-width: 240px;
+    /* max-width: 240px; */
 }
 
 /* Full-Screen Frame (Positioned More Outside) */
 .screen-frame {
     position: fixed;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    width: 360px; /* Match the mobile container width */
-    height: 100vh;
+    transform: translate(-50%, -50%);
+    width: 105vw; /* wider than viewport */
+    height: 120vh; /* taller than viewport */
     pointer-events: none;
     z-index: -1;
     display: none;
@@ -454,8 +445,8 @@ body {
 }
 
 .screen-frame img {
-    width: 100%; /* Slightly larger than the screen */
-    height: 105%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     animation: sway-frame 6s infinite alternate ease-in-out;
     opacity: 0.8;
@@ -467,35 +458,11 @@ body {
         transform: rotate(0deg) scale(1);
     }
     50% {
-        transform: rotate(1deg) scale(1.05);
+        transform: rotate(0.2deg) scale(1.02);
     }
     100% {
-        transform: rotate(-1deg) scale(1);
+        transform: rotate(-0.2deg) scale(1);
     }
-}
-
-/* Center Autumn Background */
-.center-background {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 305px; /* Match the mobile container width */
-    height: 100vh;
-    transform: translate(-50%, -50%);
-    pointer-events: none; /* Ensures it does not block interactions */
-    z-index: -2; /* Behind all elements but above the main background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Background Image */
-.center-background img {
-    width: 120%;
-    height: auto;
-    opacity: 0; /* Initially invisible */
-    transition: opacity 1.5s ease-in-out; /* Smooth fade-in effect */
-    display: none;
 }
 
 .bgimg.move {
@@ -561,7 +528,7 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     justify-items: center;
-    max-width: 300px;
+    /* max-width: 300px; */
     margin-top: 20px;
 }
 
@@ -659,7 +626,7 @@ body {
 .wedding-gate {
     position: absolute;
     width: 130%;
-    max-width: 420px; /* Adjust width to fit both cards */
+    max-width: 420px;
     height: 103%; /* Ensure it spans across the section */
     top: -20px;
     left: 50%;
@@ -753,24 +720,24 @@ body {
 }
 
 .bank-name {
-    font-size: 18px;
+    font-size: 28px;
     font-weight: bold;
     color: #8b4513;
 }
 
 .account-number {
-    font-size: 16px;
+    font-size: 22px;
     font-weight: 600;
     color: #5a3e2b;
 }
 
 .account-holder {
-    font-size: 14px;
+    font-size: 20px;
     color: #3e2723;
 }
 
 .bank-description {
-    font-size: 18px;
+    font-size: 22px;
     color: #5a3e2b;
     text-align: center;
     margin-bottom: 20px;
@@ -814,7 +781,6 @@ body {
 
 /* Section Title Enhancement */
 #wishes .section-title {
-    font-size: 26px;
     font-weight: bold;
     position: relative;
     padding: 10px 20px;
@@ -829,7 +795,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-width: 320px;
+    max-width: 400px;
     margin: auto;
 }
 
@@ -859,8 +825,9 @@ body {
     border-radius: 8px;
     background: linear-gradient(45deg, #8b4513, #a0522d);
     color: white;
-    font-size: 16px;
+    font-size: 26px;
     font-weight: bold;
+    font-family: "Tangerine", cursive;
     cursor: pointer;
     transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
 }
@@ -879,7 +846,7 @@ body {
     padding: 12px;
     border-radius: 8px;
     text-align: center;
-    max-width: 320px;
+    max-width: 400px;
     margin: 10px auto;
     transition: opacity 0.5s ease-in-out;
 }
@@ -892,7 +859,7 @@ body {
 /* ==================== Wishes List (Card Style) ==================== */
 #wishes-list {
     margin-top: 20px;
-    max-width: 320px;
+    max-width: 400px;
     margin-left: auto;
     margin-right: auto;
     height: 250px; /* Adjusted for better display */
@@ -929,7 +896,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
+    font-size: 22px;
     font-weight: bold;
     color: #8b4513;
     margin-bottom: 6px;
@@ -937,7 +904,7 @@ body {
 
 /* Wish Message */
 .wish-message {
-    font-size: 14px;
+    font-size: 18px;
     color: #3e2723;
     font-style: italic;
 }
@@ -959,7 +926,7 @@ body {
     color: #5a3e2b;
     text-align: center;
     margin-bottom: 15px;
-    max-width: 320px;
+    max-width: 400px;
     margin-left: auto;
     margin-right: auto;
     font-weight: bold;
@@ -970,7 +937,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-width: 320px;
+    max-width: 400px;
     margin: 0 auto;
 }
 
@@ -991,7 +958,7 @@ body {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 26px;
     font-weight: bold;
     font-family: "Tangerine", cursive;
 }
@@ -1059,7 +1026,7 @@ body {
 
 #leaf-bg {
     position: fixed;
-    width: 370px; /* Force mobile width */
+    width: 100vh; /* Force mobile width */
     max-width: 100%;
     height: 100vh;
     top: 0;

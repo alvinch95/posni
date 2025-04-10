@@ -46,7 +46,6 @@
 
     <!-- Main Content -->
     <div class="content">
-
         <!-- Bible Verse Section -->
         <section id="quote-section" class="section">
             <div class="quote-card">
@@ -65,7 +64,7 @@
                 <div class="profile">
                     <div class="profile-frame">
                         <img src="/img/photo-frame.png" alt="Frame" class="frame-overlay">
-                        <img src="/img/groom.png" alt="Groom" class="profile-img">
+                        <img src="/img/groom2.png" alt="Groom" class="profile-img">
                     </div>
                     <h3 class="profile-name">Alvin</h3>
                     <div class="message-frame">
@@ -77,7 +76,7 @@
                 <div class="profile">
                     <div class="profile-frame">
                         <img src="/img/photo-frame.png" alt="Frame" class="frame-overlay">
-                        <img src="/img/bride.png" alt="Bride" class="profile-img">
+                        <img src="/img/bride2.png" alt="Bride" class="profile-img">
                     </div>
                     <h3 class="profile-name">Stevani</h3>
                     <div class="message-frame">

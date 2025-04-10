@@ -282,7 +282,7 @@ function openInvitation() {
             //Initialize particle background
             tsParticles.load("leaf-bg", {
                 particles: {
-                    number: { value: 15 },
+                    number: { value: 20 },
                     shape: {
                         type: "image",
                         image: [
