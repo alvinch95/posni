@@ -8,8 +8,8 @@
         <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Parisienne&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
-    
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Oleo+Script:wght@400;700&family=Parisienne&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+        
         <link rel="stylesheet" href="{{ asset('css/invitation.css') }}">
 
         <!-- Font Awesome -->
@@ -24,9 +24,19 @@
     {{-- Autumn leaf with particle js --}}
     <div id="leaf-bg"></div>
 
-    <!-- Full-Screen Frame -->
-    <div class="screen-frame">
-        <img src="/img/section-frame.png" alt="Decorative Frame">
+    <!-- Left Border Decoration -->
+    <div class="side-border left-border hidden-border">
+        <img src="/img/left-border.png" alt="Left Decoration">
+    </div>
+
+    <!-- Right Border Decoration -->
+    <div class="side-border right-border hidden-border">
+        <img src="/img/right-border.png" alt="Right Decoration">
+    </div>
+
+    <!-- Top Border -->
+    <div class="screen-border border-top">
+        <img src="/img/top-border.png" alt="Top Border">
     </div>
 
     <!-- Cover Page -->
@@ -58,7 +68,7 @@
 
         <!-- Groom & Bride Section -->
         <section id="groom-bride" class="section">
-            <h1 class="section-title">The Groom & The Bride</h1>
+            <h1 class="section-title">The Groom<br/>&<br/>The Bride</h1>
             <div class="bride-groom-container">
                 <!-- Groom -->
                 <div class="profile">
@@ -80,7 +90,7 @@
                     </div>
                     <h3 class="profile-name">Stevani</h3>
                     <div class="message-frame">
-                        <p class="profile-message">"Every step with you is a step toward happiness."</p>
+                        <p class="profile-message">"Every step with you."</p>
                     </div>
                 </div>
             </div>
@@ -88,7 +98,7 @@
 
         <!-- Countdown Timer Section -->
         <section id="countdown" class="section scroll-reveal reveal-fade">
-            <h1 class="section-title">Countdown to<br/> the Wedding</h1>
+            <h1 class="section-title">Countdown to<br/> Our Wedding</h1>
             <div class="countdown-container">
                 <div class="countdown-box">
                     <div class="countdown-number" id="days">00</div>
@@ -107,7 +117,7 @@
                     <div class="countdown-label">Seconds</div>
                 </div>
             </div>
-        </section>
+        </section>        
           
         <!-- Location Section -->
         <section id="location" class="section scroll-reveal reveal-left">

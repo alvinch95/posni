@@ -259,8 +259,6 @@ document.addEventListener("DOMContentLoaded", function () {
 function openInvitation() {
     let cover = document.querySelector('.cover');
     let content = document.querySelector('.content');
-    let frame = document.querySelector('.screen-frame'); // Get the frame
-    // let background = document.querySelector('.bgimg'); // Get the background image
 
     // Play music when opening the invitation
     let music = document.getElementById('bg-music');
@@ -271,11 +269,18 @@ function openInvitation() {
 
     setTimeout(() => {
         cover.style.display = 'none';
-        frame.style.display = 'flex';
 
+        // Animate left and right borders
         setTimeout(() => {
-            // Show the frame after the cover disappears
-            frame.classList.add('visible');
+            const borders = document.querySelectorAll('.side-border');
+            borders.forEach(border => {
+                border.classList.add('show-border');
+                border.classList.remove('hidden-border');
+            });
+
+            document.querySelectorAll('.screen-border').forEach(el => {
+                el.classList.add('visible');
+            });
         }, 1000);
 
         setTimeout(() => {
