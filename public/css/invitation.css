@@ -10,7 +10,7 @@
     max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Optional: Adds a slight frame */
+    /* box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); */
 }
 
 body {
@@ -876,8 +876,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 22px;
+    font-size: 16px;
     font-weight: bold;
+    font-family: "Poppins", serif;
     color: #8b4513;
     margin-bottom: 6px;
 }
@@ -887,6 +888,7 @@ body {
     font-size: 18px;
     color: #3e2723;
     font-style: italic;
+    font-family: "Merriweather", serif;
 }
 
 /* Fade-in Effect */
@@ -902,7 +904,8 @@ body {
 
 /* RSVP Section */
 .rsvp-description {
-    font-size: 22px;
+    font-size: 20px;
+    font-family: "Oleo Script", serif;
     color: #5a3e2b;
     text-align: center;
     margin-bottom: 15px;
@@ -949,12 +952,13 @@ body {
 
 /* Swiper Gallery */
 .swiper {
-    width: 240px;
-    height: 380px;
+    /* width: 240px; */
+    width: auto;
+    height: 480px;
     margin: 0 auto;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); */
 }
 
 .swiper-slide {
@@ -965,7 +969,7 @@ body {
 
 .gallery-swiper {
     width: 100%;
-    max-width: 360px;
+    max-width: auto;
     margin: 20px auto;
 }
 
@@ -974,6 +978,21 @@ body {
     height: 100%;
     object-fit: cover;
     border-radius: 12px;
+}
+
+/* Thumbnail Style */
+.thumb-swiper .swiper-slide {
+    width: 80px !important; /* ← Thumbnail width */
+    height: 80px !important; /* ← Thumbnail height */
+    opacity: 0.5;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.thumb-swiper .swiper-slide-thumb-active {
+    opacity: 1;
+    border: 2px solid #8b4513;
 }
 
 /* Footer */

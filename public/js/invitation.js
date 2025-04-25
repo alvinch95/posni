@@ -232,27 +232,35 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Initialize Swiper for the gallery
+    const thumbSwiper = new Swiper(".thumb-swiper", {
+        slidesPerView: 'auto', // Let your CSS take control of width
+        spaceBetween: 10,
+        watchSlidesProgress: true,
+        freeMode: true,
+    });
+
+
     const swiper = new Swiper(".gallery-swiper", {
-        effect: "cube",
-        grabCursor: true,
+        spaceBetween: 10,
         loop: true,
         autoplay: {
-            delay: 2000,
-            disableOnInteraction: false
+            delay: 0, // Slides every 3 seconds
+            disableOnInteraction: false,
         },
-        cardsEffect: {
-            perSlideOffset: 8,
-            perSlideRotate: 2,
-            rotate: true,
-            slideShadows: true,
+        speed: 3000, // Slide speed in ms
+        thumbs: {
+            swiper: thumbSwiper,
         },
-        cubeEffect: {
-            shadow: true,
-            shadowOffset: 20,
-            shadowScale: 0.94,
-            slideShadows: true
-        },
-        speed: 1000,
+        breakpoints: {
+            // when window width is >= 768px (desktop/tablet)
+            768: {
+                slidesPerView: 2,
+            },
+            // when window width is < 768px (mobile)
+            0: {
+                slidesPerView: 1,
+            }
+        }
     });
 });
 
