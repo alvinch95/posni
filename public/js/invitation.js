@@ -134,11 +134,13 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 successMessage.classList.remove("hidden"); // Show success message
+                successMessage.classList.add("show");
                 wishesForm.reset(); // Clear the form
 
                 // Hide message after 5 seconds
                 setTimeout(() => {
                     successMessage.classList.add("hidden");
+                    successMessage.classList.remove("show");
                 }, 5000);
 
                 // Refresh the wishes list
@@ -154,23 +156,28 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch("/wishes-list")
             .then(response => response.json())
             .then(wishes => {
-                let wishesList = document.getElementById("wishes-list");
+                let wishesList = document.getElementById("guest-wishes-list");
                 wishesList.innerHTML = ""; // Clear existing wishes
 
                 wishes.forEach((wish, index) => {
                     let wishItem = document.createElement("div");
-                    wishItem.classList.add("wish-item");
+                    wishItem.classList.add("guest-wish-card");
 
-                    let wishHeader = document.createElement("div");
-                    wishHeader.classList.add("wish-header");
-                    wishHeader.innerHTML = `<span>${wish.name}</span><span>${formatDateTime(wish.created_at)}</span>`;
+                    let wishHeader = document.createElement("p");
+                    wishHeader.classList.add("guest-wish-name");
+                    wishHeader.innerText = wish.name;
 
                     let wishMessage = document.createElement("p");
-                    wishMessage.classList.add("wish-message");
+                    wishMessage.classList.add("guest-wish-message");
                     wishMessage.innerText = wish.message;
+
+                    let wishTimestamp = document.createElement("p");
+                    wishTimestamp.classList.add("guest-wish-timestamp");
+                    wishTimestamp.innerHTML = `${formatDateTime(wish.created_at)}`;
 
                     wishItem.appendChild(wishHeader);
                     wishItem.appendChild(wishMessage);
+                    wishItem.appendChild(wishTimestamp);
 
                     // Delay animation for each wish
                     setTimeout(() => {

@@ -1,0 +1,145 @@
+/* Guest Wishes Section */
+.guest-wishes-section {
+    background: rgba(
+        247,
+        239,
+        229,
+        0.95
+    ); /* original #f7efe5 with 80% opacity */
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.guest-wishes-title {
+    font-family: "Playfair Display", serif;
+    font-size: 36px;
+    color: #5a3e2b;
+    margin-bottom: 40px;
+}
+
+.guest-wishes-form {
+    max-width: 500px;
+    margin: 0 auto 10px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.guest-wishes-input,
+.guest-wishes-textarea {
+    font-family: "Poppins", sans-serif;
+    padding: 15px;
+    border: 1px solid #c87f43;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    resize: none;
+}
+
+.guest-wishes-input:focus,
+.guest-wishes-textarea:focus {
+    border-color: #b9744c;
+    outline: none;
+    box-shadow: 0 0 8px rgba(200, 127, 67, 0.4);
+}
+
+.guest-wishes-submit {
+    background: #c87f43;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.guest-wishes-submit:hover {
+    background: #b9744c;
+}
+
+.guest-wishes-list {
+    max-width: 700px;
+    margin: 0 auto;
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    border: 2px solid #c87f43; /* Warm autumn soft orange border */
+    border-radius: 12px;
+    background: #ffffff; /* Keep the inside clean white */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Optional soft shadow */
+}
+
+.guest-wishes-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.guest-wishes-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.guest-wishes-list::-webkit-scrollbar-thumb {
+    background-color: #c87f43;
+    border-radius: 10px;
+}
+
+.guest-wish-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.guest-wish-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.guest-wish-name {
+    font-family: "Playfair Display", serif;
+    font-weight: bold;
+    color: #8b5e3c;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.guest-wish-message {
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    color: #5a3e2b;
+}
+
+.guest-wish-timestamp {
+    font-family: "Poppins", sans-serif;
+    font-size: 12px;
+    color: #8b5e3c;
+    opacity: 0.7;
+    margin-top: 8px;
+    text-align: right;
+}
+
+.wish-success {
+    margin-top: 10px;
+    background-color: #c87f43; /* Warm autumn orange */
+    color: #ffffff;
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease;
+}
+
+/* Class to show the success message */
+.wish-success.show {
+    opacity: 1;
+    transform: translateY(0);
+}

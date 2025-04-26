@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="{{ asset('css/invitation/location-section.css') }}">
         <link rel="stylesheet" href="{{ asset('css/invitation/bank-section.css') }}">
         <link rel="stylesheet" href="{{ asset('css/invitation/opener.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/invitation/guest-wishes.css') }}">
 
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -258,11 +259,12 @@
         <section id="gift-new" class="scroll-reveal reveal-left">
             <div class="gift-wrapper-new">
                 <div class="gift-header-new">
-                <h2 class="gift-title-new">Gift & Bank Transfer</h2>
-                <p class="gift-description-new">
-                    Your presence at our wedding is the greatest gift.  
-                    If you wish to bless us further, you can send your love through the details below.
-                </p>
+                    <h2 class="gift-title-new">Gift & Bank Transfer</h2>
+                    <div class="gift-divider"></div>
+                    <p class="gift-description-new">
+                        Your presence at our wedding is the greatest gift.  
+                        If you wish to bless us further, you can send your love through the details below.
+                    </p>
                 </div>
             
                 <div class="gift-bank-container-new">
@@ -304,22 +306,30 @@
         </section>
           
         <!-- Wishes Section -->
-        <section id="wishes" class="section scroll-reveal reveal-up">
-            <h2 class="section-title">Guest Wishes</h2>
-
-            <!-- Wishes Form -->
-            <form id="wishes-form" action="{{ route('wishes.submit') }}" method="POST">
+        <section id="guest-wishes" class="guest-wishes-section">
+            <h2 class="guest-wishes-title">Guest Wishes</h2>
+          
+            <!-- Guest Wishes Form -->
+            <form id="wishes-form" class="guest-wishes-form" action="{{ route('wishes.submit') }}" method="POST">
                 @csrf
-                <input type="text" id="wish-name" name="name" placeholder="Your Name" required>
-                <textarea id="wish-message" name="message" placeholder="Write your wish..." required></textarea>
-                <button type="submit" class="wishes-button">Send Wish</button>
+                <input type="text" id="guest-name" name="name" placeholder="Your Name" required class="guest-wishes-input">
+                <textarea id="guest-message" name="message" placeholder="Your Wish" required class="guest-wishes-textarea"></textarea>
+                <button type="submit" class="guest-wishes-submit">Send Wish</button>
             </form>
 
-            <!-- Success Message -->
             <div id="wish-success-message" class="wish-success hidden">🎉 Thank you for your wish!</div>
-
-            <!-- Display Wishes -->
-            <div id="wishes-list"></div>
+          
+            <!-- Submitted Wishes List -->
+            <div class="guest-wishes-list" id="guest-wishes-list">
+              <!-- Example Wish Card -->
+              <!--
+              <div class="guest-wish-card">
+                <p class="guest-wish-name">John Doe</p>
+                <p class="guest-wish-message">Wishing you a lifetime of love and happiness!</p>
+                <p class="guest-wish-timestamp">24 April 2025, 14:37</p>
+              </div>
+              -->
+            </div>
         </section>
 
         <!-- RSVP Section -->

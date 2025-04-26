@@ -1,6 +1,7 @@
 /* Gift Section Wrapper */
 #gift-new {
-    background: #b9744c; /* Warm muted terracotta */
+    /* background: #b9744c;  */
+    background: rgba(185, 116, 76, 0.95);
     padding: 80px 20px;
 }
 
@@ -160,4 +161,13 @@
     opacity: 1;
     visibility: visible;
     bottom: 100px; /* Move up a little when shown */
+}
+
+.gift-divider {
+    width: 80px;
+    height: 3px;
+    background: #ffffff;
+    margin: 0 0 15px 0;
+    border-radius: 2px;
+    text-align: left;
 }

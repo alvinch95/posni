@@ -14,7 +14,7 @@
 }
 
 body {
-    font-family: "Tangerine", cursive;
+    font-family: "Poppin", cursive;
     background-color: #f8f1e5;
     color: black;
     text-align: center;
@@ -52,6 +52,7 @@ body {
 
 /* Guest Name Styling */
 .guest-name {
+    font-family: "Tangerine", cursive;
     font-size: 30px;
     font-weight: bold;
     color: #3e2723;
@@ -310,20 +311,6 @@ body {
     border-radius: 10px;
 }
 
-/* Decorative Frame Positioned at the Crown */
-.section-title::after {
-    content: "";
-    position: absolute;
-    top: -55px; /* Adjust position slightly higher */
-    left: 50%;
-    width: 180px; /* Increased width for better visibility */
-    height: 100px; /* Adjust height proportionally */
-    background: url("/img/title-frame.png") no-repeat center/contain;
-    transform: translateX(-50%);
-    z-index: -1; /* Keep behind the text but above the blur */
-    opacity: 0.9;
-}
-
 .section:not(.section-autumn):not(:last-child)::after {
     content: "";
     display: block;
@@ -531,11 +518,13 @@ body {
     font-size: 36px;
     font-weight: bold;
     color: #5a3e2b;
+    font-family: "Tangerine";
 }
 
 .countdown-label {
     font-size: 24px;
     color: #8b4513;
+    font-family: "Tangerine";
 }
 
 /* Scroll Reveal Animation - Initially Hidden */
@@ -586,160 +575,15 @@ body {
     transform: scale(1);
 }
 
-/* ==================== Wishes Section ==================== */
-#wishes {
-    padding: 40px 20px;
-    text-align: center;
-    position: relative;
-}
-
-/* Section Title Enhancement */
-#wishes .section-title {
-    font-weight: bold;
-    position: relative;
-    padding: 10px 20px;
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.7); /* Light background */
-    border-radius: 10px;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Wishes Form */
-#wishes-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 400px;
-    margin: auto;
-}
-
-/* Form Input Fields */
-#wishes-form input,
-#wishes-form textarea {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #d8a47f;
-    font-size: 14px;
-    background: #fff;
-    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Wish Message Field */
-#wishes-form textarea {
-    height: 80px;
-    resize: none;
-}
-
-/* Send Wish Button */
-#wishes-form button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(45deg, #8b4513, #a0522d);
-    color: white;
-    font-size: 26px;
-    font-weight: bold;
-    font-family: "Tangerine", cursive;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-/* Button Hover Effect */
-#wishes-form button:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Success Message */
-.wish-success {
-    background: rgba(144, 238, 144, 0.9);
-    color: #2e7d32;
-    font-size: 16px;
-    padding: 12px;
-    border-radius: 8px;
-    text-align: center;
-    max-width: 400px;
-    margin: 10px auto;
-    transition: opacity 0.5s ease-in-out;
-}
-
 .hidden {
     opacity: 0;
     pointer-events: none;
 }
 
-/* ==================== Wishes List (Card Style) ==================== */
-#wishes-list {
-    margin-top: 20px;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    height: 250px; /* Adjusted for better display */
-    overflow-y: auto; /* Enables vertical scrolling */
-    border-radius: 10px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-/* Scrollbar */
-#wishes-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-#wishes-list::-webkit-scrollbar-thumb {
-    background: rgba(139, 69, 19, 0.7);
-    border-radius: 3px;
-}
-
-/* Wish Card */
-.wish-item {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 12px;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-    transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;
-    text-align: left;
-}
-
-/* Wish Header */
-.wish-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 16px;
-    font-weight: bold;
-    font-family: "Poppins", serif;
-    color: #8b4513;
-    margin-bottom: 6px;
-}
-
-/* Wish Message */
-.wish-message {
-    font-size: 18px;
-    color: #3e2723;
-    font-style: italic;
-    font-family: "Merriweather", serif;
-}
-
-/* Fade-in Effect */
-.wish-item.appear {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.wish-item {
-    opacity: 0;
-    transform: translateY(10px);
-}
-
 /* RSVP Section */
 .rsvp-description {
     font-size: 20px;
-    font-family: "Oleo Script", serif;
+    font-family: "Poppin", serif;
     color: #5a3e2b;
     text-align: center;
     margin-bottom: 15px;
@@ -765,7 +609,7 @@ body {
     border-radius: 8px;
     border: 1px solid #d3a27c;
     font-size: 18px;
-    font-family: inherit;
+    font-family: "Poppin", serif;
 }
 
 .rsvp-form button {
