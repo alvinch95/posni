@@ -10,7 +10,10 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Oleo+Script:wght@400;700&family=Parisienne&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
         
-        <link rel="stylesheet" href="{{ asset('css/invitation.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/invitation/main-style.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/invitation/location-section.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/invitation/bank-section.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/invitation/opener.css') }}">
 
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -50,22 +53,115 @@
             <h3 class="cover-date">Sunday, 1 June 2025</h3>
             <button class="open-invitation" onclick="openInvitation()">Open Invitation</button>
             <br/>
-            <p class="footer-subtext" style="font-family: Arial, Helvetica, sans-serif">#VINallywithVAN</p>
+            <p class="footer-subtext" style="font-family: Arial, Helvetica, sans-serif">#ALwayshaveVAN</p>
         </div>        
     </div>
 
     <!-- Main Content -->
     <div class="content">
-        <!-- Bible Verse Section -->
-        <section id="quote-section" class="section">
-            <div class="quote-card">
-                <blockquote class="quote-text animate-verse">
+        <!-- Wedding Opener Section -->
+        <section id="wedding-opener" class="wedding-opener">
+            <div class="film-scroll-wrapper film-scroll-top">
+                <div class="film-scroll-track-reverse">
+                    <img src="/img/gallery/21.png" alt="Photo 1" class="film-scroll-img">
+                    <img src="/img/gallery/22.png" alt="Photo 2" class="film-scroll-img">
+                    <img src="/img/gallery/29.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/27.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/25.png" alt="Photo 4" class="film-scroll-img">
+                    <img src="/img/gallery/32.png" alt="Photo 5" class="film-scroll-img">
+                    <img src="/img/gallery/23.png" alt="Photo 6" class="film-scroll-img">
+                    <img src="/img/gallery/15.png" alt="Photo 7" class="film-scroll-img">
+                    <img src="/img/gallery/28.png" alt="Photo 8" class="film-scroll-img">
+                    <!-- Duplicate for infinite loop -->
+                    <img src="/img/gallery/21.png" alt="Photo 1" class="film-scroll-img">
+                    <img src="/img/gallery/22.png" alt="Photo 2" class="film-scroll-img">
+                    <img src="/img/gallery/29.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/27.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/25.png" alt="Photo 4" class="film-scroll-img">
+                    <img src="/img/gallery/32.png" alt="Photo 5" class="film-scroll-img">
+                    <img src="/img/gallery/23.png" alt="Photo 6" class="film-scroll-img">
+                    <img src="/img/gallery/15.png" alt="Photo 7" class="film-scroll-img">
+                    <img src="/img/gallery/28.png" alt="Photo 8" class="film-scroll-img">
+                    <!-- Duplicate for infinite loop -->
+                    <img src="/img/gallery/21.png" alt="Photo 1" class="film-scroll-img">
+                    <img src="/img/gallery/22.png" alt="Photo 2" class="film-scroll-img">
+                    <img src="/img/gallery/29.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/27.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/25.png" alt="Photo 4" class="film-scroll-img">
+                    <img src="/img/gallery/32.png" alt="Photo 5" class="film-scroll-img">
+                    <img src="/img/gallery/23.png" alt="Photo 6" class="film-scroll-img">
+                    <img src="/img/gallery/15.png" alt="Photo 7" class="film-scroll-img">
+                    <img src="/img/gallery/28.png" alt="Photo 8" class="film-scroll-img">
+                    <!-- Duplicate for infinite loop -->
+                    <img src="/img/gallery/21.png" alt="Photo 1" class="film-scroll-img">
+                    <img src="/img/gallery/22.png" alt="Photo 2" class="film-scroll-img">
+                    <img src="/img/gallery/29.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/27.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/25.png" alt="Photo 4" class="film-scroll-img">
+                    <img src="/img/gallery/32.png" alt="Photo 5" class="film-scroll-img">
+                    <img src="/img/gallery/23.png" alt="Photo 6" class="film-scroll-img">
+                    <img src="/img/gallery/15.png" alt="Photo 7" class="film-scroll-img">
+                    <img src="/img/gallery/28.png" alt="Photo 8" class="film-scroll-img">
+                </div>
+            </div>
+            <div class="wedding-opener-content">
+                <blockquote class="wedding-opener-quote">
                     “Two are better than one... If either of them falls down, one can help the other up.”
                 </blockquote>
-                <span class="quote-author">— Ecclesiastes 4:9–10</span>
+                <span class="wedding-opener-author">— Ecclesiastes 4:9–10</span>
+            
+                <div class="wedding-opener-divider"></div>
+            
+                <h2 class="wedding-opener-names">Alvin & Stevani</h2>
+                <p class="wedding-opener-date">01 June 2025</p>
+            </div>
+        
+            <!-- Film Scroll directly inside opener -->
+            <div class="film-scroll-wrapper">
+                <div class="film-scroll-track">
+                    <img src="/img/gallery/21.png" alt="Photo 1" class="film-scroll-img">
+                    <img src="/img/gallery/22.png" alt="Photo 2" class="film-scroll-img">
+                    <img src="/img/gallery/29.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/27.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/25.png" alt="Photo 4" class="film-scroll-img">
+                    <img src="/img/gallery/32.png" alt="Photo 5" class="film-scroll-img">
+                    <img src="/img/gallery/23.png" alt="Photo 6" class="film-scroll-img">
+                    <img src="/img/gallery/15.png" alt="Photo 7" class="film-scroll-img">
+                    <img src="/img/gallery/28.png" alt="Photo 8" class="film-scroll-img">
+                    <!-- Duplicate for infinite loop -->
+                    <img src="/img/gallery/21.png" alt="Photo 1" class="film-scroll-img">
+                    <img src="/img/gallery/22.png" alt="Photo 2" class="film-scroll-img">
+                    <img src="/img/gallery/29.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/27.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/25.png" alt="Photo 4" class="film-scroll-img">
+                    <img src="/img/gallery/32.png" alt="Photo 5" class="film-scroll-img">
+                    <img src="/img/gallery/23.png" alt="Photo 6" class="film-scroll-img">
+                    <img src="/img/gallery/15.png" alt="Photo 7" class="film-scroll-img">
+                    <img src="/img/gallery/28.png" alt="Photo 8" class="film-scroll-img">
+                    <!-- Duplicate for infinite loop -->
+                    <img src="/img/gallery/21.png" alt="Photo 1" class="film-scroll-img">
+                    <img src="/img/gallery/22.png" alt="Photo 2" class="film-scroll-img">
+                    <img src="/img/gallery/29.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/27.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/25.png" alt="Photo 4" class="film-scroll-img">
+                    <img src="/img/gallery/32.png" alt="Photo 5" class="film-scroll-img">
+                    <img src="/img/gallery/23.png" alt="Photo 6" class="film-scroll-img">
+                    <img src="/img/gallery/15.png" alt="Photo 7" class="film-scroll-img">
+                    <img src="/img/gallery/28.png" alt="Photo 8" class="film-scroll-img">
+                    <!-- Duplicate for infinite loop -->
+                    <img src="/img/gallery/21.png" alt="Photo 1" class="film-scroll-img">
+                    <img src="/img/gallery/22.png" alt="Photo 2" class="film-scroll-img">
+                    <img src="/img/gallery/29.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/27.png" alt="Photo 3" class="film-scroll-img">
+                    <img src="/img/gallery/25.png" alt="Photo 4" class="film-scroll-img">
+                    <img src="/img/gallery/32.png" alt="Photo 5" class="film-scroll-img">
+                    <img src="/img/gallery/23.png" alt="Photo 6" class="film-scroll-img">
+                    <img src="/img/gallery/15.png" alt="Photo 7" class="film-scroll-img">
+                    <img src="/img/gallery/28.png" alt="Photo 8" class="film-scroll-img">
+                </div>
             </div>
         </section>
-
+          
         <!-- Groom & Bride Section -->
         <section id="groom-bride" class="section">
             <h1 class="section-title">The Groom<br/>&<br/>The Bride</h1>
@@ -94,11 +190,11 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section>      
 
         <!-- Countdown Timer Section -->
-        <section id="countdown" class="section scroll-reveal reveal-fade">
-            <h1 class="section-title">Countdown to<br/> Our Wedding</h1>
+        <section id="countdown" class="section scroll-reveal reveal-fade section-autumn">
+            <h1 class="autumn-title">Countdown to<br/> Our Wedding</h1>
             <div class="countdown-container">
                 <div class="countdown-box">
                     <div class="countdown-number" id="days">00</div>
@@ -120,75 +216,93 @@
         </section>        
           
         <!-- Location Section -->
-        <section id="location" class="section scroll-reveal reveal-left">
-            <h2 class="section-title">Wedding Venue</h2>
-            <div class="event-wrapper">
-                <img src="/img/wedding-gate.png" alt="Wedding Gate" class="wedding-gate">
-                <div class="event-container">
-                    <!-- Holy Matrimony -->
-                   <div class="event-location">
-                       <h1 class="event-title">Holy Matrimony</h1>
-                       <p class="event-date">Sunday, 1 June 2025</p>
-                       <p class="event-date">13:00 WIB</p>
-                       <p class="event-venue">Gereja Katolik Santo Matias Rasul</p>
-                       <a href="https://maps.app.goo.gl/2EYvaAZJF7ERRZGW9" target="_blank" class="map-link">
-                           <i class="fas fa-map-marker-alt"></i> View Map
-                       </a>
-                   </div>
-                   <!-- Reception -->
-                   <div class="event-location">
-                       <h1 class="event-title">Reception</h1>
-                       <p class="event-date">Sunday, 1 June 2025</p>
-                       <p class="event-date">18:00 WIB</p>
-                       <p class="event-venue">Hotel Santika Premiere Slipi</p>
-                       <a href="https://maps.app.goo.gl/UTq8cdG5VgF9YQJy8" target="_blank" class="map-link">
-                           <i class="fas fa-map-marker-alt"></i> View Map
-                       </a>
-                   </div>
+        <section id="location-new" class="section scroll-reveal reveal-up">
+            <div class="location-title-wrapper">
+                <h1 class="section-title-new">Our Special Day</h1>
+                <div class="section-divider-new"></div>
+                <p class="section-subtitle-new">Join us as we celebrate love and new beginnings</p>
+            </div>
+          
+            <div class="location-cards-container">
+              <!-- Holy Matrimony -->
+              <div class="location-card">
+                <div class="event-icon-wrapper">
+                    <img src="/img/rings.png" alt="Rings Illustration" class="event-icon-new">
                 </div>
-            </div> 
+                <h2 class="event-title-new">Holy Matrimony</h2>
+                <div class="event-detail-new">
+                  <p><i class="fa-solid fa-calendar-days"></i> Sunday, 01 June 2025</p>
+                  <p><i class="fa-solid fa-clock"></i> 11:00 AM</p>
+                  <p><i class="fa-solid fa-location-dot"></i> Gereja Katolik Santo Matias Rasul</p>
+                </div>
+                <a href="https://maps.app.goo.gl/2EYvaAZJF7ERRZGW9" target="_blank" class="map-button-new"><i class="fa-solid fa-map-location-dot"></i>View Map</a>
+              </div>
+          
+              <!-- Reception -->
+              <div class="location-card reception-card">
+                <div class="event-icon-wrapper">
+                    <img src="/img/wedding-cake.png" alt="Wedding Cake Illustration" class="event-icon-new">
+                </div>
+                <h2 class="event-title-new">Reception</h2>
+                <div class="event-detail-new">
+                  <p><i class="fa-solid fa-calendar-days"></i> Sunday, 01 June 2025</p>
+                  <p><i class="fa-solid fa-clock"></i> 18:00 PM</p>
+                  <p><i class="fa-solid fa-location-dot"></i> Santika Premiere Hotel Slipi</p>
+                </div>
+                <a href="https://maps.app.goo.gl/UTq8cdG5VgF9YQJy8" target="_blank" class="map-button-new"><i class="fa-solid fa-map-location-dot"></i>View Map</a>
+              </div>
+            </div>
         </section>
-
+          
         <!-- Bank Account Information Section -->
-        <section id="bank-info" class="section scroll-reveal reveal-right">
-            <h2 class="section-title">Gift & Bank Transfer</h2>
+        <section id="gift-new" class="scroll-reveal reveal-left">
+            <div class="gift-wrapper-new">
+                <div class="gift-header-new">
+                <h2 class="gift-title-new">Gift & Bank Transfer</h2>
+                <p class="gift-description-new">
+                    Your presence at our wedding is the greatest gift.  
+                    If you wish to bless us further, you can send your love through the details below.
+                </p>
+                </div>
             
-            <!-- Gift Message -->
-            <p class="bank-description">
-                Your presence at our wedding is the greatest gift of all. 
-                However, if you would like to honor us with a token of love, 
-                we would be truly grateful. You can send your blessings through the details below.
-            </p>
-
-            <div class="bank-card">
-                <img src="/img/logo-panin.png" alt="Bank Logo" class="bank-logo">
-                <div class="bank-details">
-                    <h3 class="bank-name">Bank Panin</h3>
-                    <div class="account-info">
-                        <p class="account-number" id="panin-account">1842014911</p>
-                        <button class="copy-btn" onclick="copyAccount('panin-account')">
-                            <i class="fas fa-copy"></i>
+                <div class="gift-bank-container-new">
+                <!-- Panin Bank -->
+                <div class="gift-bank-card-new">
+                    <div class="gift-bank-logo-wrapper">
+                        <img src="/img/logo-panin.png" alt="Panin Bank Logo" class="gift-bank-logo-new">
+                    </div>
+                    <div class="gift-bank-info-new">
+                    <h3 class="gift-bank-name-new">Bank Panin</h3>
+                    <div class="gift-account-info-new">
+                        <p class="gift-account-number-new" id="panin-account">1842014911</p>
+                        <button class="gift-copy-btn-new" onclick="copyAccount('panin-account')">
+                        <i class="fas fa-copy"></i>
                         </button>
                     </div>
-                    <p class="account-holder">Alvin Christianto Hadi</p>
-                </div>
-            </div>
-
-            <div class="bank-card">
-                <img src="/img/logo-bca.png" alt="Bank Logo" class="bank-logo">
-                <div class="bank-details">
-                    <h3 class="bank-name">Bank BCA</h3>
-                    <div class="account-info">
-                        <p class="account-number" id="bca-account">8870323639</p>
-                        <button class="copy-btn" onclick="copyAccount('bca-account')">
-                            <i class="fas fa-copy"></i>
-                        </button>    
+                    <p class="gift-account-holder-new">a/n Alvin Christianto Hadi</p>
                     </div>
-                    <p class="account-holder">Stevani</p>
+                </div>
+            
+                <!-- BCA Bank -->
+                <div class="gift-bank-card-new">
+                    <div class="gift-bank-logo-wrapper">
+                    <img src="/img/logo-bca.png" alt="BCA Bank Logo" class="gift-bank-logo-new">
+                    </div>
+                    <div class="gift-bank-info-new">
+                    <h3 class="gift-bank-name-new">Bank BCA</h3>
+                    <div class="gift-account-info-new">
+                        <p class="gift-account-number-new" id="bca-account">8870323639</p>
+                        <button class="gift-copy-btn-new" onclick="copyAccount('bca-account')">
+                        <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <p class="gift-account-holder-new">a/n Stevani</p>
+                    </div>
+                </div>
                 </div>
             </div>
         </section>
-
+          
         <!-- Wishes Section -->
         <section id="wishes" class="section scroll-reveal reveal-up">
             <h2 class="section-title">Guest Wishes</h2>
@@ -209,8 +323,8 @@
         </section>
 
         <!-- RSVP Section -->
-        <section id="rsvp" class="section scroll-reveal reveal-right">
-            <h2 class="section-title">RSVP</h2>
+        <section id="rsvp" class="section scroll-reveal reveal-right section-autumn">
+            <h2 class="autumn-title">RSVP</h2>
 
             <p class="rsvp-description">
                 Kindly let us know if you’ll be attending by filling out the RSVP form below.
@@ -287,11 +401,11 @@
         <!-- Footer Section -->
         <footer class="footer">
             <p class="footer-text">Thank you for celebrating with us! 💕</p>
-            <p class="footer-subtext">Your presence means the world to us.</p>
-            <p class="footer-subtext">With love, Alvin & Stevani</p><br/>
-            <p class="footer-subtext" style="font-family: Arial, Helvetica, sans-serif">#VINallywithVAN</p>
+            <p class="footer-subtext">Your presence means the world to us.</p><br/>
+            <p class="footer-subtext">With love</p>
+            <p class="footer-name">Alvin & Stevani</p><br/>
+            <p class="footer-subtext" style="font-family: Arial, Helvetica, sans-serif">#ALwayshaveVAN</p>
         </footer>
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
@@ -313,10 +427,10 @@
         <button class="menu-btn" onclick="scrollToSection('groom-bride')">
             <i class="fas fa-user-group"></i>
         </button>
-        <button class="menu-btn" onclick="scrollToSection('location')">
+        <button class="menu-btn" onclick="scrollToSection('location-new')">
             <i class="fas fa-map-location-dot"></i>
         </button>
-        <button class="menu-btn" onclick="scrollToSection('bank-info')">
+        <button class="menu-btn" onclick="scrollToSection('gift-new')">
             <i class="fas fa-gift"></i>
         </button>
         <button class="menu-btn" onclick="scrollToSection('rsvp')">
@@ -327,6 +441,6 @@
         </button>
     </div>
 </div>
-
+<div id="copy-toast" class="copy-toast">Account number copied!</div>
 </body>
 </html>

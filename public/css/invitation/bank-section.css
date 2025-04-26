@@ -1,0 +1,163 @@
+/* Gift Section Wrapper */
+#gift-new {
+    background: #b9744c; /* Warm muted terracotta */
+    padding: 80px 20px;
+}
+
+.gift-wrapper-new {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+/* Header Area */
+.gift-header-new {
+    text-align: left;
+    margin-bottom: 50px;
+}
+
+.gift-title-new {
+    font-family: "Playfair Display", serif;
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.gift-description-new {
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #ffffff;
+}
+
+/* Bank Cards Container */
+.gift-bank-container-new {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Bank Card */
+.gift-bank-card-new {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.gift-bank-card-new:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Bank Logo Wrapper */
+.gift-bank-logo-wrapper {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.gift-bank-logo-new {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+/* Bank Info */
+.gift-bank-info-new {
+    flex-grow: 1;
+    text-align: left; /* <-- add this */
+}
+
+.gift-bank-name-new {
+    font-size: 22px;
+    font-weight: 700;
+    color: #5a3e2b; /* Dark warm brown */
+    margin-bottom: 5px;
+}
+
+.gift-account-info-new {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gift-account-number-new {
+    font-size: 20px;
+    font-weight: 800;
+    color: #5a3e2b; /* Dark warm brown */
+    margin-bottom: 5px;
+}
+
+.gift-copy-btn-new {
+    background: #f0c49c;
+    color: #5a3e2b;
+    border: 2px solid #8b5e3c; /* Add slight border */
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.gift-copy-btn-new:hover {
+    background: #e8b68b;
+    transform: scale(1.1);
+}
+
+.gift-account-holder-new {
+    font-size: 16px;
+    color: #704214;
+    margin-top: 5px;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+    .gift-bank-container-new {
+        flex-direction: row;
+        gap: 40px;
+    }
+}
+
+.gift-description-new,
+.gift-bank-name-new,
+.gift-account-number-new,
+.gift-account-holder-new {
+    font-family: "Poppins", sans-serif;
+}
+
+.copy-toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #c87f43;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 9999;
+}
+
+/* Toast Visible State */
+.copy-toast.show {
+    opacity: 1;
+    visibility: visible;
+    bottom: 100px; /* Move up a little when shown */
+}

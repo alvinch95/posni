@@ -1,0 +1,106 @@
+/* Wedding Opener Section */
+.wedding-opener {
+    background: #8b5e3c; /* Solid warm brown */
+    padding: 100px 20px 40px 20px; /* Smaller bottom padding */
+    text-align: center;
+    color: #f7efe5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.wedding-opener-content {
+    max-width: 900px;
+    margin: 0 auto 10px auto; /* Only small bottom margin before film scroll */
+    position: relative;
+    z-index: 1;
+}
+
+.wedding-opener-quote {
+    font-family: "Playfair Display", serif;
+    font-size: 28px;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.wedding-opener-author {
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    opacity: 0.9;
+    display: block;
+    margin-bottom: 40px;
+}
+
+.wedding-opener-divider {
+    width: 60px;
+    height: 3px;
+    background: #f0c49c;
+    margin: 0 auto 30px auto;
+    border-radius: 2px;
+}
+
+.wedding-opener-names {
+    font-family: "Playfair Display", serif;
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.wedding-opener-date {
+    font-family: "Poppins", sans-serif;
+    font-size: 20px;
+    opacity: 0.9;
+}
+
+/* Film Scroll inside Opener */
+.film-scroll-wrapper {
+    width: 100%;
+    overflow: hidden;
+    padding: 10px 0;
+}
+
+.film-scroll-img {
+    width: 120px;
+    height: 80px; /* Set fixed height for landscape shape */
+    object-fit: cover; /* Crop nicely inside the box */
+    margin-right: 5px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.film-scroll-top {
+    margin-bottom: 10px; /* Space between top scroll and quote */
+}
+
+.film-scroll-track {
+    display: flex;
+    width: max-content; /* Very important: allows infinite scroll width */
+    animation: filmScroll 120s linear infinite;
+}
+
+.film-scroll-track-reverse {
+    display: flex;
+    width: max-content;
+    animation: filmScrollReverse 120s linear infinite;
+}
+
+/* Animation for smooth scroll */
+@keyframes filmScroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Updated reverse scroll */
+@keyframes filmScrollReverse {
+    0% {
+        transform: translateX(-95%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}

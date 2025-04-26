@@ -1,0 +1,131 @@
+/* Section Title */
+#location-new {
+    background: rgba(247, 239, 229, 0.9); /* Soft light beige, 85% opacity */
+    padding: 80px 20px;
+}
+
+/* Title Wrapper */
+.location-title-wrapper {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+/* Main Section Title */
+.section-title-new {
+    font-family: "Merriweather", serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #5a3e2b;
+    margin-bottom: 15px;
+    color: #5a3e2b;
+}
+
+/* Decorative Divider */
+.section-divider-new {
+    width: 80px;
+    height: 3px;
+    background: #c87f43;
+    margin: 0 auto 15px;
+    border-radius: 2px;
+}
+
+/* Subtitle under Title */
+.section-subtitle-new {
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    color: #8b5e3c;
+    font-style: italic;
+}
+
+/* Container for cards */
+.location-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Card */
+.location-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 50px 25px 30px; /* Extra padding top! */
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative; /* Important: so absolute positioning works inside */
+}
+
+.event-icon-wrapper {
+    position: absolute;
+    top: -50px; /* Move up */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Event Title */
+.event-title-new {
+    font-family: "Merriweather", serif;
+    font-size: 24px;
+    color: #5a3e2b;
+    margin-bottom: 20px;
+}
+
+/* Event Detail */
+.event-detail-new p {
+    font-family: "Poppins", serif;
+    font-size: 18px;
+    color: #704214;
+    margin: 8px 0;
+}
+
+.event-detail-new i {
+    margin-right: 8px;
+    color: #c87f43;
+}
+
+/* Map Button */
+.map-button-new {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #c87f43, #8b5e3c);
+    color: #ffffff;
+    border: none;
+    border-radius: 30px; /* More rounded for elegance */
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.map-button-new:hover {
+    background: linear-gradient(135deg, #8b5e3c, #5a3e2b);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* Event Icon (Image on top of card) */
+.event-icon-new {
+    width: 100%;
+    height: auto;
+}
+
+.map-button-new i {
+    margin-right: 8px;
+}
+
+.reception-card {
+    margin-top: 20px;
+}

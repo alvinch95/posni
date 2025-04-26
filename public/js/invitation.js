@@ -343,11 +343,19 @@ function openInvitation() {
     }, 1000);
 }
 
-function copyAccount(elementId) {
-    let accountText = document.getElementById(elementId).textContent.trim();
-    navigator.clipboard.writeText(accountText).then(() => {
-        alert("Account number copied: " + accountText);
-    }).catch(err => {
-        console.error("Error copying text: ", err);
+function copyAccount(accountId) {
+    var copyText = document.getElementById(accountId).innerText;
+
+    navigator.clipboard.writeText(copyText).then(function () {
+        // Show toast
+        var toast = document.getElementById("copy-toast");
+        toast.classList.add("show");
+
+        // Hide after 2 seconds
+        setTimeout(function () {
+            toast.classList.remove("show");
+        }, 2000);
+    }).catch(function (error) {
+        console.error('Copy failed', error);
     });
 }
