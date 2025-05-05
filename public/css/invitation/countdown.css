@@ -67,3 +67,29 @@
     opacity: 1;
     transform: translateY(0);
 }
+
+.save-calendar-btn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #c87f43, #8b5e3c);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.save-calendar-btn:hover {
+    background: linear-gradient(135deg, #8b5e3c, #5a3e2b);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.save-calendar-btn i {
+    margin-right: 8px;
+}

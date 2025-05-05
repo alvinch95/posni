@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//YourWedding//Invitation//EN
+BEGIN:VEVENT
+UID:alvin-stevani-wedding-20250601@example.com
+DTSTAMP:20250505T070000Z
+DTSTART:20250601T110000Z
+DTEND:20250601T130000Z
+SUMMARY:The Wedding of Alvin & Stevani
+DESCRIPTION:Join us to celebrate our wedding day!
+LOCATION:Santika Premiere Hotel Slipi, Jakarta
+END:VEVENT
+END:VCALENDAR

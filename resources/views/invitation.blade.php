@@ -177,8 +177,11 @@
                     </div>
                     <h3 class="profile-name scroll-reveal">Alvin</h3>
                     <div class="message-frame scroll-reveal">
-                        <p class="profile-message">"A journey of love, trust, and forever."</p>
+                        <p class="profile-message">Putra kedua dari Bapak Tjong Muk Long & Ibu Yanti Bunardi</p>
                     </div>
+                    <a class="instagram-btn scroll-reveal" href="https://instagram.com/alvinnchristianto" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-instagram"></i> @alvinnchristianto
+                    </a>
                 </div>
 
                 <!-- Bride -->
@@ -189,8 +192,11 @@
                     </div>
                     <h3 class="profile-name scroll-reveal">Stevani</h3>
                     <div class="message-frame">
-                        <p class="profile-message scroll-reveal">"Every step with you."</p>
+                        <p class="profile-message scroll-reveal">Putri bungsu dari Bapak Chin Jie Nen & Ibu Yuliana Suni</p>
                     </div>
+                    <a class="instagram-btn scroll-reveal" href="https://instagram.com/stevanichen" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-instagram"></i> @stevanichen
+                    </a>
                 </div>
             </div>
         </section>    
@@ -231,6 +237,10 @@
                     <div class="countdown-label scroll-reveal">Seconds</div>
                 </div>
             </div>
+            <!-- Save to Calendar Button -->
+            <a class="save-calendar-btn scroll-reveal" href="/alvin-stevani-wedding.ics" download>
+                <i class="fas fa-calendar-plus"></i> Save to Calendar
+            </a>
         </section>        
           
         <!-- Location Section -->
