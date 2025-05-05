@@ -68,26 +68,47 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    const revealSections = document.querySelectorAll(".scroll-reveal");
-    // Scroll Reveal Animation
+    const animatedElements = document.querySelectorAll(".scroll-reveal");
+
+    // Step 1: Define all animation classes
+    const animationClasses = [
+        "reveal-fade-in",
+        "reveal-fade-up",
+        "reveal-fade-down",
+        "reveal-fade-left",
+        "reveal-fade-right",
+        "reveal-zoom-in",
+        "reveal-zoom-out",
+        "reveal-flip-in",
+        "reveal-bounce-in",
+        "reveal-blur-in"
+    ];
+
+    // Step 2: Randomly assign an animation class to each element
+    animatedElements.forEach(el => {
+        const randomClass = animationClasses[Math.floor(Math.random() * animationClasses.length)];
+        el.classList.add("reveal-animate", randomClass);
+    });
+
+    // Step 3: Reveal on scroll
     function revealOnScroll() {
-        let windowHeight = window.innerHeight;
+        const windowHeight = window.innerHeight;
 
-        revealSections.forEach(section => {
-            let sectionTop = section.getBoundingClientRect().top;
-            let sectionBottom = section.getBoundingClientRect().bottom;
+        animatedElements.forEach(el => {
+            const top = el.getBoundingClientRect().top;
+            const bottom = el.getBoundingClientRect().bottom;
 
-            // Check if the section is at least partially in view
-            if (sectionTop < windowHeight * 0.9 && sectionBottom > 50) {
-                section.classList.add("visible");
-            } else if (sectionTop > windowHeight) {
-                section.classList.remove("visible"); // Only remove when it's truly out of sight
+            if (top < windowHeight * 0.9 && bottom > 50) {
+                el.classList.add("visible");
+            } else if (top > windowHeight) {
+                el.classList.remove("visible");
             }
         });
     }
 
     window.addEventListener("scroll", revealOnScroll);
-    revealOnScroll();
+    revealOnScroll(); // initial trigger
+
 
     // Countdown Timer
     function updateCountdown() {

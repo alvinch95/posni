@@ -8,12 +8,14 @@
         <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Oleo+Script:wght@400;700&family=Parisienne&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Oleo+Script:wght@400;700&family=Parisienne&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
         
         <link rel="stylesheet" href="{{ asset('css/invitation/main-style.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/invitation/opener.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/invitation/video-teaser.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/invitation/countdown.css') }}">
         <link rel="stylesheet" href="{{ asset('css/invitation/location-section.css') }}">
         <link rel="stylesheet" href="{{ asset('css/invitation/bank-section.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/invitation/opener.css') }}">
         <link rel="stylesheet" href="{{ asset('css/invitation/guest-wishes.css') }}">
 
         <!-- Font Awesome -->
@@ -165,16 +167,16 @@
           
         <!-- Groom & Bride Section -->
         <section id="groom-bride" class="section">
-            <h1 class="section-title">The Groom<br/>&<br/>The Bride</h1>
+            <h1 class="section-title scroll-reveal">The Groom<br/>&<br/>The Bride</h1>
             <div class="bride-groom-container">
                 <!-- Groom -->
                 <div class="profile">
                     <div class="profile-frame">
                         <img src="/img/photo-frame.png" alt="Frame" class="frame-overlay">
-                        <img src="/img/groom2.png" alt="Groom" class="profile-img">
+                        <img src="/img/groom2.png" alt="Groom" class="profile-img scroll-reveal">
                     </div>
-                    <h3 class="profile-name">Alvin</h3>
-                    <div class="message-frame">
+                    <h3 class="profile-name scroll-reveal">Alvin</h3>
+                    <div class="message-frame scroll-reveal">
                         <p class="profile-message">"A journey of love, trust, and forever."</p>
                     </div>
                 </div>
@@ -183,35 +185,50 @@
                 <div class="profile">
                     <div class="profile-frame">
                         <img src="/img/photo-frame.png" alt="Frame" class="frame-overlay">
-                        <img src="/img/bride2.png" alt="Bride" class="profile-img">
+                        <img src="/img/bride2.png" alt="Bride" class="profile-img scroll-reveal">
                     </div>
-                    <h3 class="profile-name">Stevani</h3>
+                    <h3 class="profile-name scroll-reveal">Stevani</h3>
                     <div class="message-frame">
-                        <p class="profile-message">"Every step with you."</p>
+                        <p class="profile-message scroll-reveal">"Every step with you."</p>
                     </div>
                 </div>
             </div>
-        </section>      
+        </section>    
+        
+        <section id="video-teaser" class="section scroll-reveal reveal-fade teaser-section">
+            <h2 class="section-title scroll-reveal">Captured Moments</h2>
+            <p class="teaser-subtitle scroll-reveal">A glimpse into the story we are about to begin...</p>
+          
+            <div class="video-wrapper scroll-reveal">
+              <iframe 
+                src="https://www.youtube.com/embed/cZ7E3m7F0qU?rel=0"
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                title="Wedding Teaser"
+              ></iframe>
+            </div>
+        </section>
 
         <!-- Countdown Timer Section -->
         <section id="countdown" class="section scroll-reveal reveal-fade section-autumn">
-            <h1 class="autumn-title">Countdown to<br/> Our Wedding</h1>
+            <h1 class="countdown-title scroll-reveal">Countdown to<br/> Our Wedding</h1>
             <div class="countdown-container">
                 <div class="countdown-box">
-                    <div class="countdown-number" id="days">00</div>
-                    <div class="countdown-label">Days</div>
+                    <div class="countdown-number scroll-reveal" id="days">00</div>
+                    <div class="countdown-label scroll-reveal">Days</div>
                 </div>
-                <div class="countdown-box">
-                    <div class="countdown-number" id="hours">00</div>
-                    <div class="countdown-label">Hours</div>
+                <div class="countdown-box scroll-reveal">
+                    <div class="countdown-number scroll-reveal" id="hours">00</div>
+                    <div class="countdown-label scroll-reveal">Hours</div>
                 </div>
-                <div class="countdown-box">
-                    <div class="countdown-number" id="minutes">00</div>
-                    <div class="countdown-label">Minutes</div>
+                <div class="countdown-box scroll-reveal">
+                    <div class="countdown-number scroll-reveal" id="minutes">00</div>
+                    <div class="countdown-label scroll-reveal">Minutes</div>
                 </div>
-                <div class="countdown-box">
-                    <div class="countdown-number" id="seconds">00</div>
-                    <div class="countdown-label">Seconds</div>
+                <div class="countdown-box scroll-reveal">
+                    <div class="countdown-number scroll-reveal" id="seconds">00</div>
+                    <div class="countdown-label scroll-reveal">Seconds</div>
                 </div>
             </div>
         </section>        
@@ -219,38 +236,38 @@
         <!-- Location Section -->
         <section id="location-new" class="section scroll-reveal reveal-up">
             <div class="location-title-wrapper">
-                <h1 class="section-title-new">Our Special Day</h1>
-                <div class="section-divider-new"></div>
-                <p class="section-subtitle-new">Join us as we celebrate love and new beginnings</p>
+                <h1 class="section-title-new scroll-reveal">Our Special Day</h1>
+                <div class="section-divider-new scroll-reveal"></div>
+                <p class="section-subtitle-new" scroll-reveal>Join us as we celebrate love and new beginnings</p>
             </div>
           
             <div class="location-cards-container">
               <!-- Holy Matrimony -->
               <div class="location-card">
                 <div class="event-icon-wrapper">
-                    <img src="/img/rings.png" alt="Rings Illustration" class="event-icon-new">
+                    <img src="/img/rings.png" alt="Rings Illustration" class="event-icon-new scroll-reveal">
                 </div>
                 <h2 class="event-title-new">Holy Matrimony</h2>
                 <div class="event-detail-new">
-                  <p><i class="fa-solid fa-calendar-days"></i> Sunday, 01 June 2025</p>
-                  <p><i class="fa-solid fa-clock"></i> 11:00 AM</p>
-                  <p><i class="fa-solid fa-location-dot"></i> Gereja Katolik Santo Matias Rasul</p>
+                  <p><i class="fa-solid fa-calendar-days scroll-reveal"></i> Sunday, 01 June 2025</p>
+                  <p><i class="fa-solid fa-clock scroll-reveal"></i> 11:00 AM</p>
+                  <p><i class="fa-solid fa-location-dot scroll-reveal"></i> Gereja Katolik Santo Matias Rasul</p>
                 </div>
-                <a href="https://maps.app.goo.gl/2EYvaAZJF7ERRZGW9" target="_blank" class="map-button-new"><i class="fa-solid fa-map-location-dot"></i>View Map</a>
+                <a href="https://maps.app.goo.gl/2EYvaAZJF7ERRZGW9" target="_blank" class="map-button-new scroll-reveal"><i class="fa-solid fa-map-location-dot"></i>View Map</a>
               </div>
           
               <!-- Reception -->
               <div class="location-card reception-card">
                 <div class="event-icon-wrapper">
-                    <img src="/img/wedding-cake.png" alt="Wedding Cake Illustration" class="event-icon-new">
+                    <img src="/img/wedding-cake.png" alt="Wedding Cake Illustration" class="event-icon-new scroll-reveal">
                 </div>
-                <h2 class="event-title-new">Reception</h2>
+                <h2 class="event-title-new scroll-reveal">Reception</h2>
                 <div class="event-detail-new">
-                  <p><i class="fa-solid fa-calendar-days"></i> Sunday, 01 June 2025</p>
-                  <p><i class="fa-solid fa-clock"></i> 18:00 PM</p>
-                  <p><i class="fa-solid fa-location-dot"></i> Santika Premiere Hotel Slipi</p>
+                  <p><i class="fa-solid fa-calendar-days scroll-reveal"></i> Sunday, 01 June 2025</p>
+                  <p><i class="fa-solid fa-clock scroll-reveal"></i> 18:00 PM</p>
+                  <p><i class="fa-solid fa-location-dot scroll-reveal"></i> Santika Premiere Hotel Slipi</p>
                 </div>
-                <a href="https://maps.app.goo.gl/UTq8cdG5VgF9YQJy8" target="_blank" class="map-button-new"><i class="fa-solid fa-map-location-dot"></i>View Map</a>
+                <a href="https://maps.app.goo.gl/UTq8cdG5VgF9YQJy8" target="_blank" class="map-button-new scroll-reveal"><i class="fa-solid fa-map-location-dot"></i>View Map</a>
               </div>
             </div>
         </section>
@@ -259,9 +276,9 @@
         <section id="gift-new" class="scroll-reveal reveal-left">
             <div class="gift-wrapper-new">
                 <div class="gift-header-new">
-                    <h2 class="gift-title-new">Gift & Bank Transfer</h2>
-                    <div class="gift-divider"></div>
-                    <p class="gift-description-new">
+                    <h2 class="gift-title-new scroll-reveal">Gift & Bank Transfer</h2>
+                    <div class="gift-divider scroll-reveal"></div>
+                    <p class="gift-description-new scroll-reveal">
                         Your presence at our wedding is the greatest gift.  
                         If you wish to bless us further, you can send your love through the details below.
                     </p>
@@ -271,17 +288,17 @@
                 <!-- Panin Bank -->
                 <div class="gift-bank-card-new">
                     <div class="gift-bank-logo-wrapper">
-                        <img src="/img/logo-panin.png" alt="Panin Bank Logo" class="gift-bank-logo-new">
+                        <img src="/img/logo-panin.png" alt="Panin Bank Logo" class="gift-bank-logo-new scroll-reveal">
                     </div>
                     <div class="gift-bank-info-new">
-                    <h3 class="gift-bank-name-new">Bank Panin</h3>
+                    <h3 class="gift-bank-name-new scroll-reveal">Bank Panin</h3>
                     <div class="gift-account-info-new">
-                        <p class="gift-account-number-new" id="panin-account">1842014911</p>
-                        <button class="gift-copy-btn-new" onclick="copyAccount('panin-account')">
+                        <p class="gift-account-number-new scroll-reveal" id="panin-account">1842014911</p>
+                        <button class="gift-copy-btn-new scroll-reveal" onclick="copyAccount('panin-account')">
                         <i class="fas fa-copy"></i>
                         </button>
                     </div>
-                    <p class="gift-account-holder-new">a/n Alvin Christianto Hadi</p>
+                    <p class="gift-account-holder-new scroll-reveal">a/n Alvin Christianto Hadi</p>
                     </div>
                 </div>
             
@@ -291,14 +308,14 @@
                     <img src="/img/logo-bca.png" alt="BCA Bank Logo" class="gift-bank-logo-new">
                     </div>
                     <div class="gift-bank-info-new">
-                    <h3 class="gift-bank-name-new">Bank BCA</h3>
+                    <h3 class="gift-bank-name-new scroll-reveal">Bank BCA</h3>
                     <div class="gift-account-info-new">
-                        <p class="gift-account-number-new" id="bca-account">8870323639</p>
-                        <button class="gift-copy-btn-new" onclick="copyAccount('bca-account')">
+                        <p class="gift-account-number-new scroll-reveal" id="bca-account">8870323639</p>
+                        <button class="gift-copy-btn-new scroll-reveal" onclick="copyAccount('bca-account')">
                         <i class="fas fa-copy"></i>
                         </button>
                     </div>
-                    <p class="gift-account-holder-new">a/n Stevani</p>
+                    <p class="gift-account-holder-new scroll-reveal">a/n Stevani</p>
                     </div>
                 </div>
                 </div>
@@ -307,20 +324,20 @@
           
         <!-- Wishes Section -->
         <section id="guest-wishes" class="guest-wishes-section">
-            <h2 class="guest-wishes-title">Guest Wishes</h2>
+            <h2 class="guest-wishes-title scroll-reveal">Guest Wishes</h2>
           
             <!-- Guest Wishes Form -->
             <form id="wishes-form" class="guest-wishes-form" action="{{ route('wishes.submit') }}" method="POST">
                 @csrf
-                <input type="text" id="guest-name" name="name" placeholder="Your Name" required class="guest-wishes-input">
-                <textarea id="guest-message" name="message" placeholder="Your Wish" required class="guest-wishes-textarea"></textarea>
-                <button type="submit" class="guest-wishes-submit">Send Wish</button>
+                <input type="text" id="guest-name" name="name" placeholder="Your Name" required class="guest-wishes-input scroll-reveal">
+                <textarea id="guest-message" name="message" placeholder="Your Wish" required class="guest-wishes-textarea scroll-reveal"></textarea>
+                <button type="submit" class="guest-wishes-submit scroll-reveal">Send Wish</button>
             </form>
 
             <div id="wish-success-message" class="wish-success hidden">🎉 Thank you for your wish!</div>
           
             <!-- Submitted Wishes List -->
-            <div class="guest-wishes-list" id="guest-wishes-list">
+            <div class="guest-wishes-list scroll-reveal" id="guest-wishes-list">
               <!-- Example Wish Card -->
               <!--
               <div class="guest-wish-card">
@@ -334,13 +351,13 @@
 
         <!-- RSVP Section -->
         <section id="rsvp" class="section scroll-reveal reveal-right section-autumn">
-            <h2 class="autumn-title">RSVP</h2>
+            <h2 class="autumn-title scroll-reveal">RSVP</h2>
 
-            <p class="rsvp-description">
+            <p class="rsvp-description scroll-reveal">
                 Kindly let us know if you’ll be attending by filling out the RSVP form below.
             </p>
 
-            <form id="rsvp-form" class="rsvp-form" action="{{ route('rsvp.submit') }}" method="POST">
+            <form id="rsvp-form" class="rsvp-form scroll-reveal" action="{{ route('rsvp.submit') }}" method="POST">
                 @csrf
                 <input type="text" name="guest_name" placeholder="Your Name" required>
                 <input type="number" name="guest_pax" placeholder="Number of Guests" min="1" required>
@@ -355,10 +372,10 @@
 
         <!-- Gallery Section -->
         <section id="gallery" class="section scroll-reveal reveal-up">
-            <h2 class="section-title">Photo Gallery</h2>
+            <h2 class="section-title scroll-reveal">Photo Gallery</h2>
 
             <div class="swiper gallery-swiper">
-                <div class="swiper-wrapper">
+                <div class="swiper-wrapper scroll-reveal">
                     <div class="swiper-slide"><img src="/img/gallery/1.png" alt="Gallery 1"></div>
                     <div class="swiper-slide"><img src="/img/gallery/2.png" alt="Gallery 2"></div>
                     <div class="swiper-slide"><img src="/img/gallery/3.png" alt="Gallery 3"></div>
@@ -383,7 +400,7 @@
             </div>
 
             <div class="thumb-swiper">
-                <div class="swiper-wrapper">
+                <div class="swiper-wrapper scroll-reveal">
                     <div class="swiper-slide"><img src="/img/gallery/1.png" alt="Gallery 1"></div>
                     <div class="swiper-slide"><img src="/img/gallery/2.png" alt="Gallery 2"></div>
                     <div class="swiper-slide"><img src="/img/gallery/3.png" alt="Gallery 3"></div>
@@ -410,11 +427,11 @@
 
         <!-- Footer Section -->
         <footer class="footer">
-            <p class="footer-text">Thank you for celebrating with us! 💕</p>
-            <p class="footer-subtext">Your presence means the world to us.</p><br/>
-            <p class="footer-subtext">With love</p>
-            <p class="footer-name">Alvin & Stevani</p><br/>
-            <p class="footer-subtext" style="font-family: Arial, Helvetica, sans-serif">#ALwayshaveVAN</p>
+            <p class="footer-text scroll-reveal">Thank you for celebrating with us! 💕</p>
+            <p class="footer-subtext scroll-reveal">Your presence means the world to us.</p><br/>
+            <p class="footer-subtext scroll-reveal">With love</p>
+            <p class="footer-name scroll-reveal">Alvin & Stevani</p><br/>
+            <p class="footer-subtext scroll-reveal" style="font-family: Arial, Helvetica, sans-serif">#ALwayshaveVAN</p>
         </footer>
     </div>
 
@@ -425,7 +442,7 @@
 
     <!-- Background Music -->
     <audio id="bg-music" loop>
-        <source src="/audio/wedding-music2.mp3" type="audio/mpeg">
+        <source src="/audio/wedding-music.mp3" type="audio/mpeg">
         Your browser does not support the audio tag.
     </audio>
 

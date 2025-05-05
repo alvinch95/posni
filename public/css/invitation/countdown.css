@@ -1,0 +1,69 @@
+.countdown-section {
+    padding: 100px 20px;
+    text-align: center;
+    background: rgba(139, 94, 60, 0.8); /* Slightly transparent brown */
+    color: #fff;
+}
+
+.countdown-title {
+    font-family: "Playfair Display", serif;
+    font-size: 36px;
+    color: #ffffff;
+    line-height: 1.4;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+}
+
+.countdown-subtitle {
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+    color: #ffeeda;
+    margin-top: 10px;
+    margin-bottom: 40px;
+    opacity: 0.85;
+}
+
+.countdown-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.countdown-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    width: 100px; /* ✅ Fixed width */
+    height: 100px; /* ✅ Fixed height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(3px);
+    transition: transform 0.3s ease;
+}
+
+.countdown-box:hover {
+    transform: translateY(-4px);
+}
+
+.countdown-number {
+    font-size: 40px;
+    font-family: "Playfair Display", serif;
+    color: #ffffff;
+}
+
+.countdown-label {
+    font-size: 14px;
+    font-family: "Poppins", sans-serif;
+    color: #ffeeda;
+    margin-top: 5px;
+    letter-spacing: 1px;
+}
+
+.scroll-reveal.visible .countdown-box {
+    opacity: 1;
+    transform: translateY(0);
+}

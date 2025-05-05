@@ -2,7 +2,7 @@
 .wedding-opener {
     /* background: #8b5e3c; */
     background: rgba(139, 94, 60, 0.95);
-    padding: 100px 20px 40px 20px; /* Smaller bottom padding */
+    padding: 20px 20px 40px 20px; /* Smaller bottom padding */
     text-align: center;
     color: #f7efe5;
     min-height: 100vh;
