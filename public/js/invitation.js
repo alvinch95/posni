@@ -134,6 +134,9 @@ document.addEventListener("DOMContentLoaded", function () {
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
+    // Detect Mobile OS and Show Calendar Button
+    detectMobileOSAndShowCalendarBtn();
+
     //wishes form
     const wishesForm = document.getElementById("wishes-form");
     const successMessage = document.getElementById("wish-success-message");
@@ -250,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
-                    text: "Thank you for your RSVP!"
+                    text: "Thank you for your RSVP!",
                 });
                 rsvpForm.reset(); // Clear the form
             })
@@ -386,4 +389,18 @@ function copyAccount(accountId) {
     }).catch(function (error) {
         console.error('Copy failed', error);
     });
+}
+
+function detectMobileOSAndShowCalendarBtn() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+
+    const iosBtn = document.getElementById("btn-ios-calendar");
+    const androidBtn = document.getElementById("btn-android-calendar");
+
+    if (isIOS) {
+        iosBtn.style.display = "inline-block";
+    } else {
+        androidBtn.style.display = "inline-block";
+    }
 }

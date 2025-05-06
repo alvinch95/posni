@@ -238,7 +238,11 @@
                 </div>
             </div>
             <!-- Save to Calendar Button -->
-            <a class="save-calendar-btn scroll-reveal" href="/alvin-stevani-wedding.ics" download>
+            <a id="btn-ios-calendar" class="save-calendar-btn scroll-reveal" href="/alvin-stevani-wedding.ics" download style="display: none">
+                <i class="fas fa-calendar-plus"></i> Save to Calendar
+            </a>
+
+            <a id="btn-android-calendar" class="save-calendar-btn scroll-reveal" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=The+Wedding+of+Alvin+%26+Stevani&dates=20250601T110000Z/20250601T130000Z&details=Join+us+to+celebrate+our+wedding+day!&location=Santika+Premiere+Hotel+Slipi%2C+Jakarta&sf=true&output=xml" target="_blank" rel="noopener noreferrer" style="display: none">
                 <i class="fas fa-calendar-plus"></i> Save to Calendar
             </a>
         </section>        

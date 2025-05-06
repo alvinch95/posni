@@ -175,14 +175,14 @@ body {
 /* Floating Music Button */
 .music-btn {
     position: fixed;
-    bottom: 30px;
-    right: 10px;
+    bottom: 75px;
+    right: 5px;
     background-color: rgba(139, 69, 19, 0.8); /* Semi-transparent brown */
     color: white;
     border: none;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     font-size: 10px;
     cursor: pointer;
     display: flex;
@@ -565,7 +565,7 @@ body {
 
 /* RSVP Section */
 .rsvp-description {
-    font-size: 20px;
+    font-size: 16px;
     font-family: "Poppin", serif;
     color: #5a3e2b;
     text-align: center;
@@ -602,9 +602,9 @@ body {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 26px;
+    font-size: 20px;
     font-weight: bold;
-    font-family: "Tangerine", cursive;
+    font-family: "Poppin", cursive;
 }
 
 .rsvp-form button:hover {
