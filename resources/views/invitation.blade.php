@@ -287,7 +287,7 @@
         </section>
           
         <!-- Bank Account Information Section -->
-        <section id="gift-new" class="scroll-reveal reveal-left">
+        {{-- <section id="gift-new" class="scroll-reveal reveal-left">
             <div class="gift-wrapper-new">
                 <div class="gift-header-new">
                     <h2 class="gift-title-new scroll-reveal">Gift & Bank Transfer</h2>
@@ -334,7 +334,7 @@
                 </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
           
         <!-- Wishes Section -->
         <section id="guest-wishes" class="guest-wishes-section">
@@ -468,12 +468,15 @@
         <button class="menu-btn" onclick="scrollToSection('groom-bride')">
             <i class="fas fa-user-group"></i>
         </button>
+        <button class="menu-btn" onclick="scrollToSection('video-teaser')">
+            <i class="fas fa-video-camera"></i>
+        </button>
         <button class="menu-btn" onclick="scrollToSection('location-new')">
             <i class="fas fa-map-location-dot"></i>
         </button>
-        <button class="menu-btn" onclick="scrollToSection('gift-new')">
+        {{-- <button class="menu-btn" onclick="scrollToSection('gift-new')">
             <i class="fas fa-gift"></i>
-        </button>
+        </button> --}}
         <button class="menu-btn" onclick="scrollToSection('rsvp')">
             <i class="fas fa-clipboard-check"></i>
         </button>
