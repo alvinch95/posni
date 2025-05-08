@@ -264,7 +264,7 @@
                 <h2 class="event-title-new">Holy Matrimony</h2>
                 <div class="event-detail-new">
                   <p><i class="fa-solid fa-calendar-days scroll-reveal"></i> Sunday, 01 June 2025</p>
-                  <p><i class="fa-solid fa-clock scroll-reveal"></i> 11:00 AM</p>
+                  <p><i class="fa-solid fa-clock scroll-reveal"></i> 11:00 AM - 12:00 PM</p>
                   <p><i class="fa-solid fa-location-dot scroll-reveal"></i> Gereja Katolik Santo Matias Rasul</p>
                 </div>
                 <a href="https://maps.app.goo.gl/2EYvaAZJF7ERRZGW9" target="_blank" class="map-button-new scroll-reveal"><i class="fa-solid fa-map-location-dot"></i>View Map</a>
@@ -278,7 +278,7 @@
                 <h2 class="event-title-new scroll-reveal">Reception</h2>
                 <div class="event-detail-new">
                   <p><i class="fa-solid fa-calendar-days scroll-reveal"></i> Sunday, 01 June 2025</p>
-                  <p><i class="fa-solid fa-clock scroll-reveal"></i> 18:00 PM</p>
+                  <p><i class="fa-solid fa-clock scroll-reveal"></i> 18:00 PM - 20:00 PM</p>
                   <p><i class="fa-solid fa-location-dot scroll-reveal"></i> Santika Premiere Hotel Slipi</p>
                 </div>
                 <a href="https://maps.app.goo.gl/UTq8cdG5VgF9YQJy8" target="_blank" class="map-button-new scroll-reveal"><i class="fa-solid fa-map-location-dot"></i>View Map</a>
