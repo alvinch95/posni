@@ -177,7 +177,7 @@
                     </div>
                     <h3 class="profile-name scroll-reveal">Alvin</h3>
                     <div class="message-frame scroll-reveal">
-                        <p class="profile-message">Putra kedua dari Bapak Tjong Muk Long & Ibu Yanti Bunardi</p>
+                        <p class="profile-message">Putra kedua dari Bapak Tjong Muk Long & Ibu Cong Jan Cu</p>
                     </div>
                     <a class="instagram-btn scroll-reveal" href="https://instagram.com/alvinnchristianto" target="_blank" rel="noopener noreferrer">
                         <i class="fab fa-instagram"></i> @alvinnchristianto
@@ -192,7 +192,7 @@
                     </div>
                     <h3 class="profile-name scroll-reveal">Stevani</h3>
                     <div class="message-frame">
-                        <p class="profile-message scroll-reveal">Putri bungsu dari Bapak Chin Jie Nen & Ibu Yuliana Suni</p>
+                        <p class="profile-message scroll-reveal">Putri bungsu dari Bapak Chin Jie Nen & Ibu Sun Jiu Lie</p>
                     </div>
                     <a class="instagram-btn scroll-reveal" href="https://instagram.com/stevanichen" target="_blank" rel="noopener noreferrer">
                         <i class="fab fa-instagram"></i> @stevanichen
