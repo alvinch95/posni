@@ -336,17 +336,24 @@
 
         $('#discount').on('change', function () {
             var selectedOption = $('#customer_select').find(":selected");
+            var custID = 0;
             if(selectedOption == null){
                 var fee_percentage = 0;
             }
             else{
                 var fee_percentage = parseFloat(selectedOption.data('fee'));
+                custID = selectedOption.data('id');
             }
             var discount = $(this).val();
             var total_order = $('#total_order_original').val();
             var total_modal = $('#total_modal').val();
             var total_after_discount = total_order - discount;
-            var fee_amount = fee_percentage/100*total_after_discount;
+            if(custID == 1){
+                var fee_amount = (fee_percentage/100*total_after_discount)+1250;// Add 1250 fee for customer Shopee
+            }
+            else{
+                var fee_amount = fee_percentage/100*total_after_discount;
+            }
             var new_total = total_after_discount - fee_amount;
             var cuan = new_total - total_modal;
             var formattedTotal = 'Total : Rp. ' + new_total.toLocaleString('id-ID', { minimumFractionDigits: 0 });
@@ -365,9 +372,14 @@
         $('#customer_select').on('change', function () {
             var selectedOption = $(this).find(":selected");
             var fee_percentage = parseFloat(selectedOption.data('fee'));
+            var custID = selectedOption.data('id');
             var total_order = $('#total_order_original').val();
             var total_modal = $('#total_modal').val();
-            var fee_amount = fee_percentage/100*total_order;
+            if(custID == 1){
+                var fee_amount = (fee_percentage/100*total_order)+1250;// Add 1250 fee for customer Shopee
+            }else{
+                var fee_amount = fee_percentage/100*total_order;
+            }
             var new_total = total_order-fee_amount;
             var cuan = new_total - total_modal;
             var formattedTotal = 'Total : Rp. ' + new_total.toLocaleString('id-ID', { minimumFractionDigits: 0 });

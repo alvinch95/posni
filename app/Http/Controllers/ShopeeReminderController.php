@@ -153,7 +153,7 @@ class ShopeeReminderController extends Controller
                 $hamper = Hamper::find($hamperid);
                 $total_capital_price += $hamper->capital_price*$qtys[$index];
             }
-            $customer_fee = $customer->fee/100 * $total_amount;
+            $customer_fee = ($customer->fee/100 * $total_amount)+1250;//1250 Fee shopee
 
             //save header
             $so = new SalesOrder;
