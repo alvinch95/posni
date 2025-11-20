@@ -4,7 +4,7 @@
 
 @section('container')
 <div class="container mt-5">
-    <h2>Employee Attendance History (Last 7 Days)</h2>
+    <h2>Employee Attendance History (Last 1 Month)</h2>
     
     @foreach ($attendance as $date => $records)
         <div class="card mb-4">
@@ -32,7 +32,15 @@
                                 </span>
                             </td>
                             <td>{{ \Carbon\Carbon::parse($record->action_time)->format('H:i:s') }}</td>
-                            <td>{{ $record->latitude }}, {{ $record->longitude }}</td>
+                            <td>
+                                @php
+                                    $mapUrl = "https://www.google.com/maps/search/?api=1&query={$record->latitude},{$record->longitude}";
+                                @endphp
+                                <a href="{{ $mapUrl }}" target="_blank" title="View location on map">
+                                    <small>{{ $record->latitude }}, {{ $record->longitude }}</small>
+                                    <i class="bi bi-geo-alt-fill text-danger"></i>
+                                </a>
+                            </td>
                             <td>
                                 <a href="#" 
                                 data-bs-toggle="modal" 

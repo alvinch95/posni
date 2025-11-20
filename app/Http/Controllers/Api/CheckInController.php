@@ -122,7 +122,7 @@ class CheckInController extends Controller
 
         // 2. Data Fetching
         // Fetch records for the last 7 days. This avoids loading too much data.
-        $startDate = now()->subDays(7)->startOfDay();
+        $startDate = now()->startOfMonth();
 
         $attendance = CheckIn::with('user') // Eager load user data for names
             ->where('action_time', '>=', $startDate)
