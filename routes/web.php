@@ -22,6 +22,8 @@ use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\DashboardProductController;
 use App\Http\Controllers\ShopeeReminderController;
 use App\Http\Controllers\WeddingInvitationController;
+use App\Http\Controllers\EmployeeCheckInController;
+use App\Http\Controllers\Api\CheckInController;
 
 /*
 |--------------------------------------------------------------------------
@@ -120,4 +122,16 @@ Route::get('/wedding-invitation', [WeddingInvitationController::class, 'index'])
 Route::post('/rsvp-submit', [WeddingInvitationController::class, 'storeRSVP'])->name('rsvp.submit');
 Route::post('/wishes-submit', [WeddingInvitationController::class, 'storeWish'])->name('wishes.submit');
 Route::get('/wishes-list', [WeddingInvitationController::class, 'getWishes'])->name('wishes.list');
+
+Route::middleware(['auth'])->group(function () {
+    // This route serves the check-in form page
+    Route::get('/attendance/checkin', [EmployeeCheckInController::class, 'index'])
+         ->name('attendance.checkin');
+
+    Route::post('/attendance/submit', [CheckInController::class, 'store'])
+         ->name('attendance.submit');
+
+    Route::get('/attendance/status', [CheckInController::class, 'status'])
+     ->name('attendance.status');
+});
 

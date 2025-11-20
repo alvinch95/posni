@@ -9,8 +9,26 @@
           </a>
         </li>
       </ul>
+      @endcan
 
       <div class="sidebar-heading mt-4">
+        <button class="btn btn-link text-left px-3 text-muted" data-bs-toggle="collapse" data-bs-target="#attendanceSubmenu" aria-expanded="false" aria-controls="attendanceSubmenu">
+          <span>Absensi</span>
+          <span class="arrow-down" data-feather="arrow-down" style="display: inline;"></span>
+          <span class="arrow-up" data-feather="arrow-up" style="display: none;"></span>
+        </button>
+      </div>
+      <ul id="attendanceSubmenu" class="nav flex-column collapse">
+        <li class="nav-item">
+          <a class="nav-link {{ Request::is('attendance/checkin*') ? 'active' : '' }}" href="/attendance/checkin">
+            <span data-feather="user-check"></span>
+            Checkin/Checkout
+          </a>
+        </li>
+      </ul>
+
+      @can('admin')
+      <div class="sidebar-heading mt-3">
         <button class="btn btn-link text-left px-3 text-muted" data-bs-toggle="collapse" data-bs-target="#masterDataSubmenu" aria-expanded="false" aria-controls="masterDataSubmenu">
           <span>Master Data</span>
           <span class="arrow-down" data-feather="arrow-down" style="display: inline;"></span>
@@ -51,6 +69,7 @@
       </ul>
       @endcan
 
+      @can('admin')
       <div class="sidebar-heading mt-3">
         <button class="btn btn-link text-left px-3 text-muted" data-bs-toggle="collapse" data-bs-target="#transactionSubmenu" aria-expanded="false" aria-controls="transactionSubmenu">
           <span>Transaction</span>
@@ -74,6 +93,7 @@
           </a>
         </li>
       </ul>
+      @endcan
 
       @can('admin')
       <div class="sidebar-heading mt-3">
@@ -160,58 +180,67 @@
 <script>
   // Change arrow direction on collapse/expand
   var reportSubmenu = document.getElementById('reportSubmenu');
-  reportSubmenu.addEventListener('show.bs.collapse', function() {
-    document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-down').style.display = 'none';
-    document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-up').style.display = 'inline';
-  });
+  if(reportSubmenu){
+    reportSubmenu.addEventListener('show.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-down').style.display = 'none';
+      document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-up').style.display = 'inline';
+    });
 
-  reportSubmenu.addEventListener('hide.bs.collapse', function() {
-    document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-down').style.display = 'inline';
-    document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-up').style.display = 'none';
-  });
+    reportSubmenu.addEventListener('hide.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-down').style.display = 'inline';
+      document.querySelector('[data-bs-target="#reportSubmenu"] .arrow-up').style.display = 'none';
+    });
+  }
 
   var cashBalanceSubmenu = document.getElementById('cashBalanceSubmenu');
-  cashBalanceSubmenu.addEventListener('show.bs.collapse', function() {
-    document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-down').style.display = 'none';
-    document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-up').style.display = 'inline';
-  });
-
-  cashBalanceSubmenu.addEventListener('hide.bs.collapse', function() {
-    document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-down').style.display = 'inline';
-    document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-up').style.display = 'none';
-  });
+  if(cashBalanceSubmenu){
+    cashBalanceSubmenu.addEventListener('show.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-down').style.display = 'none';
+      document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-up').style.display = 'inline';
+    });
+  
+    cashBalanceSubmenu.addEventListener('hide.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-down').style.display = 'inline';
+      document.querySelector('[data-bs-target="#cashBalanceSubmenu"] .arrow-up').style.display = 'none';
+    });
+  }
 
   var stockOpnameSubmenu = document.getElementById('stockOpnameSubmenu');
-  stockOpnameSubmenu.addEventListener('show.bs.collapse', function() {
-    document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-down').style.display = 'none';
-    document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-up').style.display = 'inline';
-  });
-
-  stockOpnameSubmenu.addEventListener('hide.bs.collapse', function() {
-    document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-down').style.display = 'inline';
-    document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-up').style.display = 'none';
-  });
+  if(stockOpnameSubmenu){
+    stockOpnameSubmenu.addEventListener('show.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-down').style.display = 'none';
+      document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-up').style.display = 'inline';
+    });
+  
+    stockOpnameSubmenu.addEventListener('hide.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-down').style.display = 'inline';
+      document.querySelector('[data-bs-target="#stockOpnameSubmenu"] .arrow-up').style.display = 'none';
+    });
+  }
 
   var transactionSubmenu = document.getElementById('transactionSubmenu');
-  transactionSubmenu.addEventListener('show.bs.collapse', function() {
-    document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-down').style.display = 'none';
-    document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-up').style.display = 'inline';
-  });
-
-  transactionSubmenu.addEventListener('hide.bs.collapse', function() {
-    document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-down').style.display = 'inline';
-    document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-up').style.display = 'none';
-  });
+  if(transactionSubmenu){
+    transactionSubmenu.addEventListener('show.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-down').style.display = 'none';
+      document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-up').style.display = 'inline';
+    });
+  
+    transactionSubmenu.addEventListener('hide.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-down').style.display = 'inline';
+      document.querySelector('[data-bs-target="#transactionSubmenu"] .arrow-up').style.display = 'none';
+    });
+  }
 
   var masterDataSubmenu = document.getElementById('masterDataSubmenu');
-  masterDataSubmenu.addEventListener('show.bs.collapse', function() {
-    document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-down').style.display = 'none';
-    document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-up').style.display = 'inline';
-  });
-
-  masterDataSubmenu.addEventListener('hide.bs.collapse', function() {
-    document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-down').style.display = 'inline';
-    document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-up').style.display = 'none';
-  });
-
+  if(masterDataSubmenu){
+    masterDataSubmenu.addEventListener('show.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-down').style.display = 'none';
+      document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-up').style.display = 'inline';
+    });
+  
+    masterDataSubmenu.addEventListener('hide.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-down').style.display = 'inline';
+      document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-up').style.display = 'none';
+    });
+  }
 </script>
