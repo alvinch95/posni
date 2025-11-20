@@ -25,6 +25,14 @@
             Checkin/Checkout
           </a>
         </li>
+        @can('admin')
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('attendance/record*') ? 'active' : '' }}" href="{{ route('attendance.records') }}">
+                <span data-feather="file-text"></span>
+                Attendance Records
+            </a>
+        </li>
+        @endcan
       </ul>
 
       @can('admin')

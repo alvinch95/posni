@@ -112,4 +112,29 @@ class CheckInController extends Controller
             'next_action' => $nextAction
         ]);
     }
+
+    public function records(Request $request)
+    {
+        // 1. Authorization Check (Simple Admin check)
+        if (auth()->user()->is_admin !== 1) {
+            return redirect('/')->with('error', 'Access denied. Only managers can view this report.');
+        }
+
+        // 2. Data Fetching
+        // Fetch records for the last 7 days. This avoids loading too much data.
+        $startDate = now()->subDays(7)->startOfDay();
+
+        $attendance = CheckIn::with('user') // Eager load user data for names
+            ->where('action_time', '>=', $startDate)
+            ->orderBy('action_time', 'desc')
+            ->get()
+            ->groupBy(function($date) {
+                // Group by date for easier display in the view
+                return \Carbon\Carbon::parse($date->action_time)->format('Y-m-d');
+            });
+
+        return view('dashboard.attendances.records', [
+            'attendance' => $attendance,
+        ]);
+    }
 }
