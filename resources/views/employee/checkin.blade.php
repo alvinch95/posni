@@ -16,7 +16,7 @@
             </div>
             <div class="card-body text-center">
                 <video id="webcam-stream" class="img-fluid border" autoplay style="max-width: 100%; height: auto;"></video>
-                <canvas id="photo-canvas" style="display:none;"></canvas>
+                <canvas id="photo-canvas" style="display:none; width: 100%; height: auto;"></canvas>
                 <div class="mt-3">
                     <button type="button" class="btn btn-warning" id="start-camera-btn">Buka Kamera</button>
                     <button type="button" class="btn btn-primary d-none" id="capture-photo-btn">Ambil Foto</button>
@@ -111,43 +111,72 @@
             );
         }
         
+        function stopCameraStream() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                webcamStream.srcObject = null;
+                stream = null;
+            }
+        }
         // --- 3. Camera Controls ---
-        startCameraBtn.addEventListener('click', async () => {
+        startCameraBtn.onclick = async () => {
+            canvas.style.display = 'none';
+            webcamStream.style.display = 'block';
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 webcamStream.srcObject = stream;
-                webcamStream.style.display = 'block';
+                
                 startCameraBtn.classList.add('d-none');
                 capturePhotoBtn.classList.remove('d-none');
-                // Start location fetching as soon as camera starts
-                getLocation(); 
+                
+                getLocation();
             } catch (err) {
-                alert('Error accessing camera. Please ensure permissions are granted.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Camera Error',
+                    text: 'Tidak bisa akses kamera. Mohon untuk diberikan permission.'
+                });
                 console.error(err);
             }
-        });
+        };
         
-        capturePhotoBtn.addEventListener('click', () => {
-            const context = canvas.getContext('2d');
-            // Set canvas dimensions to the video stream size
-            canvas.width = webcamStream.videoWidth;
-            canvas.height = webcamStream.videoHeight;
-            
-            // Draw the current video frame onto the canvas
-            context.drawImage(webcamStream, 0, 0, canvas.width, canvas.height);
-            
-            // Convert the canvas image to a Blob (File object for submission)
-            canvas.toBlob((blob) => {
-                photoBlob = blob;
-                webcamStream.style.border = '5px solid #28a745'; // Visual confirmation
-                capturePhotoBtn.textContent = 'Photo Captured (Retake)';
+        capturePhotoBtn.onclick = () => {
+            if (capturePhotoBtn.textContent === 'Retake Photo') {
+                // --- ACTION: RETAKE (Re-open the stream) ---
+                canvas.style.display = 'none';
+                webcamStream.style.display = 'block';
+                
+                // Reset button state to original capture state
+                capturePhotoBtn.textContent = 'Ambil Foto'; 
+                capturePhotoBtn.classList.remove('btn-danger');
+                capturePhotoBtn.classList.add('btn-primary'); 
+                
+                // Restart the camera stream
+                startCameraBtn.onclick(); 
+                
+            } else {
+                // --- ACTION: CAPTURE (Stop stream and show preview) ---
+                const context = canvas.getContext('2d');
+                canvas.width = webcamStream.videoWidth;
+                canvas.height = webcamStream.videoHeight;
+                context.drawImage(webcamStream, 0, 0, canvas.width, canvas.height);
+                
+                canvas.toBlob((blob) => {
+                    photoBlob = blob;
+                    webcamStream.style.display = 'none'; // Hide the live stream
+                    canvas.style.display = 'block';      // Show the captured image preview
+                    stopCameraStream(); 
 
-                // If location is also ready, enable submit
-                if (document.getElementById('latitude-input').value) {
-                    submitBtn.disabled = false;
-                }
-            }, 'image/jpeg');
-        });
+                    capturePhotoBtn.textContent = 'Retake Photo';
+                    capturePhotoBtn.classList.remove('btn-primary');
+                    capturePhotoBtn.classList.add('btn-danger');
+
+                    if (document.getElementById('latitude-input').value) {
+                        submitBtn.disabled = false;
+                    }
+                }, 'image/jpeg');
+            }
+        };
 
         // --- 4. Submission Handler ---
         form.addEventListener('submit', async (e) => {
