@@ -19,6 +19,7 @@
                 <canvas id="photo-canvas" style="display:none; width: 100%; height: auto;"></canvas>
                 <div class="mt-3">
                     <button type="button" class="btn btn-warning" id="start-camera-btn">Buka Kamera</button>
+                    <button type="button" class="btn btn-secondary d-none" id="switch-camera-btn">Switch Camera</button>
                     <button type="button" class="btn btn-primary d-none" id="capture-photo-btn">Ambil Foto</button>
                 </div>
             </div>
@@ -55,6 +56,8 @@
         const actionText = document.getElementById('action-text');
         let stream = null; // To store the video stream object
         let photoBlob = null; // To store the captured photo file
+        const switchCameraBtn = document.getElementById('switch-camera-btn');
+        let useFrontCamera = true; // NEW STATE: Start with the front camera (user-facing)
 
         // --- 1. Get Initial Status and Set Button Text (Simulated for now) ---
         // In a real app, you would make a small API call to see the employee's last action 
@@ -118,8 +121,40 @@
                 stream = null;
             }
         }
+
+        async function startCameraAndLocation() {
+            // 1. Stop any existing stream
+            stopCameraStream(); 
+            canvas.style.display = 'none';
+            webcamStream.style.display = 'block';
+
+            try {
+                const videoConstraints = {
+                    video: {
+                        // Use 'user' for front camera, 'environment' for back camera
+                        facingMode: useFrontCamera ? 'user' : 'environment' 
+                    }
+                };
+
+                stream = await navigator.mediaDevices.getUserMedia(videoConstraints);
+                webcamStream.srcObject = stream;
+                
+                startCameraBtn.classList.add('d-none');
+                capturePhotoBtn.classList.remove('d-none');
+                switchCameraBtn.classList.remove('d-none'); // Show the switch button
+
+                getLocation(); 
+            } catch (err) {
+                alert('Error accessing camera: ' + err.name + '. Check permissions or switch setting.');
+                console.error(err);
+            }
+        }
+
         // --- 3. Camera Controls ---
         startCameraBtn.onclick = async () => {
+            useFrontCamera = !useFrontCamera; // Toggle camera facing mode
+            switchCameraBtn.textContent = useFrontCamera ? 'Kamera Belakang' : 'Kamera Depan';
+            await startCameraAndLocation();
             canvas.style.display = 'none';
             webcamStream.style.display = 'block';
             try {
@@ -166,6 +201,7 @@
                     webcamStream.style.display = 'none'; // Hide the live stream
                     canvas.style.display = 'block';      // Show the captured image preview
                     stopCameraStream(); 
+                    switchCameraBtn.classList.add('d-none');
 
                     capturePhotoBtn.textContent = 'Retake Photo';
                     capturePhotoBtn.classList.remove('btn-primary');
