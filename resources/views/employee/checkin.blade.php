@@ -152,9 +152,6 @@
 
         // --- 3. Camera Controls ---
         startCameraBtn.onclick = async () => {
-            useFrontCamera = !useFrontCamera; // Toggle camera facing mode
-            switchCameraBtn.textContent = useFrontCamera ? 'Kamera Belakang' : 'Kamera Depan';
-            await startCameraAndLocation();
             canvas.style.display = 'none';
             webcamStream.style.display = 'block';
             try {
@@ -163,6 +160,7 @@
                 
                 startCameraBtn.classList.add('d-none');
                 capturePhotoBtn.classList.remove('d-none');
+                switchCameraBtn.classList.remove('d-none');
                 
                 getLocation();
             } catch (err) {
@@ -175,6 +173,12 @@
             }
         };
         
+        switchCameraBtn.onclick = async () => {
+            useFrontCamera = !useFrontCamera; // Toggle camera facing mode
+            switchCameraBtn.textContent = useFrontCamera ? 'Kamera Belakang' : 'Kamera Depan';
+            await startCameraAndLocation();
+        };
+
         capturePhotoBtn.onclick = () => {
             if (capturePhotoBtn.textContent === 'Retake Photo') {
                 // --- ACTION: RETAKE (Re-open the stream) ---
@@ -185,6 +189,7 @@
                 capturePhotoBtn.textContent = 'Ambil Foto'; 
                 capturePhotoBtn.classList.remove('btn-danger');
                 capturePhotoBtn.classList.add('btn-primary'); 
+                switchCameraBtn.classList.remove('d-none');
                 
                 // Restart the camera stream
                 startCameraBtn.onclick(); 
