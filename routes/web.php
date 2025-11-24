@@ -136,5 +136,8 @@ Route::middleware(['auth'])->group(function () {
 
      Route::get('/attendance/records', [CheckInController::class, 'records'])
     ->name('attendance.records');
+
+    Route::get('/attendance/my-history', [CheckInController::class, 'myHistory'])
+    ->name('attendance.my-history');
 });
 

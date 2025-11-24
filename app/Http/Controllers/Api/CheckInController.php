@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Api;
 // Use the necessary classes
 use App\Models\CheckIn;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Storage;
+use SebastianBergmann\Environment\Console;
 
 class CheckInController extends Controller
 {
@@ -14,16 +15,25 @@ class CheckInController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
+        $currentDateTime = now();
 
         // 1. Determine the required next action (IN or OUT)
         $latestAction = CheckIn::where('user_id', $user->id)
             ->latest('action_time')
             ->first();
 
-        $requiredAction = (
-            !$latestAction || 
-            $latestAction->action_type === 'out'
-        ) ? 'in' : 'out';
+        $requiredAction = 'in'; // Default to Check-In
+
+        if ($latestAction) {
+            $lastActionDate = \Carbon\Carbon::parse($latestAction->action_time)->toDateString();
+            $todayDate = $currentDateTime->toDateString();
+
+            if ($lastActionDate === $todayDate) {
+                // Last action was TODAY: Use standard logic
+                $requiredAction = ($latestAction->action_type === 'out') ? 'in' : 'out';
+            }
+            // If last action was YESTERDAY or earlier, requiredAction remains 'in'
+        }
 
         // 2. Validation (Photo, Location)
         $request->validate([
@@ -101,15 +111,22 @@ class CheckInController extends Controller
             ->latest('action_time')
             ->first();
 
-        // If no action or the last action was 'out', the next action is 'in'.
-        $nextAction = (
-            !$latestAction || 
-            $latestAction->action_type === 'out'
-        ) ? 'in' : 'out';
+        $nextAction = 'in'; // Default to Check-In
+
+        if ($latestAction) {
+            $lastActionDate = \Carbon\Carbon::parse($latestAction->action_time)->toDateString();
+            $todayDate = now()->toDateString();
+            
+            if ($lastActionDate === $todayDate) {
+                // Last action was TODAY: Use standard logic
+                $nextAction = ($latestAction->action_type === 'out') ? 'in' : 'out';
+            }
+            // If last action was YESTERDAY or earlier, we keep the default 'in'
+        }
 
         return response()->json([
-            'status' => $latestAction ? $latestAction->action_type : 'out', // 'in' or 'out'
-            'next_action' => $nextAction
+            'status' => $latestAction ? $latestAction->action_type : 'out', 
+            'next_action' => $nextAction // Will be 'in' if the last action was yesterday
         ]);
     }
 
@@ -136,5 +153,18 @@ class CheckInController extends Controller
         return view('dashboard.attendances.records', [
             'attendance' => $attendance,
         ]);
+    }
+
+    public function myHistory(Request $request)
+    {
+        $startDate = today();
+
+        $records = CheckIn::where('user_id', auth()->id())
+            ->where('action_time', '>=', $startDate)
+            ->orderBy('action_time', 'desc')
+            ->limit(10) // Limit to 10 latest entries
+            ->get();
+
+        return response()->json($records);
     }
 }

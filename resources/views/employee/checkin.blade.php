@@ -40,6 +40,22 @@
             <span id="action-text">...</span> Absen
         </button>
     </form>
+    <div class="mt-5">
+        <h3>Absensi Hari Ini</h3>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Absen</th>
+                    <th>Waktu</th>
+                </tr>
+            </thead>
+            <tbody id="history-table-body">
+                <tr>
+                    <td colspan="2">Loading history...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 @endsection
 
@@ -79,7 +95,43 @@
                 actionText.textContent = 'Error';
             }
         }
+        async function loadHistory() {
+            const historyBody = document.getElementById('history-table-body');
+            
+            try {
+                const response = await fetch('{{ route('attendance.my-history') }}');
+                const records = await response.json();
+                
+                historyBody.innerHTML = ''; // Clear 'Loading...' message
+
+                if (records.length === 0) {
+                    historyBody.innerHTML = '<tr><td colspan="3">Data absensi tidak ditemukan.</td></tr>';
+                    return;
+                }
+
+                records.forEach(record => {
+                    const row = document.createElement('tr');
+                    
+                    const actionBadge = record.action_type === 'in' 
+                        ? '<span class="badge bg-success">Masuk</span>' 
+                        : '<span class="badge bg-danger">Keluar</span>';
+                    
+                    const time = new Date(record.action_time).toLocaleString();
+                    
+                    row.innerHTML = `
+                        <td>${actionBadge}</td>
+                        <td>${time}</td>
+                    `;
+                    historyBody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error('Failed to load history:', error);
+                historyBody.innerHTML = '<tr><td colspan="3" class="text-danger">Gagal memuat data absensi.</td></tr>';
+            }
+        }
         loadInitialStatus();
+        loadHistory();
 
         // --- 2. Geolocation Function ---
         function getLocation() {
