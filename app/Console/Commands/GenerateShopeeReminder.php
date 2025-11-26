@@ -143,6 +143,13 @@ class GenerateShopeeReminder extends Command
             $data = json_decode($webhook->request_body,true);
             $ordersn = $data['data']['ordersn'];
 
+            $existing = ShopeeReminder::where('ordersn', $ordersn)->first();
+            if($existing){
+                $webhook->is_processed = true;
+                $webhook->save();
+                continue;
+            }
+
             $sm = new ShopeeReminder;
             $sm->webhook_request_id = $webhook->id;
             //call order detail API
