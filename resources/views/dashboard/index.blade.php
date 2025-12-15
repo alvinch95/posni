@@ -11,67 +11,67 @@
 <div class="row mb-3">
     <!-- Total Revenue Card -->
     <div class="col-6 col-md-3 mb-3">
-        <div class="card" style="background-color: #AEDFF7; color: #333; height: 140px;">
+        <div class="card bg-metric-blue border-0" style="height: 140px;">
             <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Total Revenue</h5>
+                    <h5 class="card-title fw-bold opacity-75">Total Revenue</h5>
                     <i class="bi bi-currency-dollar fs-3"></i>
                 </div>
-                <p class="card-text fs-5">Rp. {{ number_format($totalRevenueSum, 0, ',', '.') }}</p>
+                <p class="card-text fs-4 fw-bold">Rp. {{ number_format($totalRevenueSum, 0, ',', '.') }}</p>
             </div>
         </div>
     </div>
 
     <!-- Total Orders Card -->
     <div class="col-6 col-md-3 mb-3">
-        <div class="card" style="background-color: #D5E8D4; color: #333; height: 140px;">
+        <div class="card bg-metric-green border-0" style="height: 140px;">
             <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Total Orders</h5>
+                    <h5 class="card-title fw-bold opacity-75">Total Orders</h5>
                     <i class="bi bi-cart-fill fs-3"></i>
                 </div>
-                <p class="card-text fs-5">{{ number_format($totalOrdersSum, 0, ',', '.') }}</p>
+                <p class="card-text fs-4 fw-bold">{{ number_format($totalOrdersSum, 0, ',', '.') }}</p>
             </div>
         </div>
     </div>
 
     <!-- Average Order Value Card -->
     <div class="col-6 col-md-3 mb-3">
-        <div class="card" style="background-color: #F9E7C7; color: #333; height: 140px;">
+        <div class="card bg-metric-teal border-0" style="height: 140px;">
             <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Average Order Value</h5>
+                    <h5 class="card-title fw-bold opacity-75">Avg Order Value</h5>
                     <i class="bi bi-graph-up-arrow fs-3"></i>
                 </div>
-                <p class="card-text fs-5">Rp. {{ number_format($averageOrderValue, 0, ',', '.') }}</p>
+                <p class="card-text fs-4 fw-bold">Rp. {{ number_format($averageOrderValue, 0, ',', '.') }}</p>
             </div>
         </div>
     </div>
 
     <!-- Cash In Card -->
     <div class="col-6 col-md-3 mb-3">
-        <div class="card" style="background-color: #FFE6CC; color: #333; height: 140px;">
+        <div class="card bg-metric-orange border-0" style="height: 140px;">
             <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Cash In (This Month)</h5>
+                    <h5 class="card-title fw-bold opacity-75">Cash In (Month)</h5>
                     <i class="bi bi-credit-card fs-3"></i>
                 </div>
-                <p class="card-text fs-5">Rp. {{ number_format($totalCashIn, 0, ',', '.') }}</p>
-                <small class="text-muted">Last Month: Rp. {{ number_format($totalCashInLastMonth, 0, ',', '.') }}</small>
+                <p class="card-text fs-4 fw-bold">Rp. {{ number_format($totalCashIn, 0, ',', '.') }}</p>
+                <small class="opacity-75">Last: Rp. {{ number_format($totalCashInLastMonth, 0, ',', '.') }}</small>
             </div>
         </div>
     </div>
 
     <!-- Cash Out Card -->
     <div class="col-6 col-md-3 mb-3">
-        <div class="card" style="background-color: #FFCCCC; color: #333; height: 140px;">
+        <div class="card bg-metric-red border-0" style="height: 140px;">
             <div class="card-body d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Cash Out (This Month)</h5>
+                    <h5 class="card-title fw-bold opacity-75">Cash Out (Month)</h5>
                     <i class="bi bi-wallet2 fs-3"></i>
                 </div>
-                <p class="card-text fs-5">Rp. {{ number_format($totalCashOut, 0, ',', '.') }}</p>
-                <small class="text-muted">Last Month: Rp. {{ number_format($totalCashOutLastMonth, 0, ',', '.') }}</small>
+                <p class="card-text fs-4 fw-bold">Rp. {{ number_format($totalCashOut, 0, ',', '.') }}</p>
+                <small class="opacity-75">Last: Rp. {{ number_format($totalCashOutLastMonth, 0, ',', '.') }}</small>
             </div>
         </div>
     </div>
@@ -83,8 +83,8 @@
     <!-- Daily Report Chart -->
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header text-white" style="background-color: #C8A2C8;">
-                <h5 class="mb-0">Daily Report</h5>
+            <div class="card-header">
+                Daily Report
             </div>
             <div class="card-body">
                 <form action="{{ route('dashboard.index') }}" method="GET" class="mb-3">
@@ -114,8 +114,8 @@
     <!-- Top Selling Products Table -->
     <div class="col-md-4">
         <div class="card">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Top Selling Products</h5>
+            <div class="card-header">
+                Top Selling Products
             </div>
             <div class="card-body p-0">
                 <table class="table table-bordered table-striped mb-0">
@@ -144,8 +144,8 @@
 
         <!-- Inventory Value Chart -->
         <div class="card mt-3">
-            <div class="card-header text-white" style="background-color: #C0C0C0;">
-                <h5 class="mb-0">Inventory Value</h5>
+            <div class="card-header">
+                Inventory Value
             </div>
             <div class="card-body">
                 <div id="inventory-chart" style="width: 100%; height: 400px;"></div>
@@ -158,8 +158,8 @@
 <div class="row mb-3">
     <div class="col-md-12">
         <div class="card">
-            <div class="card-header text-white" style="background-color: #008080;">
-                <h5 class="mb-0">Monthly Transactions</h5>
+            <div class="card-header">
+                Monthly Transactions
             </div>
             <div class="card-body">
                 <form action="{{ route('dashboard.index') }}" method="GET" class="d-flex align-items-center mb-3">

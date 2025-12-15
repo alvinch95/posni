@@ -1,0 +1,331 @@
+/* Modern Dashboard Design System - Premium Revamp */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #8c9c84;
+    /* Sage Green (Frontend Primary) */
+    --secondary-color: #d4c5b0;
+    /* Soft Beige (Frontend Secondary) */
+    --accent-color: #e67e22;
+    /* Muted Orange (Frontend Accent) */
+    --text-dark: #4a4036;
+    /* Deep Warm Brown (Frontend Foreground) */
+    --text-muted: #8b7e74;
+    /* Desaturated Brown */
+    --bg-light: #fdfbf7;
+    /* Warm Cream (Frontend Background) */
+    --bg-white: #ffffff;
+
+    --sidebar-width: 260px;
+    --header-height: 64px;
+    --border-radius: 12px;
+    --shadow-sm: 0 1px 2px 0 rgba(74, 64, 54, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(74, 64, 54, 0.1), 0 2px 4px -2px rgba(74, 64, 54, 0.1);
+
+    /* Metric Card Colors (Earth Tone Subtles) */
+    --bg-blue-soft: #e0e7df;
+    /* Soft Sage */
+    --bg-green-soft: #ecf3e9;
+    /* Light Green */
+    --bg-orange-soft: #fae8d6;
+    /* Peach */
+    --bg-red-soft: #fde8e8;
+    /* Soft Red */
+    --bg-purple-soft: #f3e8ff;
+    /* Lavender (Keep for distinctness) */
+    --bg-teal-soft: #e6f0eb;
+    /* Soft Teal */
+}
+
+/* Metric Cards */
+.bg-metric-blue {
+    background-color: var(--bg-blue-soft) !important;
+    color: #2f3e2b !important;
+}
+
+/* Dark Sage Text on Soft Sage */
+.bg-metric-green {
+    background-color: var(--bg-green-soft) !important;
+    color: #3f4d3b !important;
+}
+
+/* Dark Green Text */
+.bg-metric-orange {
+    background-color: var(--bg-orange-soft) !important;
+    color: #9a3412 !important;
+}
+
+.bg-metric-red {
+    background-color: var(--bg-red-soft) !important;
+    color: #7f1d1d !important;
+}
+
+.bg-metric-teal {
+    background-color: var(--bg-teal-soft) !important;
+    color: #134e4a !important;
+}
+
+/* Subtle Badges (BS5.3 Compat) */
+.bg-success-subtle {
+    background-color: #dcfce7 !important;
+}
+
+.text-success {
+    color: #166534 !important;
+}
+
+.border-success-subtle {
+    border-color: #bbf7d0 !important;
+}
+
+.bg-danger-subtle {
+    background-color: #fee2e2 !important;
+}
+
+.text-danger {
+    color: #991b1b !important;
+}
+
+.border-danger-subtle {
+    border-color: #fecaca !important;
+}
+
+.bg-warning-subtle {
+    background-color: #fef08a !important;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+/* --- Typography --- */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* --- Layout --- */
+.navbar {
+    height: var(--header-height);
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: none !important;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+/* --- Header & Toggler --- */
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+    font-size: 1.25rem;
+    padding-left: 1rem;
+    letter-spacing: -0.5px;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.navbar-toggler {
+    border: none;
+    padding: 0.5rem;
+    color: var(--text-dark) !important;
+    position: absolute;
+    right: 1rem;
+    top: 0.75rem;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%234a4036' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* --- Sidebar --- */
+#sidebarMenu {
+    position: fixed;
+    top: var(--header-height);
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0;
+    box-shadow: none;
+    background-color: var(--bg-white);
+    border-right: 1px solid #e2e8f0;
+    width: var(--sidebar-width);
+    transition: width 0.3s ease;
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    color: var(--text-muted);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--primary-color);
+    background-color: #f1f5f9;
+}
+
+.sidebar .nav-link.active {
+    color: #ffffff;
+    /* White text on active */
+    background-color: var(--primary-color);
+    /* Sage Green */
+    border-right: none;
+    border-radius: 8px;
+    /* Rounded active state */
+    margin: 0 10px;
+    /* Inset look */
+}
+
+.sidebar .nav-link svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Submenu Toggles */
+.sidebar-heading button {
+    font-weight: 600;
+    color: var(--text-dark) !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 1.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none !important;
+}
+
+.sidebar-heading button:hover {
+    color: var(--primary-color) !important;
+}
+
+.sidebar-heading button:focus {
+    box-shadow: none;
+}
+
+/* --- Content Content --- */
+main {
+    margin-left: var(--sidebar-width);
+    /* Push content */
+    padding: 2rem;
+}
+
+@media (max-width: 768px) {
+    #sidebarMenu {
+        width: 100%;
+        /* or partial width e.g., 250px */
+        height: calc(100vh - var(--header-height));
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        z-index: 1050;
+        /* Higher than header (1030)? No, stick below header but above content */
+        overflow-y: auto;
+        border-right: none;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Ensure navbar is above sidebar if we want sidebar below it */
+    .navbar {
+        height: auto;
+        /* Allow expansion if needed, but usually fixed */
+        min-height: var(--header-height);
+        z-index: 1060;
+    }
+
+    main {
+        margin-left: 0;
+        padding-top: 1.5rem;
+        /* Give some breathing room */
+    }
+
+    /* Adjust sidebar nav links for mobile touch targets */
+    .sidebar .nav-link {
+        padding: 1rem 1.5rem;
+    }
+}
+
+/* --- Cards & Tables --- */
+.card {
+    border: none;
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--border-radius);
+    background: var(--bg-white);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background-color: #fff !important;
+    border-bottom: 0px solid #f1f5f9;
+    padding: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark) !important;
+    font-size: 1.1rem;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border-bottom-width: 1px;
+    padding: 1rem;
+    background-color: #f8fafc;
+}
+
+.table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.9rem;
+}
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 1px 2px 0 rgba(140, 156, 132, 0.4);
+}
+
+.btn-primary:hover {
+    background-color: #7a8b73;
+    /* Darker Sage */
+    border-color: #7a8b73;
+}
+
+/* --- Form Controls --- */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    padding: 0.625rem 0.875rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
