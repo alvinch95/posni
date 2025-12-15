@@ -76,6 +76,7 @@ Route::get('/register', [RegisterController::class, 'index'])->middleware('guest
 Route::post('/register', [RegisterController::class, 'store']);
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard.index');
+Route::get('/dashboard/data', [DashboardController::class, 'getData'])->middleware('auth')->name('dashboard.data');
 
 
 //route resource artinya udah sepaket crud, tinggal diarahin sesuai dengan nama method di dalam controllernya

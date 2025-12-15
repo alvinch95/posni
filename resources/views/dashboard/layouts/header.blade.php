@@ -1,15 +1,14 @@
-<header class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/dashboard">POSNI</a>
+<header class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow d-md-none">
+    <div class="d-flex align-items-center px-3 bg-white border-bottom" style="height: var(--header-height); width: var(--sidebar-width); flex-shrink: 0;">
+        <a class="navbar-brand text-dark p-0 me-2" href="/dashboard">POSNI</a>
+
+    </div>
+    
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    {{-- <input class="form-control form-control-light w-100" type="text" placeholder="Search" aria-label="Search"> --}}
+    
     <div class="navbar-nav">
-      <div class="nav-item text-nowrap">
-        {{-- <form action="/logout" method="POST">
-          @csrf
-          <button type="submit" class="nav-link px-3 border-0 text-dark">Logout <span data-feather="log-out"></span></button>
-        </form> --}}
-      </div>
+      <!-- User Menu -->
     </div>
 </header>

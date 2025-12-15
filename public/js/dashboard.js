@@ -1,53 +1,29 @@
-/* globals Chart:false, feather:false */
+/* globals feather:false */
 
 (function () {
   'use strict'
 
   feather.replace({ 'aria-hidden': 'true' })
 
-  // Graphs
-  var ctx = document.getElementById('myChart')
-  // eslint-disable-next-line no-unused-vars
-  // var myChart = new Chart(ctx, {
-  //   type: 'line',
-  //   data: {
-  //     labels: [
-  //       'Sunday',
-  //       'Monday',
-  //       'Tuesday',
-  //       'Wednesday',
-  //       'Thursday',
-  //       'Friday',
-  //       'Saturday'
-  //     ],
-  //     datasets: [{
-  //       data: [
-  //         15339,
-  //         21345,
-  //         18483,
-  //         24003,
-  //         23489,
-  //         24092,
-  //         12034
-  //       ],
-  //       lineTension: 0,
-  //       backgroundColor: 'transparent',
-  //       borderColor: '#007bff',
-  //       borderWidth: 4,
-  //       pointBackgroundColor: '#007bff'
-  //     }]
-  //   },
-  //   options: {
-  //     scales: {
-  //       yAxes: [{
-  //         ticks: {
-  //           beginAtZero: false
-  //         }
-  //       }]
-  //     },
-  //     legend: {
-  //       display: false
-  //     }
-  //   }
-  // })
+  // Sidebar Toggle Logic
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebarToggleMain = document.getElementById('sidebarToggleMain');
+  const sidebarMenu = document.getElementById('sidebarMenu');
+  const mainContent = document.querySelector('.dashboard-main');
+
+  function toggleSidebar() {
+    if (sidebarMenu && mainContent) {
+      sidebarMenu.classList.toggle('collapsed');
+      mainContent.classList.toggle('expanded');
+    }
+  }
+
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', toggleSidebar);
+  }
+
+  if (sidebarToggleMain) {
+    sidebarToggleMain.addEventListener('click', toggleSidebar);
+  }
+
 })()

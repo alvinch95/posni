@@ -1,4 +1,10 @@
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+<nav id="sidebarMenu" class="d-md-block sidebar collapse">
+    <div class="sidebar-header d-flex align-items-center justify-content-between px-3 mt-3 mb-2">
+        <a class="navbar-brand text-white fw-bold fs-4" href="/dashboard">POSNI</a>
+        <button class="btn btn-link text-white-50 p-0 d-none d-md-block" id="sidebarToggle" aria-label="Toggle Sidebar">
+            <span data-feather="chevrons-left"></span>
+        </button>
+    </div>
     <div class="position-sticky pt-3">
       @can('admin')
       <ul class="nav flex-column">

@@ -50,25 +50,32 @@
 @include('dashboard.layouts.header')
 @include('sweetalert::alert')
 
-<div class="container-fluid">
-  <div class="row">
+
+
+<div class="dashboard-container">
     @include('dashboard.layouts.sidebar')
 
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <main class="dashboard-main">
       <div id="loading-container" style="display: none;">
         <div>
             <img src="{{ asset('img/loading-gif.gif') }}" alt="Loading...">
         </div>
       </div>
+      
+      <!-- Floating Sidebar Toggle (Visible only when sidebar is collapsed) -->
+      <button class="btn btn-light shadow-sm border position-fixed d-none" id="sidebarToggleMain" style="top: 20px; left: 20px; z-index: 1040;">
+        <span data-feather="menu"></span>
+      </button>
+
       @yield('container')
     </main>
-  </div>
 </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script src="/js/dashboard.js"></script>
 @stack('scripts')
   </body>

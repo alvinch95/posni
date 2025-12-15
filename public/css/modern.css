@@ -155,44 +155,52 @@ h6 {
 /* --- Sidebar --- */
 #sidebarMenu {
     position: fixed;
-    top: var(--header-height);
+    top: 0;
     bottom: 0;
     left: 0;
     z-index: 100;
     padding: 0;
     box-shadow: none;
-    background-color: var(--bg-white);
-    border-right: 1px solid #e2e8f0;
+    background-color: var(--text-dark);
+    /* Dark Brown Theme */
+    border-right: none;
     width: var(--sidebar-width);
-    transition: width 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+#sidebarMenu.collapsed {
+    margin-left: calc(-1 * var(--sidebar-width));
+}
+
+.sidebar-header .navbar-brand {
+    color: #fff !important;
 }
 
 .sidebar .nav-link {
     font-weight: 500;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.7);
     padding: 0.75rem 1.5rem;
     border-radius: 0;
     transition: all 0.2s;
     display: flex;
     align-items: center;
     gap: 10px;
+    border-left: 3px solid transparent;
 }
 
 .sidebar .nav-link:hover {
-    color: var(--primary-color);
-    background-color: #f1f5f9;
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-left-color: var(--primary-color);
 }
 
 .sidebar .nav-link.active {
     color: #ffffff;
-    /* White text on active */
-    background-color: var(--primary-color);
-    /* Sage Green */
+    background-color: rgba(255, 255, 255, 0.1);
     border-right: none;
-    border-radius: 8px;
-    /* Rounded active state */
-    margin: 0 10px;
-    /* Inset look */
+    border-left-color: var(--primary-color);
+    border-radius: 0;
+    margin: 0;
 }
 
 .sidebar .nav-link svg {
@@ -203,7 +211,7 @@ h6 {
 /* Submenu Toggles */
 .sidebar-heading button {
     font-weight: 600;
-    color: var(--text-dark) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 0.05em;
@@ -216,7 +224,7 @@ h6 {
 }
 
 .sidebar-heading button:hover {
-    color: var(--primary-color) !important;
+    color: #ffffff !important;
 }
 
 .sidebar-heading button:focus {
@@ -224,25 +232,51 @@ h6 {
 }
 
 /* --- Content Content --- */
-main {
-    margin-left: var(--sidebar-width);
+/* --- Content Content --- */
+.dashboard-main {
+    margin-left: var(--sidebar-width) !important;
     /* Push content */
     padding: 2rem;
+    transition: margin-left 0.3s ease;
+    min-height: 100vh;
+    width: auto;
+}
+
+.dashboard-main.expanded {
+    margin-left: 0 !important;
+}
+
+.dashboard-main.expanded #sidebarToggleMain {
+    display: block !important;
 }
 
 @media (max-width: 768px) {
     #sidebarMenu {
         width: 100%;
-        /* or partial width e.g., 250px */
         height: calc(100vh - var(--header-height));
         position: fixed;
         top: var(--header-height);
         left: 0;
         z-index: 1050;
-        /* Higher than header (1030)? No, stick below header but above content */
         overflow-y: auto;
         border-right: none;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transform: translateX(-100%);
+        /* Hidden by default on mobile */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #sidebarMenu.show {
+        transform: translateX(0);
+        /* Slide in */
+    }
+
+
+
+    /* Mobile: Navbar Brand fills width */
+    .navbar>div:first-child {
+        width: 100% !important;
+        border-bottom: none !important;
     }
 
     /* Ensure navbar is above sidebar if we want sidebar below it */
@@ -253,10 +287,10 @@ main {
         z-index: 1060;
     }
 
-    main {
-        margin-left: 0;
+    /* Reset margin for mobile */
+    .dashboard-main {
+        margin-left: 0 !important;
         padding-top: 1.5rem;
-        /* Give some breathing room */
     }
 
     /* Adjust sidebar nav links for mobile touch targets */
