@@ -83,6 +83,7 @@ Route::get('/dashboard/data', [DashboardController::class, 'getData'])->middlewa
 Route::get('/dashboard/products/checkSlug',[DashboardProductController::class, 'checkSlug'])->middleware('admin');
 Route::resource('/dashboard/products', DashboardProductController::class)->middleware('admin');
 
+Route::post('dashboard/items/previewHamperUpdate', [ItemsController::class, 'previewHamperUpdate'])->middleware('admin');
 Route::resource('/dashboard/items', ItemsController::class)->middleware('admin');
 
 Route::resource('/dashboard/suppliers', SupplierController::class)->middleware('admin');

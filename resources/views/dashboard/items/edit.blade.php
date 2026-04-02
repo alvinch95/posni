@@ -15,9 +15,11 @@
     </div>
 @endif
 <div class="col-lg-8">
-    <form method="post" action="/dashboard/items/{{ $item->slug }}" class="mb-5" enctype="multipart/form-data">
+    <form method="post" action="/dashboard/items/{{ $item->slug }}" class="mb-5" enctype="multipart/form-data" id="editItemForm">
         @method('patch')
         @csrf
+        <input type="hidden" name="confirm_hamper_update" id="confirm_hamper_update" value="0">
+        <input type="hidden" id="original_purchase_price" value="{{ $item->purchase_price }}">
         <div class="mb-3">
           <label for="name" class="form-label">Name</label>
           <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" autofocus value="{{ old('name', $item->name) }}">
@@ -100,6 +102,69 @@
 
 
 <script>
+    document.getElementById('editItemForm').addEventListener('submit', function(e) {
+        if (this.dataset.confirmed) return;
+
+        const originalPrice = Number(document.getElementById('original_purchase_price').value);
+        const newPrice = Number(document.getElementById('purchase_price').value);
+
+        if (originalPrice !== newPrice) {
+            e.preventDefault();
+            const form = this;
+
+            $.ajax({
+                url: '/dashboard/items/previewHamperUpdate',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    item_id: {{ $item->id }},
+                    new_purchase_price: newPrice
+                },
+                success: function(data) {
+                    if (data.length > 0) {
+                        let tableHtml = '<div style="max-height:300px;overflow-y:auto;">' +
+                            '<table class="table table-sm table-bordered text-nowrap" style="font-size:13px;">' +
+                            '<thead class="table-dark"><tr><th>Hamper</th><th>Modal</th><th style="background-color:#198754;color:#fff;">Modal Baru</th><th>Revenue %</th><th style="background-color:#198754;color:#fff;">Revenue % Baru</th></tr></thead><tbody>';
+                        data.forEach(function(h) {
+                            tableHtml += '<tr>' +
+                                '<td>' + h.name + '</td>' +
+                                '<td>' + Number(h.capital_price).toLocaleString() + '</td>' +
+                                '<td style="background-color:#d1e7dd;color:#0f5132;font-weight:600;">' + Number(h.new_capital_price).toLocaleString() + '</td>' +
+                                '<td>' + h.revenue_percentage + '%</td>' +
+                                '<td style="background-color:#d1e7dd;color:#0f5132;font-weight:600;">' + h.new_revenue_percentage + '%</td>' +
+                                '</tr>';
+                        });
+                        tableHtml += '</tbody></table></div>';
+
+                        Swal.fire({
+                            title: 'Update affected hampers?',
+                            html: tableHtml,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, update all',
+                            cancelButtonText: 'Cancel',
+                            width: '600px'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById('confirm_hamper_update').value = '1';
+                                form.dataset.confirmed = '1';
+                                form.submit();
+                            }
+                        });
+                    } else {
+                        form.dataset.confirmed = '1';
+                        form.submit();
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Preview hamper update failed:', xhr.responseText);
+                    form.dataset.confirmed = '1';
+                    form.submit();
+                }
+            });
+        }
+    });
+
     function previewImage(){
       const image = document.querySelector('#image');
       const imgPreview = document.querySelector('.img-preview');

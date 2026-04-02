@@ -185,6 +185,42 @@ class ItemsController extends Controller
         
         Item::where('id', $item->id)->update($validatedData);
 
+        if ($request->confirm_hamper_update == '1') {
+            // Update hamper_details unit_price and total for this item
+            HamperDetail::where('item_id', $item->id)
+                ->whereNull('deleted_at')
+                ->update([
+                    'unit_price' => $validatedData['purchase_price'],
+                    'total' => DB::raw('qty * ' . (int) $validatedData['purchase_price']),
+                ]);
+
+            // Recalculate capital_price and revenue_percentage for affected hampers
+            DB::statement("
+                UPDATE hampers h
+                INNER JOIN (
+                    SELECT
+                        h.id,
+                        SUM(i.purchase_price * hd.qty) AS new_capital_price,
+                        ROUND((h.selling_price / SUM(i.purchase_price * hd.qty) - 1) * 100, 2) AS new_revenue_percent
+                    FROM hampers h
+                    LEFT JOIN hamper_details hd ON hd.hamper_id = h.id
+                    LEFT JOIN items i ON i.id = hd.item_id
+                    WHERE hd.deleted_at IS NULL
+                      AND h.id IN (
+                          SELECT DISTINCT hd2.hamper_id
+                          FROM hamper_details hd2
+                          WHERE hd2.item_id = ?
+                            AND hd2.deleted_at IS NULL
+                      )
+                    GROUP BY h.id
+                    HAVING SUM(i.purchase_price * hd.qty) > 0
+                ) nh ON nh.id = h.id
+                SET
+                    h.capital_price      = nh.new_capital_price,
+                    h.revenue_percentage = nh.new_revenue_percent
+            ", [$item->id]);
+        }
+
         Alert::success('Success', 'Item has been updated');
 
         return redirect('/dashboard/items');
@@ -211,5 +247,40 @@ class ItemsController extends Controller
 
         Alert::success('Success', 'Item has been deleted');
         return redirect('/dashboard/items');
+    }
+
+    public function previewHamperUpdate(Request $request)
+    {
+        $itemId = $request->item_id;
+        $newPrice = $request->new_purchase_price;
+
+        $hampers = DB::select("
+            SELECT
+                h.id,
+                h.name,
+                h.capital_price,
+                h.revenue_percentage,
+                SUM(
+                    CASE WHEN hd.item_id = ? THEN ? ELSE i.purchase_price END * hd.qty
+                ) AS new_capital_price,
+                ROUND((h.selling_price / SUM(
+                    CASE WHEN hd.item_id = ? THEN ? ELSE i.purchase_price END * hd.qty
+                ) - 1) * 100, 2) AS new_revenue_percentage
+            FROM hampers h
+            LEFT JOIN hamper_details hd ON hd.hamper_id = h.id
+            LEFT JOIN items i ON i.id = hd.item_id
+            WHERE hd.deleted_at IS NULL
+              AND h.deleted_at IS NULL
+              AND h.id IN (
+                  SELECT DISTINCT hd2.hamper_id
+                  FROM hamper_details hd2
+                  WHERE hd2.item_id = ?
+                    AND hd2.deleted_at IS NULL
+              )
+            GROUP BY h.id, h.name, h.capital_price, h.revenue_percentage, h.selling_price
+            HAVING SUM(CASE WHEN hd.item_id = ? THEN ? ELSE i.purchase_price END * hd.qty) > 0
+        ", [$itemId, $newPrice, $itemId, $newPrice, $itemId, $itemId, $newPrice]);
+
+        return response()->json($hampers);
     }
 }
