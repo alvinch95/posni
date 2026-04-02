@@ -207,7 +207,7 @@
     const renderMetrics = (metrics) => {
         if(!metrics) return;
         $('#total_revenue').text(formatRupiah(metrics.total_revenue));
-        $('#total_orders').text(metrics.total_orders); // Assuming this is kept as is (Value or Count? User said "another chart for number of orders" implying this might be value, but usually metrics card is count. Let's leave as is for now)
+        $('#total_orders').text(formatRupiah(metrics.total_orders));
         $('#avg_order_value').text(formatRupiah(metrics.avg_order_value));
         $('#cash_in').text(formatRupiah(metrics.cash_in));
         $('#cash_out').text(formatRupiah(metrics.cash_out));

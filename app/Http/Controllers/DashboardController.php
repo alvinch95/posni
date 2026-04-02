@@ -91,15 +91,31 @@ class DashboardController extends Controller
             // But I must respect existing codebase conventions unless obviously wrong.
             // Given "SalesOrder::sum('total_order')", it likely means "Total Quantity of Items Ordered" across all orders.
             
+            // Previous period cash queries
+            $cashInPrev = CashBalance::where('cash_type', 'CashIn');
+            $cashOutPrev = CashBalance::where('cash_type', 'CashOut');
+
+            if ($period === 'this_month') {
+                $prev = $queryDate->copy()->subMonth();
+                $cashInPrev->whereYear('transaction_date', $prev->year)->whereMonth('transaction_date', $prev->month);
+                $cashOutPrev->whereYear('transaction_date', $prev->year)->whereMonth('transaction_date', $prev->month);
+            } elseif ($period === 'last_month') {
+                $prev = $queryDate->copy()->subMonths(2);
+                $cashInPrev->whereYear('transaction_date', $prev->year)->whereMonth('transaction_date', $prev->month);
+                $cashOutPrev->whereYear('transaction_date', $prev->year)->whereMonth('transaction_date', $prev->month);
+            } elseif ($period === 'this_year') {
+                $cashInPrev->whereYear('transaction_date', $year - 1);
+                $cashOutPrev->whereYear('transaction_date', $year - 1);
+            }
+
             $response['metrics'] = [
                 'total_revenue' => $salesQuery->sum('total_revenue'),
-                'total_orders' => $salesQuery->sum('total_order'), // Keeping strict to original
-                'avg_order_value' => $salesQuery->count() ? $salesQuery->sum('total_revenue') / $salesQuery->count() : 0, // Better to use revenue for avg value
+                'total_orders' => $salesQuery->sum('total_order'),
+                'avg_order_value' => $salesQuery->count() ? $salesQuery->sum('total_revenue') / $salesQuery->count() : 0,
                 'cash_in' => $cashInQuery->sum('amount'),
                 'cash_out' => $cashOutQuery->sum('amount'),
-                // Comparison data can be added later if needed, simplyfing for responsiveness first
-                'cash_in_last' => 0, // Placeholder or implement properly if time permits
-                'cash_out_last' => 0,
+                'cash_in_last' => $cashInPrev->sum('amount'),
+                'cash_out_last' => $cashOutPrev->sum('amount'),
             ];
         }
 
