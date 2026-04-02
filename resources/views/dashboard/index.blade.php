@@ -8,9 +8,9 @@
     </div>
     <div class="btn-toolbar mb-2 mb-md-0">
         <select id="global-filter" class="form-select form-select-sm" style="width: 150px;">
-            <option value="this_month">This Month</option>
+            <option value="this_month" selected>This Month</option>
             <option value="last_month">Last Month</option>
-            <option value="this_year" selected>This Year</option>
+            <option value="this_year">This Year</option>
         </select>
     </div>
 </div>

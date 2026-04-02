@@ -30,7 +30,7 @@ class DashboardController extends Controller
 
         if ($type === 'all' || $type === 'metrics') {
             // Metrics Logic
-            $period = $request->input('period', 'this_year');
+            $period = $request->input('period', 'this_month');
             
             // Define Date Range based on Period
             $queryDate = now();
