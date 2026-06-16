@@ -3,6 +3,7 @@
 namespace App\Chen\Modules\Finance\Controllers;
 
 use App\Chen\Modules\Finance\Models\Category;
+use App\Chen\Modules\Finance\Models\FinanceSetting;
 use App\Chen\Modules\Finance\Models\RecurringRule;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -26,8 +27,9 @@ class RecurringController extends Controller
         $rules = RecurringRule::with('category')->where('chen_user_id', $this->uid())
             ->orderByDesc('active')->orderBy('next_run_date')->get();
         $categories = Category::where('chen_user_id', $this->uid())->orderBy('name')->get();
+        $currency = FinanceSetting::where('chen_user_id', $this->uid())->value('currency') ?? 'IDR';
 
-        return view('finance::recurring.index', compact('rules', 'categories'));
+        return view('finance::recurring.index', compact('rules', 'categories', 'currency'));
     }
 
     public function store(Request $request)

@@ -3,6 +3,7 @@
 namespace App\Chen\Modules\Finance\Controllers;
 
 use App\Chen\Modules\Finance\Models\Category;
+use App\Chen\Modules\Finance\Models\FinanceSetting;
 use App\Chen\Modules\Finance\Models\Transaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -46,9 +47,10 @@ class TransactionController extends Controller
 
         $transactions = $query->orderByDesc('date')->orderByDesc('id')->paginate(25)->withQueryString();
         $categories = Category::where('chen_user_id', $this->uid())->orderBy('name')->get();
+        $currency = FinanceSetting::where('chen_user_id', $this->uid())->value('currency') ?? 'IDR';
 
         return view('finance::transactions.index', compact(
-            'transactions', 'incomeTotal', 'expenseTotal', 'net', 'categories', 'month', 'type'
+            'transactions', 'incomeTotal', 'expenseTotal', 'net', 'categories', 'month', 'type', 'currency'
         ));
     }
 

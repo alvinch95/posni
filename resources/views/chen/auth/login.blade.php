@@ -6,38 +6,35 @@
     <title>Masuk — Chen</title>
     <link rel="stylesheet" href="{{ asset('chen/app.css') }}">
 </head>
-<body class="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+<body class="min-h-screen bg-slate-900 flex items-center justify-center p-5">
     <div class="w-full max-w-sm">
-        <div class="text-center mb-6">
-            <div class="text-3xl font-bold tracking-tight text-white">Chen</div>
-            <p class="text-slate-400 text-sm mt-1">Ruang pribadi kamu</p>
+        <div class="text-center mb-7">
+            <div class="text-4xl font-extrabold tracking-tight text-white">Chen</div>
+            <p class="text-slate-400 text-sm mt-1.5">Ruang pribadi kamu</p>
         </div>
-        <div class="bg-white rounded-2xl shadow-xl p-6">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-7">
             @if ($errors->any())
-                <div class="mb-4 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 px-3 py-2 text-sm">
+                <div class="mb-5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 text-sm">
                     {{ $errors->first() }}
                 </div>
             @endif
             <form method="POST" action="{{ route('chen.login') }}" class="space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                    <input type="email" name="email" value="{{ old('email') }}" required autofocus
-                           class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900">
+                    <label class="field-label" for="login-email">Email</label>
+                    <input id="login-email" type="email" name="email" value="{{ old('email') }}" required autofocus inputmode="email" class="field">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                    <input type="password" name="password" required
-                           class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900">
+                    <label class="field-label" for="login-pass">Password</label>
+                    <input id="login-pass" type="password" name="password" required class="field">
                 </div>
-                <label class="flex items-center gap-2 text-sm text-slate-600">
-                    <input type="checkbox" name="remember" class="rounded border-slate-300"> Ingat saya
+                <label class="flex items-center gap-2.5 text-sm text-slate-600 py-1">
+                    <input type="checkbox" name="remember" class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"> Ingat saya
                 </label>
-                <button class="w-full bg-slate-900 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-slate-800">
-                    Masuk
-                </button>
+                <button class="btn-primary btn-block" style="min-height:3rem">Masuk</button>
             </form>
         </div>
+        <p class="text-center text-xs text-slate-500 mt-5">Akses khusus. Hubungi pemilik untuk akun.</p>
     </div>
 </body>
 </html>
