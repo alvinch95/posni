@@ -3,6 +3,7 @@
 use App\Chen\Modules\Finance\Controllers\CategoryController;
 use App\Chen\Modules\Finance\Controllers\DashboardController;
 use App\Chen\Modules\Finance\Controllers\RecurringController;
+use App\Chen\Modules\Finance\Controllers\SettingController;
 use App\Chen\Modules\Finance\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,3 +25,6 @@ Route::post('/recurring', [RecurringController::class, 'store'])->name('recurrin
 Route::put('/recurring/{rule}', [RecurringController::class, 'update'])->name('recurring.update');
 Route::patch('/recurring/{rule}/toggle', [RecurringController::class, 'toggle'])->name('recurring.toggle');
 Route::delete('/recurring/{rule}', [RecurringController::class, 'destroy'])->name('recurring.destroy');
+
+Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
+Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
