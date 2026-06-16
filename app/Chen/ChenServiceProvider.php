@@ -46,12 +46,11 @@ class ChenServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 \App\Chen\Console\CreateUser::class,
-                // \App\Chen\Modules\Finance\Console\RunRecurring::class,     // created in Task 9
+                \App\Chen\Modules\Finance\Console\RunRecurring::class,
             ]);
         }
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
-            // command registered in Task 9; safe to schedule by name once it exists.
-            // $schedule->command('chen:finance:run-recurring')->dailyAt('00:30');
+            $schedule->command('chen:finance:run-recurring')->dailyAt('00:30');
         });
     }
 }
