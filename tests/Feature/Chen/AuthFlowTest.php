@@ -23,9 +23,9 @@ class AuthFlowTest extends ChenTestCase
 
     public function test_user_can_login_with_valid_credentials(): void
     {
-        User::factory()->create(['email' => 'me@chen.app', 'password' => Hash::make('secret123')]);
+        User::factory()->create(['username' => 'me', 'password' => Hash::make('secret123')]);
 
-        $this->post($this->chenUrl('/login'), ['email' => 'me@chen.app', 'password' => 'secret123'])
+        $this->post($this->chenUrl('/login'), ['username' => 'me', 'password' => 'secret123'])
             ->assertRedirect($this->chenUrl('/'));
 
         $this->assertAuthenticatedAs(User::first(), 'chen');
@@ -33,10 +33,10 @@ class AuthFlowTest extends ChenTestCase
 
     public function test_login_rejects_wrong_password(): void
     {
-        User::factory()->create(['email' => 'me@chen.app', 'password' => Hash::make('secret123')]);
+        User::factory()->create(['username' => 'me', 'password' => Hash::make('secret123')]);
 
         $this->from($this->chenUrl('/login'))
-            ->post($this->chenUrl('/login'), ['email' => 'me@chen.app', 'password' => 'wrong'])
+            ->post($this->chenUrl('/login'), ['username' => 'me', 'password' => 'wrong'])
             ->assertRedirect($this->chenUrl('/login'));
 
         $this->assertGuest('chen');

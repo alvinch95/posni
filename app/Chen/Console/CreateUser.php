@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\Hash;
 
 class CreateUser extends Command
 {
-    protected $signature = 'chen:user {email}';
+    protected $signature = 'chen:user {username}';
     protected $description = 'Create a Chen platform user (login-only, full access)';
 
     public function handle(): int
     {
-        $email = $this->argument('email');
+        $username = $this->argument('username');
 
-        if (User::where('email', $email)->exists()) {
-            $this->error("A Chen user with email {$email} already exists.");
+        if (User::where('username', $username)->exists()) {
+            $this->error("A Chen user with username {$username} already exists.");
             return 1;
         }
 
@@ -29,11 +29,11 @@ class CreateUser extends Command
 
         User::create([
             'name' => $name,
-            'email' => $email,
+            'username' => $username,
             'password' => Hash::make($password),
         ]);
 
-        $this->info("Chen user {$email} created.");
+        $this->info("Chen user {$username} created.");
         return 0;
     }
 }

@@ -20,13 +20,13 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'username' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
         if (! Auth::guard('chen')->attempt($credentials, $request->boolean('remember'))) {
-            return back()->withInput($request->only('email'))
-                ->withErrors(['email' => 'Email atau password salah.']);
+            return back()->withInput($request->only('username'))
+                ->withErrors(['username' => 'Username atau password salah.']);
         }
 
         $request->session()->regenerate();

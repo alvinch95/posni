@@ -21,8 +21,8 @@
             <form method="POST" action="{{ route('chen.login') }}" class="space-y-4">
                 @csrf
                 <div>
-                    <label class="field-label" for="login-email">Email</label>
-                    <input id="login-email" type="email" name="email" value="{{ old('email') }}" required autofocus inputmode="email" class="field">
+                    <label class="field-label" for="login-username">Username</label>
+                    <input id="login-username" type="text" name="username" value="{{ old('username') }}" required autofocus autocapitalize="none" autocomplete="username" class="field">
                 </div>
                 <div>
                     <label class="field-label" for="login-pass">Password</label>
