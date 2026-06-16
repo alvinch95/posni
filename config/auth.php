@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'chen' => [
+            'driver' => 'session',
+            'provider' => 'chen_users',
+        ],
     ],
 
     /*
@@ -63,6 +68,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'chen_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Chen\Models\User::class,
         ],
 
         // 'users' => [
