@@ -82,4 +82,26 @@ class TransactionControllerTest extends ChenTestCase
             ->assertSee('Juni')
             ->assertDontSee('Mei');
     }
+
+    public function test_totals_are_correct_across_pagination_and_net(): void
+    {
+        $me = \App\Chen\Models\User::factory()->create();
+        $expCat = \App\Chen\Modules\Finance\Models\Category::factory()->create(['chen_user_id' => $me->id, 'type' => 'expense']);
+        $incCat = \App\Chen\Modules\Finance\Models\Category::factory()->create(['chen_user_id' => $me->id, 'type' => 'income']);
+
+        // 30 expense rows of 1000 (forces 2 pages at 25/page) + 1 income of 50000
+        \App\Chen\Modules\Finance\Models\Transaction::factory()->count(30)->create([
+            'chen_user_id' => $me->id, 'fin_category_id' => $expCat->id, 'type' => 'expense', 'amount' => 1000, 'date' => '2026-06-10',
+        ]);
+        \App\Chen\Modules\Finance\Models\Transaction::factory()->create([
+            'chen_user_id' => $me->id, 'fin_category_id' => $incCat->id, 'type' => 'income', 'amount' => 50000, 'date' => '2026-06-10',
+        ]);
+
+        // Page 2 must still show the FULL filtered totals, not a page-limited (zero) sum.
+        $response = $this->actingAs($me, 'chen')->get($this->chenUrl('/finance/transactions?page=2'));
+        $response->assertOk();
+        $response->assertViewHas('incomeTotal', 50000.0);
+        $response->assertViewHas('expenseTotal', 30000.0);
+        $response->assertViewHas('net', 20000.0);
+    }
 }

@@ -39,11 +39,17 @@ class TransactionController extends Controller
             $query->where('notes', 'like', '%' . $search . '%');
         }
 
+        // Compute totals from the filtered set BEFORE paginating (paginate() mutates the builder).
+        $incomeTotal = (float) (clone $query)->where('type', 'income')->sum('amount');
+        $expenseTotal = (float) (clone $query)->where('type', 'expense')->sum('amount');
+        $net = $incomeTotal - $expenseTotal;
+
         $transactions = $query->orderByDesc('date')->orderByDesc('id')->paginate(25)->withQueryString();
-        $total = (clone $query)->sum('amount');
         $categories = Category::where('chen_user_id', $this->uid())->orderBy('name')->get();
 
-        return view('finance::transactions.index', compact('transactions', 'total', 'categories', 'month', 'type'));
+        return view('finance::transactions.index', compact(
+            'transactions', 'incomeTotal', 'expenseTotal', 'net', 'categories', 'month', 'type'
+        ));
     }
 
     public function store(Request $request)

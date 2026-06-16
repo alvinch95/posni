@@ -21,8 +21,9 @@
         <button class="bg-slate-200 rounded-lg px-3 hover:bg-slate-300">Filter</button>
     </form>
 
-    <div class="rounded-2xl bg-white border border-slate-200 overflow-hidden">
-        <table class="w-full text-sm">
+    <div class="rounded-2xl bg-white border border-slate-200">
+        <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[640px]">
             <thead class="bg-slate-50 text-slate-500 text-left">
                 <tr><th class="px-4 py-2">Tanggal</th><th class="px-4 py-2">Kategori</th>
                     <th class="px-4 py-2">Catatan</th><th class="px-4 py-2 text-right">Jumlah</th><th></th></tr>
@@ -55,10 +56,18 @@
                 @endforelse
             </tbody>
             <tfoot class="bg-slate-50 font-semibold">
-                <tr><td colspan="3" class="px-4 py-2 text-right">Total</td>
-                    <td class="px-4 py-2 text-right">{{ number_format($total, 0, ',', '.') }}</td><td></td></tr>
+                <tr>
+                    <td colspan="3" class="px-4 py-2 text-right text-slate-500">Pemasukan / Pengeluaran / Net</td>
+                    <td class="px-4 py-2 text-right whitespace-nowrap">
+                        <span class="text-emerald-600">+{{ number_format($incomeTotal, 0, ',', '.') }}</span>
+                        <span class="text-rose-600 ml-2">−{{ number_format($expenseTotal, 0, ',', '.') }}</span>
+                        <span class="ml-2 {{ $net >= 0 ? 'text-slate-900' : 'text-rose-600' }}">= {{ number_format($net, 0, ',', '.') }}</span>
+                    </td>
+                    <td></td>
+                </tr>
             </tfoot>
         </table>
+        </div>
     </div>
     <div>{{ $transactions->links() }}</div>
 
