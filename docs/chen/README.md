@@ -94,8 +94,8 @@ Herd serves `*.test` via dnsmasq and resolves **wildcard subdomains** of a parke
 - **Month-end drift:** a monthly rule starting on the 31st uses Carbon's `addMonthNoOverflow`, so it
   becomes the 28th after passing February and stays there (it does not snap back to true month-end).
   If you want "last day of month" semantics, set the rule to a safe day or extend the generator.
-- `day_of_month` / `weekday` columns exist for future use but are **not** read by the generator yet
-  (and the UI does not expose them) — `start_date` drives the day.
+- **`start_date` is the single source of truth for the recurring day** — it seeds `next_run_date`,
+  which the generator then advances. (There are no separate day-of-month/weekday inputs.)
 
 ---
 
@@ -113,8 +113,27 @@ The platform is built to grow. To add a feature module `Foo`:
 3. Put Blade views in `app/Chen/Modules/Foo/Views/` — available under the `foo::` namespace.
 4. Define a `chen.foo.dashboard` route — the sidebar nav links each module to `chen.<key>.dashboard`.
 5. Put any migrations in `database/migrations/chen/` (auto-loaded) and tables under a `foo_*` prefix.
+6. After adding/editing blades with new Tailwind classes, rebuild the stylesheet (see Front-end assets).
 
 No changes to the shell, the provider, or posni are needed — the module is discovered automatically.
+
+---
+
+## Front-end assets
+
+The Chen UI uses a **prebuilt, committed Tailwind stylesheet** at `public/chen/app.css` (loaded via
+`{{ asset('chen/app.css') }}`) — not the Tailwind CDN. Alpine.js and ApexCharts are still loaded from
+CDN. This avoids touching posni's Laravel Mix pipeline.
+
+Rebuild the stylesheet whenever a Chen blade introduces new utility classes (the build scans
+`resources/views/chen/**` and `app/Chen/**/Views/**`):
+
+```
+npx -y tailwindcss@3.4.17 -c tailwind.chen.config.js -i resources/chen/app.css -o public/chen/app.css --minify
+```
+
+Then commit the regenerated `public/chen/app.css`. Production needs no build step — the artifact is
+committed.
 
 ---
 
