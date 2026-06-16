@@ -22,6 +22,10 @@ class CreateUser extends Command
 
         $name = $this->ask('Name');
         $password = $this->secret('Password') ?: $this->ask('Password');
+        if (empty($password)) {
+            $this->error('Password cannot be empty.');
+            return 1;
+        }
 
         User::create([
             'name' => $name,

@@ -28,4 +28,14 @@ class CreateUserCommandTest extends ChenTestCase
         $this->artisan('chen:user', ['email' => 'dupe@chen.app'])
             ->assertExitCode(1);
     }
+
+    public function test_command_rejects_empty_password(): void
+    {
+        $this->artisan('chen:user', ['email' => 'blank@chen.app'])
+            ->expectsQuestion('Name', 'Blank')
+            ->expectsQuestion('Password', '')
+            ->assertExitCode(1);
+
+        $this->assertDatabaseMissing('chen_users', ['email' => 'blank@chen.app']);
+    }
 }
