@@ -132,26 +132,58 @@ class CheckInController extends Controller
 
     public function records(Request $request)
     {
-        // 1. Authorization Check (Simple Admin check)
         if (auth()->user()->is_admin !== 1) {
             return redirect('/')->with('error', 'Access denied. Only managers can view this report.');
         }
 
-        // 2. Data Fetching
-        // Fetch records for the last 7 days. This avoids loading too much data.
-        $startDate = now()->startOfMonth();
+        $selectedMonth = $request->input('month', now()->month);
+        $selectedYear = $request->input('year', now()->year);
 
-        $attendance = CheckIn::with('user') // Eager load user data for names
-            ->where('action_time', '>=', $startDate)
-            ->orderBy('action_time', 'desc')
-            ->get()
-            ->groupBy(function($date) {
-                // Group by date for easier display in the view
-                return \Carbon\Carbon::parse($date->action_time)->format('Y-m-d');
-            });
+        $startDate = \Carbon\Carbon::create($selectedYear, $selectedMonth, 1)->startOfDay();
+        $endDate = $startDate->copy()->endOfMonth();
+        $daysInMonth = $startDate->daysInMonth;
+
+        $records = CheckIn::with('user')
+            ->whereBetween('action_time', [$startDate, $endDate])
+            ->orderBy('action_time')
+            ->get();
+
+        $summary = $records->groupBy('user_id')->map(function ($userRecords) {
+            $user = $userRecords->first()->user;
+            $lateCount = 0;
+            $days = $userRecords->groupBy(fn($r) => \Carbon\Carbon::parse($r->action_time)->format('Y-m-d'))
+                ->map(function ($dayRecords) use (&$lateCount) {
+                    $in = $dayRecords->where('action_type', 'in')->sortBy('action_time')->first();
+                    $out = $dayRecords->where('action_type', 'out')->sortByDesc('action_time')->first();
+                    $inTime = $in ? \Carbon\Carbon::parse($in->action_time)->format('H:i') : '-';
+                    if ($inTime !== '-' && $inTime > '08:05') {
+                        $lateCount++;
+                    }
+                    return [
+                        'in' => $inTime,
+                        'out' => $out ? \Carbon\Carbon::parse($out->action_time)->format('H:i') : '-',
+                        'in_photo' => $in->photo_path ?? null,
+                        'in_lat' => $in->latitude ?? null,
+                        'in_lng' => $in->longitude ?? null,
+                        'out_photo' => $out->photo_path ?? null,
+                        'out_lat' => $out->latitude ?? null,
+                        'out_lng' => $out->longitude ?? null,
+                    ];
+                });
+            return [
+                'name' => $user->name ?? 'N/A',
+                'total_days' => $days->count(),
+                'late_count' => $lateCount,
+                'days' => $days,
+            ];
+        })->sortBy('name')->values();
 
         return view('dashboard.attendances.records', [
-            'attendance' => $attendance,
+            'summary' => $summary,
+            'daysInMonth' => $daysInMonth,
+            'selectedMonth' => $selectedMonth,
+            'selectedYear' => $selectedYear,
+            'startDate' => $startDate,
         ]);
     }
 

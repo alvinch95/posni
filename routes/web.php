@@ -76,12 +76,14 @@ Route::get('/register', [RegisterController::class, 'index'])->middleware('guest
 Route::post('/register', [RegisterController::class, 'store']);
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard.index');
+Route::get('/dashboard/data', [DashboardController::class, 'getData'])->middleware('auth')->name('dashboard.data');
 
 
 //route resource artinya udah sepaket crud, tinggal diarahin sesuai dengan nama method di dalam controllernya
 Route::get('/dashboard/products/checkSlug',[DashboardProductController::class, 'checkSlug'])->middleware('admin');
 Route::resource('/dashboard/products', DashboardProductController::class)->middleware('admin');
 
+Route::post('dashboard/items/previewHamperUpdate', [ItemsController::class, 'previewHamperUpdate'])->middleware('admin');
 Route::resource('/dashboard/items', ItemsController::class)->middleware('admin');
 
 Route::resource('/dashboard/suppliers', SupplierController::class)->middleware('admin');

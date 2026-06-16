@@ -11,37 +11,46 @@
   </div>
 @endif
 
-<div class="table-responsive col-lg-8">
-    <a href="/dashboard/products/create" class="btn btn-primary mb-3">Create new product</a>
-    <table class="table table-striped table-sm">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Title</th>
-          <th scope="col">Category</th>
-          <th scope="col">Price</th>
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach ($products as $product)
-            <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $product->title }}</td>
-                <td>{{ $product->category->name }}</td>
-                <td>Rp. {{ number_format($product->price, 0, ',', '.') }}</td>
-                <td>
-                    <a href="/dashboard/products/{{ $product->slug }}" class="badge bg-primary"><span data-feather="eye"></span></a>
-                    <a href="/dashboard/products/{{ $product->slug }}/edit" class="badge bg-warning"><span data-feather="edit"></span></a>
-                    <form action="/dashboard/products/{{ $product->slug }}" method="post" class="d-inline">
-                      @method('delete')
-                      @csrf
-                      <button class="badge bg-danger border-0" onclick="return confirm('Are you sure ?')"><span data-feather="x-circle"></span></button>
-                    </form>
-                </td>
-            </tr>
-        @endforeach
-      </tbody>
-    </table>
-  </div>
+<div class="col-lg-12">
+    <a href="/dashboard/products/create" class="btn btn-primary mb-4 shadow-sm">
+        <span data-feather="plus-circle" class="me-1"></span> Create New Product
+    </a>
+    
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead class="bg-light">
+                    <tr>
+                      <th scope="col" class="border-0 rounded-start">#</th>
+                      <th scope="col" class="border-0">Title</th>
+                      <th scope="col" class="border-0">Category</th>
+                      <th scope="col" class="border-0">Price</th>
+                      <th scope="col" class="border-0 rounded-end">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($products as $product)
+                        <tr>
+                            <td class="ps-3">{{ $loop->iteration }}</td>
+                            <td class="fw-medium">{{ $product->title }}</td>
+                            <td><span class="badge bg-light text-dark border">{{ $product->category->name }}</span></td>
+                            <td class="font-monospace">Rp. {{ number_format($product->price, 0, ',', '.') }}</td>
+                            <td>
+                                <a href="/dashboard/products/{{ $product->slug }}" class="btn btn-sm btn-outline-primary"><span data-feather="eye"></span></a>
+                                <a href="/dashboard/products/{{ $product->slug }}/edit" class="btn btn-sm btn-outline-warning mx-1"><span data-feather="edit"></span></a>
+                                <form action="/dashboard/products/{{ $product->slug }}" method="post" class="d-inline">
+                                  @method('delete')
+                                  @csrf
+                                  <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure ?')"><span data-feather="trash-2"></span></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
