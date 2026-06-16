@@ -73,4 +73,19 @@ class RecurringGeneratorTest extends ChenTestCase
 
         $this->assertGreaterThanOrEqual(1, Transaction::where('recurring_rule_id', $rule->id)->count());
     }
+
+    public function test_incremental_runs_across_advancing_time_generate_each_period_once(): void
+    {
+        $rule = $this->rule(); // monthly from 2026-01-01
+
+        // First run as of mid-March → Jan, Feb, Mar = 3 rows, cursor advances to Apr 1.
+        app(RecurringGenerator::class)->run(\Carbon\Carbon::parse('2026-03-15'));
+        $this->assertSame(3, Transaction::where('recurring_rule_id', $rule->id)->count());
+        $this->assertSame('2026-04-01', $rule->fresh()->next_run_date->format('Y-m-d'));
+
+        // Two months later → Apr, May added = 5 total, no duplicates of Jan–Mar.
+        app(RecurringGenerator::class)->run(\Carbon\Carbon::parse('2026-05-10'));
+        $this->assertSame(5, Transaction::where('recurring_rule_id', $rule->id)->count());
+        $this->assertSame('2026-06-01', $rule->fresh()->next_run_date->format('Y-m-d'));
+    }
 }
