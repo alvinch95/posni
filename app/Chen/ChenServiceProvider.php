@@ -45,7 +45,7 @@ class ChenServiceProvider extends ServiceProvider
         // Console commands + daily schedule, without editing app/Console/Kernel.php.
         if ($this->app->runningInConsole()) {
             $this->commands([
-                // \App\Chen\Console\CreateUser::class,                       // created in Task 4
+                \App\Chen\Console\CreateUser::class,
                 // \App\Chen\Modules\Finance\Console\RunRecurring::class,     // created in Task 9
             ]);
         }
