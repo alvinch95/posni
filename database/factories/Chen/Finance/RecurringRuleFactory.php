@@ -20,8 +20,6 @@ class RecurringRuleFactory extends Factory
             'amount' => $this->faker->numberBetween(50000, 1000000),
             'notes' => null,
             'frequency' => 'monthly',
-            'day_of_month' => 1,
-            'weekday' => null,
             'start_date' => '2026-01-01',
             'end_date' => null,
             'next_run_date' => '2026-01-01',

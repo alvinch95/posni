@@ -21,7 +21,6 @@ class RecurringGeneratorTest extends ChenTestCase
             'chen_user_id' => $user->id,
             'fin_category_id' => $cat->id,
             'frequency' => 'monthly',
-            'day_of_month' => 1,
             'start_date' => '2026-01-01',
             'next_run_date' => '2026-01-01',
             'amount' => 100000,

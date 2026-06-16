@@ -17,7 +17,7 @@ class RecurringControllerTest extends ChenTestCase
         $this->actingAs($me, 'chen')
             ->post($this->chenUrl('/finance/recurring'), [
                 'type' => 'expense', 'fin_category_id' => $cat->id, 'amount' => 500000,
-                'frequency' => 'monthly', 'day_of_month' => 1, 'start_date' => '2026-07-01',
+                'frequency' => 'monthly', 'start_date' => '2026-07-01',
             ])
             ->assertRedirect();
 
@@ -37,6 +37,22 @@ class RecurringControllerTest extends ChenTestCase
             ->assertRedirect();
 
         $this->assertFalse($rule->fresh()->active);
+    }
+
+    public function test_can_update_own_rule(): void
+    {
+        $me = User::factory()->create();
+        $cat = Category::factory()->create(['chen_user_id' => $me->id]);
+        $rule = RecurringRule::factory()->create(['chen_user_id' => $me->id, 'fin_category_id' => $cat->id, 'amount' => 100000]);
+
+        $this->actingAs($me, 'chen')
+            ->put($this->chenUrl('/finance/recurring/' . $rule->id), [
+                'type' => 'expense', 'fin_category_id' => $cat->id, 'amount' => 250000,
+                'frequency' => 'monthly', 'start_date' => '2026-07-01',
+            ])
+            ->assertRedirect();
+
+        $this->assertSame('250000.00', (string) $rule->fresh()->amount);
     }
 
     public function test_cannot_delete_another_users_rule(): void

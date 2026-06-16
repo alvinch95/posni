@@ -16,8 +16,6 @@ class CreateFinRecurringRulesTable extends Migration
             $table->decimal('amount', 15, 2);
             $table->text('notes')->nullable();
             $table->enum('frequency', ['weekly', 'monthly', 'yearly']);
-            $table->unsignedTinyInteger('day_of_month')->nullable();
-            $table->unsignedTinyInteger('weekday')->nullable(); // 0=Sun..6=Sat
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->date('next_run_date');

@@ -76,8 +76,6 @@ class RecurringController extends Controller
             'amount' => ['required', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string'],
             'frequency' => ['required', 'in:weekly,monthly,yearly'],
-            'day_of_month' => ['nullable', 'integer', 'between:1,31'],
-            'weekday' => ['nullable', 'integer', 'between:0,6'],
             'start_date' => ['required', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
