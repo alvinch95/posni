@@ -23,4 +23,19 @@ class ModuleNavTest extends ChenTestCase
             ->assertOk()
             ->assertSee('Finance');
     }
+
+    public function test_sidebar_shows_finance_sub_navigation(): void
+    {
+        $response = $this->actingAs(User::factory()->create(), 'chen')
+            ->get($this->chenUrl('/finance'));
+
+        // Sub-nav labels and their hrefs must be present so every Finance page is reachable.
+        foreach (['Transaksi', 'Berulang', 'Kategori', 'Pengaturan'] as $label) {
+            $response->assertSee($label);
+        }
+        $response->assertSee($this->chenUrl('/finance/transactions'));
+        $response->assertSee($this->chenUrl('/finance/categories'));
+        $response->assertSee($this->chenUrl('/finance/recurring'));
+        $response->assertSee($this->chenUrl('/finance/settings'));
+    }
 }
