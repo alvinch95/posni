@@ -82,12 +82,12 @@
                 <template x-if="edit"><input type="hidden" name="_method" value="PUT"></template>
                 <div class="space-y-3">
                     <select name="type" class="w-full rounded-lg border-slate-300 text-sm">
-                        <option value="expense">Pengeluaran</option>
-                        <option value="income">Pemasukan</option>
+                        <option value="expense" :selected="!edit || edit.type === 'expense'">Pengeluaran</option>
+                        <option value="income" :selected="edit && edit.type === 'income'">Pemasukan</option>
                     </select>
                     <select name="fin_category_id" class="w-full rounded-lg border-slate-300 text-sm" required>
                         @foreach ($categories as $c)
-                            <option value="{{ $c->id }}">{{ ucfirst($c->type) }} — {{ $c->name }}</option>
+                            <option value="{{ $c->id }}" :selected="edit && edit.fin_category_id == {{ $c->id }}">{{ ucfirst($c->type) }} — {{ $c->name }}</option>
                         @endforeach
                     </select>
                     <input type="date" name="date" :value="edit ? edit.date.substring(0,10) : '{{ date('Y-m-d') }}'" required

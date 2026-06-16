@@ -46,9 +46,9 @@
                 @csrf
                 <template x-if="edit"><input type="hidden" name="_method" value="PUT"></template>
                 <div class="space-y-3">
-                    <select name="type" x-bind:value="edit ? edit.type : 'expense'" class="w-full rounded-lg border-slate-300 text-sm">
-                        <option value="expense">Pengeluaran</option>
-                        <option value="income">Pemasukan</option>
+                    <select name="type" class="w-full rounded-lg border-slate-300 text-sm">
+                        <option value="expense" :selected="!edit || edit.type === 'expense'">Pengeluaran</option>
+                        <option value="income" :selected="edit && edit.type === 'income'">Pemasukan</option>
                     </select>
                     <input name="name" :value="edit ? edit.name : ''" placeholder="Nama kategori" required
                            class="w-full rounded-lg border-slate-300 text-sm">

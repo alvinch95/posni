@@ -14,9 +14,9 @@ class DashboardController extends Controller
 {
     public function index(Analytics $analytics, RecurringGenerator $generator)
     {
-        $generator->run(); // idempotent catch-up so dashboards reflect due recurring rows
-
         $uid = Auth::guard('chen')->id();
+        $generator->run(null, $uid); // idempotent catch-up, scoped to this user
+
         $now = Carbon::now();
 
         $summary = $analytics->monthSummary($uid, $now);

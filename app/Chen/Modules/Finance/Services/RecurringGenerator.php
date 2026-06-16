@@ -20,13 +20,14 @@ class RecurringGenerator
      *
      * @return int number of transactions created
      */
-    public function run(?CarbonInterface $asOf = null): int
+    public function run(?CarbonInterface $asOf = null, ?int $userId = null): int
     {
         $asOf = $asOf ? $asOf->copy()->startOfDay() : Carbon::now()->startOfDay();
         $created = 0;
 
         RecurringRule::where('active', true)
             ->where('next_run_date', '<=', $asOf->toDateString())
+            ->when($userId !== null, fn ($q) => $q->where('chen_user_id', $userId))
             ->each(function (RecurringRule $rule) use ($asOf, &$created) {
                 $created += $this->runRule($rule, $asOf);
             });

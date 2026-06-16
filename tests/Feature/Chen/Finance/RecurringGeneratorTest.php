@@ -74,6 +74,18 @@ class RecurringGeneratorTest extends ChenTestCase
         $this->assertGreaterThanOrEqual(1, Transaction::where('recurring_rule_id', $rule->id)->count());
     }
 
+    public function test_run_can_be_scoped_to_a_single_user(): void
+    {
+        $ruleA = $this->rule(['next_run_date' => '2026-06-01', 'start_date' => '2026-06-01']);
+        $ruleB = $this->rule(['next_run_date' => '2026-06-01', 'start_date' => '2026-06-01']);
+
+        // Scope to ruleA's user only.
+        app(RecurringGenerator::class)->run(\Carbon\Carbon::parse('2026-06-16'), $ruleA->chen_user_id);
+
+        $this->assertGreaterThanOrEqual(1, Transaction::where('recurring_rule_id', $ruleA->id)->count());
+        $this->assertSame(0, Transaction::where('recurring_rule_id', $ruleB->id)->count());
+    }
+
     public function test_incremental_runs_across_advancing_time_generate_each_period_once(): void
     {
         $rule = $this->rule(); // monthly from 2026-01-01
