@@ -69,6 +69,22 @@ class AnalyticsTest extends ChenTestCase
             ->assertSee('Tabungan'); // savings card label
     }
 
+    public function test_expense_by_category_excludes_soft_deleted_categories(): void
+    {
+        $user = \App\Chen\Models\User::factory()->create();
+        $cat = \App\Chen\Modules\Finance\Models\Category::factory()->create(['chen_user_id' => $user->id, 'type' => 'expense', 'name' => 'Lama']);
+        \App\Chen\Modules\Finance\Models\Transaction::factory()->create([
+            'chen_user_id' => $user->id, 'type' => 'expense', 'fin_category_id' => $cat->id,
+            'date' => '2026-06-05', 'amount' => 1000,
+        ]);
+        $cat->delete(); // soft delete
+
+        $breakdown = app(\App\Chen\Modules\Finance\Services\Analytics::class)
+            ->expenseByCategory($user->id, \Carbon\Carbon::parse('2026-06-15'));
+
+        $this->assertCount(0, $breakdown);
+    }
+
     public function test_analytics_scoped_per_user(): void
     {
         $me = User::factory()->create();

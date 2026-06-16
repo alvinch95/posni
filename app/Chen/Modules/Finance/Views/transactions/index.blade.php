@@ -11,14 +11,14 @@
 
     {{-- Filters --}}
     <form method="GET" class="flex flex-wrap gap-2 text-sm">
-        <input type="month" name="month" value="{{ $month }}" class="rounded-lg border-slate-300">
-        <select name="type" class="rounded-lg border-slate-300">
+        <input type="month" name="month" value="{{ $month }}" class="rounded-lg border-slate-300 py-2">
+        <select name="type" class="rounded-lg border-slate-300 py-2">
             <option value="">Semua</option>
             <option value="expense" @selected($type==='expense')>Pengeluaran</option>
             <option value="income" @selected($type==='income')>Pemasukan</option>
         </select>
-        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari catatan…" class="rounded-lg border-slate-300">
-        <button class="bg-slate-200 rounded-lg px-3 hover:bg-slate-300">Filter</button>
+        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari catatan…" class="rounded-lg border-slate-300 py-2">
+        <button class="inline-flex items-center bg-slate-200 rounded-lg px-3 py-2 hover:bg-slate-300">Filter</button>
     </form>
 
     <div class="rounded-2xl bg-white border border-slate-200">
@@ -43,11 +43,11 @@
                             {{ $t->type === 'income' ? '+' : '−' }} {{ number_format($t->amount, 0, ',', '.') }}
                         </td>
                         <td class="px-4 py-2 text-right whitespace-nowrap">
-                            <button class="text-xs text-slate-500 hover:text-slate-900" @click='edit = @json($t); open = true'>Edit</button>
+                            <button class="inline-flex items-center text-xs text-slate-500 hover:text-slate-900 px-3 py-2 rounded-lg" @click='edit = @json($t); open = true'>Edit</button>
                             <form method="POST" action="{{ route('chen.finance.transactions.destroy', $t->id) }}" class="inline"
                                   onsubmit="return confirm('Hapus transaksi ini?')">
                                 @csrf @method('DELETE')
-                                <button class="text-xs text-rose-500 hover:text-rose-700 ml-1">Hapus</button>
+                                <button class="inline-flex items-center text-xs text-rose-500 hover:text-rose-700 px-3 py-2 rounded-lg ml-1">Hapus</button>
                             </form>
                         </td>
                     </tr>

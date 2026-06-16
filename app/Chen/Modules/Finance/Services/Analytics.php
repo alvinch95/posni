@@ -27,6 +27,7 @@ class Analytics
             ->join('fin_categories', 'fin_categories.id', '=', 'fin_transactions.fin_category_id')
             ->where('fin_transactions.chen_user_id', $userId)
             ->where('fin_transactions.type', $type)
+            ->whereNull('fin_categories.deleted_at')
             ->whereYear('fin_transactions.date', $month->year)
             ->whereMonth('fin_transactions.date', $month->month)
             ->groupBy('fin_categories.id', 'fin_categories.name', 'fin_categories.color')

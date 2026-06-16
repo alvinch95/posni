@@ -26,7 +26,7 @@
                         <td class="px-4 py-2">
                             <form method="POST" action="{{ route('chen.finance.recurring.toggle', $r->id) }}">
                                 @csrf @method('PATCH')
-                                <button class="text-xs rounded-full px-2 py-0.5 {{ $r->active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-500' }}">
+                                <button class="inline-flex items-center text-xs rounded-full px-3 py-2 {{ $r->active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-500' }}">
                                     {{ $r->active ? 'Aktif' : 'Nonaktif' }}
                                 </button>
                             </form>
@@ -35,7 +35,7 @@
                             <form method="POST" action="{{ route('chen.finance.recurring.destroy', $r->id) }}"
                                   onsubmit="return confirm('Hapus aturan ini?')">
                                 @csrf @method('DELETE')
-                                <button class="text-xs text-rose-500 hover:text-rose-700">Hapus</button>
+                                <button class="inline-flex items-center text-xs text-rose-500 hover:text-rose-700 px-3 py-2 rounded-lg">Hapus</button>
                             </form>
                         </td>
                     </tr>

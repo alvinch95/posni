@@ -21,7 +21,7 @@
                    value="{{ old('monthly_savings_target', $setting->monthly_savings_target) }}"
                    class="mt-1 w-full rounded-lg border-slate-300 text-sm">
         </label>
-        <button class="bg-slate-900 text-white text-sm rounded-lg px-4 py-2">Simpan</button>
+        <button class="inline-flex items-center justify-center w-full sm:w-auto bg-slate-900 text-white text-sm rounded-lg px-4 py-3 hover:bg-slate-800">Simpan</button>
     </form>
 </div>
 @endsection

@@ -19,12 +19,12 @@
                             <span class="w-3 h-3 rounded-full" style="background: {{ $cat->color }}"></span>
                             <span class="text-sm">{{ $cat->name }}</span>
                             <span class="ml-auto flex gap-2">
-                                <button class="text-xs text-slate-500 hover:text-slate-900"
+                                <button class="inline-flex items-center text-xs text-slate-500 hover:text-slate-900 px-3 py-2 rounded-lg"
                                         @click='edit = @json($cat); open = true'>Edit</button>
                                 <form method="POST" action="{{ route('chen.finance.categories.destroy', $cat->id) }}"
                                       onsubmit="return confirm('Hapus kategori ini?')">
                                     @csrf @method('DELETE')
-                                    <button class="text-xs text-rose-500 hover:text-rose-700">Hapus</button>
+                                    <button class="inline-flex items-center text-xs text-rose-500 hover:text-rose-700 px-3 py-2 rounded-lg">Hapus</button>
                                 </form>
                             </span>
                         </li>
