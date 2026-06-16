@@ -13,21 +13,21 @@ class ChenServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ModuleRegistry::class, fn () => new ModuleRegistry());
-
-        // Register the Chen subdomain route group during register() so its domain-constrained
-        // routes are inserted into the RouteCollection BEFORE posni's RouteServiceProvider
-        // loads routes/web.php (it defers that to an app booted() callback registered at its
-        // own register()). Iteration/match order is insertion order, so on the chen.* host the
-        // Chen "/login" wins over posni's unconstrained "/login". posni's own host is unaffected
-        // because the domain constraint stops these routes matching it.
-        Route::domain('chen.' . config('chen.domain'))
-            ->middleware('web')
-            ->name('chen.')
-            ->group(base_path('routes/chen.php'));
     }
 
     public function boot(): void
     {
+        // Register the Chen subdomain route group here in boot(). This provider is listed
+        // BEFORE App\Providers\RouteServiceProvider in config/app.php, so its boot() runs first
+        // and these domain-constrained routes are inserted into the RouteCollection ahead of
+        // posni's unconstrained web routes. Route matching is insertion order, so on the chen.*
+        // host the Chen "/login" wins; posni's own host is unaffected by the domain constraint.
+        // (Registering routes in boot() — not register() — is what the HTTP kernel reliably picks up.)
+        Route::domain('chen.' . config('chen.domain'))
+            ->middleware('web')
+            ->name('chen.')
+            ->group(base_path('routes/chen.php'));
+
         // Migrations live in their own folder so they stay out of posni's top-level set.
         $this->loadMigrationsFrom(database_path('migrations/chen'));
 

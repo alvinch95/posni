@@ -175,8 +175,10 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        // Chen must boot before RouteServiceProvider so its subdomain routes are registered
+        // first and win over posni's unconstrained routes on the chen.* host.
         App\Chen\ChenServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
 
     ],
 
