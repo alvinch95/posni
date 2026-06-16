@@ -2,6 +2,7 @@
 
 use App\Chen\Modules\Finance\Controllers\CategoryController;
 use App\Chen\Modules\Finance\Controllers\DashboardController;
+use App\Chen\Modules\Finance\Controllers\RecurringController;
 use App\Chen\Modules\Finance\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,9 @@ Route::get('/transactions', [TransactionController::class, 'index'])->name('tran
 Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
 Route::put('/transactions/{transaction}', [TransactionController::class, 'update'])->name('transactions.update');
 Route::delete('/transactions/{transaction}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
+
+Route::get('/recurring', [RecurringController::class, 'index'])->name('recurring.index');
+Route::post('/recurring', [RecurringController::class, 'store'])->name('recurring.store');
+Route::put('/recurring/{rule}', [RecurringController::class, 'update'])->name('recurring.update');
+Route::patch('/recurring/{rule}/toggle', [RecurringController::class, 'toggle'])->name('recurring.toggle');
+Route::delete('/recurring/{rule}', [RecurringController::class, 'destroy'])->name('recurring.destroy');
