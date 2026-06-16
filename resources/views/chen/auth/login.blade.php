@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Masuk — Chen</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ asset('chen/app.css') }}">
 </head>
 <body class="min-h-screen bg-slate-900 flex items-center justify-center p-4">
     <div class="w-full max-w-sm">
