@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Chen')</title>
-    <link rel="stylesheet" href="{{ asset('chen/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('chen/app.css') }}?v={{ @filemtime(public_path('chen/app.css')) ?: '1' }}">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }

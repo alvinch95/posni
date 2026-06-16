@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Masuk — Chen</title>
-    <link rel="stylesheet" href="{{ asset('chen/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('chen/app.css') }}?v={{ @filemtime(public_path('chen/app.css')) ?: '1' }}">
 </head>
 <body class="min-h-screen bg-slate-900 flex items-center justify-center p-5">
     <div class="w-full max-w-sm">
