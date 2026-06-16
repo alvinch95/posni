@@ -162,10 +162,12 @@
                             <div class="grid grid-cols-3 gap-2 sm:grid-cols-4">
                                 <template x-for="c in filtered" :key="c.id">
                                     <button type="button" @click="category_id = String(c.id)"
-                                            class="flex flex-col items-center gap-1.5 rounded-xl border p-2.5 transition"
-                                            :class="String(category_id) === String(c.id) ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500/25' : 'border-slate-200 hover:bg-slate-50'">
-                                        <span class="icon-chip icon-chip-sm" :style="`background-color: ${c.color}1f`" x-text="c.icon || '🏷️'"></span>
-                                        <span class="text-xs font-medium text-slate-700 text-center leading-tight" x-text="c.name"></span>
+                                            class="flex flex-col items-center gap-1.5 rounded-xl border-2 p-2.5 transition"
+                                            :class="String(category_id) === String(c.id) ? 'border-indigo-600 bg-indigo-600 text-white shadow-md' : 'border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'">
+                                        <span class="icon-chip icon-chip-sm bg-white/90"
+                                              :style="String(category_id) === String(c.id) ? '' : `background-color: ${c.color}1f`"
+                                              x-text="c.icon || '🏷️'"></span>
+                                        <span class="text-xs font-medium text-center leading-tight" x-text="c.name"></span>
                                     </button>
                                 </template>
                             </div>
@@ -194,6 +196,19 @@
                         <button class="btn-primary btn-block" :disabled="!filtered.length">Simpan</button>
                     </div>
                 </form>
+
+                {{-- Delete (only when editing an existing transaction) --}}
+                <template x-if="editing">
+                    <form method="POST" :action="'{{ url('finance/transactions') }}/' + editing.id" class="mt-3"
+                          onsubmit="return confirm('Hapus transaksi ini?')">
+                        @csrf
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn-danger btn-block">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+                            Hapus transaksi
+                        </button>
+                    </form>
+                </template>
             </div>
         </div>
     </template>
