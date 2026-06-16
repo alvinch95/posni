@@ -156,16 +156,22 @@
                     </div>
 
                     <div>
-                        <label class="field-label" for="tx-cat">Kategori</label>
+                        <span class="field-label">Kategori</span>
+                        <input type="hidden" name="fin_category_id" :value="category_id">
                         <template x-if="filtered.length">
-                            <select id="tx-cat" name="fin_category_id" x-model="category_id" required class="field">
+                            <div class="grid grid-cols-3 gap-2 sm:grid-cols-4">
                                 <template x-for="c in filtered" :key="c.id">
-                                    <option :value="c.id" x-text="(c.icon || '🏷️') + '  ' + c.name"></option>
+                                    <button type="button" @click="category_id = String(c.id)"
+                                            class="flex flex-col items-center gap-1.5 rounded-xl border p-2.5 transition"
+                                            :class="String(category_id) === String(c.id) ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500/25' : 'border-slate-200 hover:bg-slate-50'">
+                                        <span class="icon-chip icon-chip-sm" :style="`background-color: ${c.color}1f`" x-text="c.icon || '🏷️'"></span>
+                                        <span class="text-xs font-medium text-slate-700 text-center leading-tight" x-text="c.name"></span>
+                                    </button>
                                 </template>
-                            </select>
+                            </div>
                         </template>
                         <template x-if="!filtered.length">
-                            <a href="{{ route('chen.finance.categories.index') }}" class="block field flex items-center text-indigo-600">
+                            <a href="{{ route('chen.finance.categories.index') }}" class="btn-ghost w-full justify-start text-indigo-600">
                                 Belum ada kategori — buat dulu →
                             </a>
                         </template>
