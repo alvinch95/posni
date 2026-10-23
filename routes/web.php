@@ -36,7 +36,7 @@ use App\Http\Controllers\Api\CheckInController;
 |
 */
 
-Route::get('/', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+Route::get('/', [DashboardController::class, 'home'])->middleware('auth')->name('dashboard');
 
 Route::post('/webhook', [WebhookController::class, 'handleWebhook'])->middleware('exempt.csrf');
 
@@ -75,8 +75,8 @@ Route::post('/logout', [LoginController::class, 'logout']);
 Route::get('/register', [RegisterController::class, 'index'])->middleware('guest');
 Route::post('/register', [RegisterController::class, 'store']);
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard.index');
-Route::get('/dashboard/data', [DashboardController::class, 'getData'])->middleware('auth')->name('dashboard.data');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'admin'])->name('dashboard.index');
+Route::get('/dashboard/data', [DashboardController::class, 'getData'])->middleware(['auth', 'admin'])->name('dashboard.data');
 
 
 //route resource artinya udah sepaket crud, tinggal diarahin sesuai dengan nama method di dalam controllernya
@@ -116,6 +116,7 @@ Route::get('dashboard/shopeereminder', [ShopeeReminderController::class, 'index'
 Route::post('dashboard/shopeereminder/openConvert',[ShopeeReminderController::class, 'openConvert'])->middleware('auth')->name('dashboard.shopeereminder.openConvert');
 Route::post('dashboard/shopeereminder/convertOrder', [ShopeeReminderController::class, 'convertOrder'])->middleware('auth')->name('dashboard.shopeereminder.convertOrder');
 
+Route::patch('/dashboard/cashbalances/{cashBalance}/category', [CashBalanceController::class, 'updateCategory'])->middleware(['auth', 'admin'])->name('dashboard.cashbalances.category');
 Route::resource('/dashboard/cashbalances', CashBalanceController::class)->except('show')->middleware('admin');
 
 Route::resource('/dashboard/cashbalances', CashBalanceController::class)->except('show')->middleware('admin');

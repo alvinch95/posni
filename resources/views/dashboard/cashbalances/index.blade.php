@@ -84,6 +84,7 @@
             <th class="p-2" scope="col">Kredit</th>
             <th class="p-2" scope="col">Saldo</th>
             <th class="p-2" scope="col">Keterangan</th>
+            <th class="p-2" scope="col">Kategori</th>
             {{-- <th scope="col">Action</th> --}}
           </tr>
         </thead>
@@ -97,6 +98,20 @@
                   <td class="p-2">{{ $cb->cash_type=="CashIn"?"Rp. ".number_format($cb->amount, 0, ',', '.'):"" }}</td>
                   <td class="p-2">{{ "Rp. ".number_format($cb->end_balance, 0, ',', '.') }}</td>
                   <td class="p-2">{{ $cb->remark }}</td>
+                  <td class="p-2">
+                    @if ($cb->cash_type == 'CashOut' && $cb->related_to == 'Manual Input')
+                      <select class="form-select form-select-sm category-select" data-id="{{ $cb->id }}" data-current="{{ $cb->category }}" aria-label="Kategori biaya">
+                        @unless ($cb->category)
+                          <option value="" selected>-- Belum dikategorikan --</option>
+                        @endunless
+                        @foreach ($categories as $slug => $label)
+                          <option value="{{ $slug }}" {{ $cb->category === $slug ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                      </select>
+                    @elseif ($cb->related_to == 'Purchase')
+                      <span class="text-muted">Pembelian stok</span>
+                    @endif
+                  </td>
                   {{-- <td>
                     <form action="/dashboard/cash/{{ $cb->id }}" method="post" class="d-inline">
                       @method('delete')
@@ -117,6 +132,9 @@
 </div>
 <style>
   /* Style the page size select */
+  .category-select {
+      min-width: 170px;
+  }
   .page-size-select {
       padding: 4px 8px; /* Adjust padding as needed */
       font-size: 12px; /* Adjust font size as needed */
@@ -192,6 +210,31 @@
           var form = $('#filterForm');
           // console.log(form);
           form.submit();
+      });
+
+      // Inline recategorisation of manual cash-outs
+      $('.category-select').on('change', function () {
+          var select = $(this);
+          var previous = select.data('current') || '';
+          select.prop('disabled', true);
+
+          fetch('/dashboard/cashbalances/' + select.data('id') + '/category', {
+              method: 'POST',
+              headers: { 'Accept': 'application/json' },
+              body: new URLSearchParams({ _method: 'PATCH', _token: '{{ csrf_token() }}', category: select.val() })
+          }).then(function (res) {
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+              return res.json();
+          }).then(function (data) {
+              select.data('current', data.category);
+              select.find('option[value=""]').remove();
+              Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Kategori: ' + data.label, showConfirmButton: false, timer: 1500 });
+          }).catch(function () {
+              select.val(previous);
+              Swal.fire({ icon: 'error', title: 'Gagal menyimpan kategori', text: 'Coba lagi.' });
+          }).finally(function () {
+              select.prop('disabled', false);
+          });
       });
 
       $('.hapus').click(function(e) {

@@ -26,25 +26,39 @@
         </div>
         <div class="mb-3">
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="cashType" id="cashType1" value="CashIn" checked>
+            <input class="form-check-input" type="radio" name="cashType" id="cashType1" value="CashIn" {{ old('cashType', 'CashIn') === 'CashIn' ? 'checked' : '' }}>
             <label class="form-check-label" for="cashType1">
               Cash In
             </label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="cashType" id="cashType2" value="CashOut">
+            <input class="form-check-input" type="radio" name="cashType" id="cashType2" value="CashOut" {{ old('cashType') === 'CashOut' ? 'checked' : '' }}>
             <label class="form-check-label" for="cashType2">
               Cash Out
             </label>
           </div>
         </div>
+        <div class="mb-3 w-75 {{ old('cashType') === 'CashOut' ? '' : 'd-none' }}" id="categoryField">
+          <label for="category" class="form-label">Kategori Biaya</label>
+          <select name="category" id="category" class="form-select @error('category') is-invalid @enderror" {{ old('cashType') === 'CashOut' ? '' : 'disabled' }}>
+            <option value="">-- Pilih kategori --</option>
+            @foreach ($categories as $slug => $label)
+              <option value="{{ $slug }}" {{ old('category') === $slug ? 'selected' : '' }}>{{ $label }}</option>
+            @endforeach
+          </select>
+          @error('category')
+            <div class="invalid-feedback">
+              Pilih kategori untuk Cash Out.
+            </div>
+          @enderror
+        </div>
         <div class="mb-3 w-50">
           <label for="amount" class="form-label">Amount</label>
-          <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" required>
+          <input type="number" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="{{ old('amount') }}" required>
         </div>
         <div class="mb-3 w-75">
           <label for="remark" class="form-label">Remark</label>
-          <input type="text" name="remark" id="remark" class="form-control">
+          <input type="text" name="remark" id="remark" class="form-control" value="{{ old('remark') }}">
         </div>
         <button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
     </form>
@@ -52,9 +66,22 @@
 
 <script>
   $(document).ready(function() {
+      // Category only applies to Cash Out (operating costs on the dashboard)
+      function toggleCategory() {
+        var isCashOut = $('input[name="cashType"]:checked').val() === 'CashOut';
+        $('#categoryField').toggleClass('d-none', !isCashOut);
+        $('#category').prop('disabled', !isCashOut);
+      }
+      $('input[name="cashType"]').on('change', toggleCategory);
+      toggleCategory();
+
       $('#submitBtn').on('click', function (e) {
         e.preventDefault();
         var form = $('#cashBalanceForm');
+        if ($('input[name="cashType"]:checked').val() === 'CashOut' && !$('#category').val()) {
+            Swal.fire({ icon: 'warning', title: 'Kategori belum dipilih', text: 'Pilih kategori biaya untuk Cash Out.' });
+            return;
+        }
         Swal.fire({
             title: 'Are you sure ?',
             text: "This will update your cash",

@@ -1,6 +1,6 @@
 <header class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow d-md-none">
     <div class="d-flex align-items-center px-3 bg-white border-bottom" style="height: var(--header-height); width: var(--sidebar-width); flex-shrink: 0;">
-        <a class="navbar-brand text-dark p-0 me-2" href="/dashboard">POSNI</a>
+        <a class="navbar-brand text-dark p-0 me-2" href="/">POSNI</a>
 
     </div>
     
