@@ -5,6 +5,7 @@ namespace App\Services\Website;
 use App\Models\WebProduct;
 use App\Models\WebProductOption;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 /**
  * Builds the public product payloads. Every response is a literal array of allow-listed fields;
@@ -15,6 +16,22 @@ class ProductCatalog
     private const KIND_ORDER = ['engraved' => 0, 'plain' => 1];
 
     /**
+     * The single definition of "a product the public API may show": published, not soft-deleted,
+     * and with at least one option whose hamper still exists (a soft-deleted or missing hamper
+     * resolves to nothing). Product lists, product details and category counts all derive from it.
+     *
+     * @return Collection<int, int>
+     */
+    public static function validPublishedProductIds(): Collection
+    {
+        return WebProduct::query()
+            ->where('is_published', true)
+            ->whereHas('options.hamper')
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id);
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     public static function cards(string $locale): array
@@ -23,7 +40,7 @@ class ProductCatalog
 
         foreach (self::query()->get() as $product) {
             $options = self::validOptions($product);
-            if ($options === []) {
+            if ($options === []) { // already excluded by query(); guards min() against a concurrent hamper delete
                 continue;
             }
 
@@ -66,13 +83,13 @@ class ProductCatalog
     }
 
     /**
-     * Published, non-deleted products in display order, with everything the payloads need.
-     * The default scopes already drop soft-deleted products and hampers.
+     * Valid published products (see validPublishedProductIds) in display order, with everything
+     * the payloads need.
      */
     private static function query(): Builder
     {
         return WebProduct::query()
-            ->where('is_published', true)
+            ->whereIn('id', self::validPublishedProductIds())
             ->with(['options.hamper.details', 'images', 'categories'])
             ->orderBy('sort_order')
             ->orderByDesc('id');

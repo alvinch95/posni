@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\Website\ProductCatalog;
+use App\Services\Website\SitePayload;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -34,5 +35,27 @@ class WebsiteController extends Controller
         }
 
         return response()->json(['data' => $product]);
+    }
+
+    public function categories(Request $request): JsonResponse
+    {
+        return response()->json(['data' => SitePayload::categories(self::locale($request))]);
+    }
+
+    public function testimonials(Request $request): JsonResponse
+    {
+        return response()->json(['data' => SitePayload::testimonials(self::locale($request))]);
+    }
+
+    public function site(Request $request): JsonResponse
+    {
+        $site = SitePayload::build(self::locale($request));
+
+        // "copy" is a flat map: when empty it must encode as {} (a PHP [] would become a JSON array).
+        if ($site['copy'] === []) {
+            $site['copy'] = new \stdClass();
+        }
+
+        return response()->json(['data' => $site]);
     }
 }

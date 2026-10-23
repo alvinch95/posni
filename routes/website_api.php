@@ -8,3 +8,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('products', [WebsiteController::class, 'products']);
 Route::get('products/{slug}', [WebsiteController::class, 'product'])->where('slug', '[a-z0-9-]+');
+Route::get('categories', [WebsiteController::class, 'categories']);
+Route::get('testimonials', [WebsiteController::class, 'testimonials']);
+Route::get('site', [WebsiteController::class, 'site']);
