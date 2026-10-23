@@ -345,6 +345,14 @@
                 loadInfo();
             }
 
+            // The filter is only a search box: Enter (the Search/Go key on phone keyboards) must not
+            // submit the product form. This binds every .hamper-filter, one per option row.
+            $filter.on('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                }
+            });
+
             // <option> cannot be hidden on iOS Safari, so the list is rebuilt from the master copy.
             $filter.on('input', function () {
                 var query = $.trim($filter.val()).toLowerCase();

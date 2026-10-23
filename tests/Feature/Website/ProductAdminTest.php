@@ -554,6 +554,20 @@ class ProductAdminTest extends WebsiteTestCase
             ->assertSee('Isi satu');
     }
 
+    public function test_hamper_filter_inputs_cannot_submit_the_form_with_enter(): void
+    {
+        $html = $this->actingAs($this->admin())->get(route('website.products.create'))->assertOk()->getContent();
+
+        // One search box per option row (Grafir, Tanpa Grafir) sits inside the product form ...
+        $this->assertSame(2, substr_count($html, 'type="search" id="filter-'));
+
+        // ... so the script that binds every .hamper-filter must swallow Enter (the phone keyboard's
+        // Search/Go key), or typing in the filter would save the product. The browser check covers the behaviour.
+        $this->assertStringContainsString("\$filter.on('keydown'", $html);
+        $this->assertStringContainsString("event.key === 'Enter'", $html);
+        $this->assertStringContainsString('event.preventDefault()', $html);
+    }
+
     public function test_edit_keeps_showing_a_hamper_that_was_deleted_in_posni(): void
     {
         $gone = $this->hamper('Hamper Lama', 1000, [], null, null, true);
