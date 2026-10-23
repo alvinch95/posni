@@ -183,6 +183,55 @@
       </ul>
       @endcan
 
+      @can('admin')
+      @php($websiteOpen = Request::is('dashboard/website*'))
+      <div class="sidebar-heading mt-3">
+        <button class="btn btn-link text-left px-3 text-muted" data-bs-toggle="collapse" data-bs-target="#websiteSubmenu" aria-expanded="{{ $websiteOpen ? 'true' : 'false' }}" aria-controls="websiteSubmenu">
+          <span>Website</span>
+          <span class="arrow-down" data-feather="arrow-down" style="display: {{ $websiteOpen ? 'none' : 'inline' }};"></span>
+          <span class="arrow-up" data-feather="arrow-up" style="display: {{ $websiteOpen ? 'inline' : 'none' }};"></span>
+        </button>
+      </div>
+      <ul id="websiteSubmenu" class="nav flex-column collapse {{ $websiteOpen ? 'show' : '' }}">
+        <li class="nav-item">
+          <a class="nav-link {{ Request::is('dashboard/website/products*') ? 'active' : '' }}" href="/dashboard/website/products">
+            <span data-feather="shopping-bag"></span>
+            Produk Website
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ Request::is('dashboard/website/categories*') ? 'active' : '' }}" href="/dashboard/website/categories">
+            <span data-feather="tag"></span>
+            Kategori
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ Request::is('dashboard/website/testimonials*') ? 'active' : '' }}" href="/dashboard/website/testimonials">
+            <span data-feather="message-circle"></span>
+            Testimoni
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ Request::is('dashboard/website/content*') ? 'active' : '' }}" href="/dashboard/website/content">
+            <span data-feather="edit-3"></span>
+            Konten Homepage
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ Request::is('dashboard/website/faqs*') ? 'active' : '' }}" href="/dashboard/website/faqs">
+            <span data-feather="help-circle"></span>
+            FAQ
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ Request::is('dashboard/website/contact*') ? 'active' : '' }}" href="/dashboard/website/contact">
+            <span data-feather="link"></span>
+            Link &amp; Kontak
+          </a>
+        </li>
+      </ul>
+      @endcan
+
       <hr>
       <form action="/logout" method="POST">
         @csrf
@@ -255,6 +304,19 @@
     masterDataSubmenu.addEventListener('hide.bs.collapse', function() {
       document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-down').style.display = 'inline';
       document.querySelector('[data-bs-target="#masterDataSubmenu"] .arrow-up').style.display = 'none';
+    });
+  }
+
+  var websiteSubmenu = document.getElementById('websiteSubmenu');
+  if(websiteSubmenu){
+    websiteSubmenu.addEventListener('show.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#websiteSubmenu"] .arrow-down').style.display = 'none';
+      document.querySelector('[data-bs-target="#websiteSubmenu"] .arrow-up').style.display = 'inline';
+    });
+
+    websiteSubmenu.addEventListener('hide.bs.collapse', function() {
+      document.querySelector('[data-bs-target="#websiteSubmenu"] .arrow-down').style.display = 'inline';
+      document.querySelector('[data-bs-target="#websiteSubmenu"] .arrow-up').style.display = 'none';
     });
   }
 </script>
