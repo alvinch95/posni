@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Website\WebCategoryController;
 use App\Http\Controllers\Website\WebContactController;
+use App\Http\Controllers\Website\WebContentController;
 use App\Http\Controllers\Website\WebFaqController;
 use App\Http\Controllers\Website\WebLinkController;
 use App\Http\Controllers\Website\WebTestimonialController;
@@ -20,3 +21,7 @@ Route::resource('faqs', WebFaqController::class)->except('show');
 Route::get('contact', [WebContactController::class, 'edit'])->name('contact.edit');
 Route::put('contact', [WebContactController::class, 'update'])->name('contact.update');
 Route::resource('links', WebLinkController::class)->except(['index', 'show']);
+
+// Homepage copy overrides ("Konten Homepage"), one screen for every section.
+Route::get('content', [WebContentController::class, 'edit'])->name('content.edit');
+Route::put('content', [WebContentController::class, 'update'])->name('content.update');
