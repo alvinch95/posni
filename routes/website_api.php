@@ -1,4 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\WebsiteController;
+use Illuminate\Support\Facades\Route;
+
 // Public website API, mounted by App\Providers\WebsiteServiceProvider under /api/website/v1.
-// Routes are added by later tasks.
+// GET only; responses are allow-listed arrays (never serialized models).
+
+Route::get('products', [WebsiteController::class, 'products']);
+Route::get('products/{slug}', [WebsiteController::class, 'product'])->where('slug', '[a-z0-9-]+');
