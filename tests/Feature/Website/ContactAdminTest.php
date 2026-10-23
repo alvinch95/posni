@@ -339,7 +339,17 @@ class ContactAdminTest extends WebsiteTestCase
     {
         $admin = $this->admin();
 
-        foreach (['bukan url', 'shopee.co.id/kayuni', 'javascript:alert(1)', ''] as $url) {
+        // Laravel's `url` rule alone accepts the non-web schemes (ftp, file, data, ...): only http(s) may be a public href.
+        $badUrls = [
+            'bukan url',
+            'shopee.co.id/kayuni',
+            'javascript:alert(1)',
+            'ftp://x.com/a',
+            'file://localhost/etc/passwd',
+            'data://text/html,hello',
+            '',
+        ];
+        foreach ($badUrls as $url) {
             $this->actingAs($admin)
                 ->post(route('website.links.store'), $this->linkPayload(['url' => $url]))
                 ->assertSessionHasErrors('url');

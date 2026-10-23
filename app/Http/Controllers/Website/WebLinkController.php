@@ -60,7 +60,7 @@ class WebLinkController extends Controller
             'group' => 'required|in:' . implode(',', array_keys(WebLink::GROUPS)),
             'platform' => 'required|in:' . implode(',', array_keys(WebLink::PLATFORMS)),
             'label' => 'required|max:50',
-            'url' => 'required|url|max:255',
+            'url' => 'required|url|starts_with:http://,https://|max:255',
             'sort_order' => 'nullable|integer|min:0|max:65535',
             'is_active' => 'boolean',
         ];
@@ -77,6 +77,7 @@ class WebLinkController extends Controller
             'label.max' => 'Label maksimal :max karakter.',
             'url.required' => 'URL wajib diisi.',
             'url.url' => 'URL tidak valid. Contoh: https://shopee.co.id/kayuni',
+            'url.starts_with' => 'URL harus diawali http:// atau https://',
             'url.max' => 'URL maksimal :max karakter.',
             'sort_order.integer' => 'Urutan harus berupa angka bulat.',
             'sort_order.min' => 'Urutan tidak boleh negatif.',

@@ -28,6 +28,26 @@ class PhoneNumberTest extends TestCase
         $this->assertSame('6281234567890', PhoneNumber::normalizeWa('6281234567890'));
     }
 
+    public function test_country_code_followed_by_trunk_zero_is_collapsed(): void
+    {
+        $this->assertSame('6281234567890', PhoneNumber::normalizeWa('+62 0812-3456-7890'));
+        $this->assertSame('6281234567890', PhoneNumber::normalizeWa('62 0812 3456 7890'));
+    }
+
+    public function test_international_dialing_prefix_is_dropped(): void
+    {
+        $this->assertSame('6281234567890', PhoneNumber::normalizeWa('0062 812 3456 7890'));
+        $this->assertSame('6281234567890', PhoneNumber::normalizeWa('00 62 0812 3456 7890'));
+    }
+
+    public function test_bare_country_code_prefixes_are_rejected(): void
+    {
+        $this->assertNull(PhoneNumber::normalizeWa('620'));
+        $this->assertNull(PhoneNumber::normalizeWa('62'));
+        $this->assertNull(PhoneNumber::normalizeWa('00'));
+        $this->assertNull(PhoneNumber::normalizeWa('0'));
+    }
+
     public function test_surrounding_whitespace_and_brackets_are_ignored(): void
     {
         $this->assertSame('6281234567890', PhoneNumber::normalizeWa("  (0812) 3456 7890\n"));
