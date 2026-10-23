@@ -29,4 +29,19 @@ class WebsiteSchemaTest extends WebsiteTestCase
         WebSetting::put('copy.Hero.eyebrow', '', '');
         $this->assertSame(0, WebSetting::count());
     }
+
+    public function test_setting_put_stores_trimmed_values(): void
+    {
+        WebSetting::put('contact.address', "  Jl. Contoh 1  \n", "\tExample St. 1 ");
+
+        $row = WebSetting::where('key', 'contact.address')->firstOrFail();
+        $this->assertSame('Jl. Contoh 1', $row->value_id);
+        $this->assertSame('Example St. 1', $row->value_en);
+
+        // a blank side is stored as null, the other side still trimmed
+        WebSetting::put('contact.address', '  Jl. Baru 2 ', '   ');
+        $row = $row->fresh();
+        $this->assertSame('Jl. Baru 2', $row->value_id);
+        $this->assertNull($row->value_en);
+    }
 }

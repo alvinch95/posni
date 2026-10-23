@@ -35,12 +35,15 @@ class WebSetting extends Model
 
     /**
      * Upsert a setting. When both values are blank the row is deleted, so "empty" and
-     * "never set" are the same state (the frontend then uses its built-in default).
+     * "never set" are the same state (the frontend then uses its built-in default). Values are
+     * stored trimmed, so what the admin sees is what the API serves.
      */
     public static function put(string $key, ?string $id, ?string $en = null): void
     {
-        $id = trim((string) $id) === '' ? null : $id;
-        $en = trim((string) $en) === '' ? null : $en;
+        $id = trim((string) $id);
+        $en = trim((string) $en);
+        $id = $id === '' ? null : $id;
+        $en = $en === '' ? null : $en;
 
         if ($id === null && $en === null) {
             static::where('key', $key)->delete();
