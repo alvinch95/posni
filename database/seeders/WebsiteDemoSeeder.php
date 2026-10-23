@@ -121,7 +121,9 @@ class WebsiteDemoSeeder extends Seeder
     public function run()
     {
         if (app()->environment('production')) {
-            $this->command?->error('Demo seeder is local-only.');
+            if ($this->command) {
+                $this->command->error('Demo seeder is local-only.');
+            }
 
             return;
         }
@@ -175,7 +177,9 @@ class WebsiteDemoSeeder extends Seeder
         ]);
 
         if ($options === []) {
-            $this->command?->warn("No hamper for {$package}, skipped");
+            if ($this->command) {
+                $this->command->warn("No hamper for {$package}, skipped");
+            }
 
             return;
         }
