@@ -114,13 +114,8 @@ class SitePayload
     private static function settingValue(Collection $settings, string $key, string $locale): ?string
     {
         $row = $settings->get($key);
-        if ($row === null) {
-            return null;
-        }
 
-        $value = Localized::pick($row->value_id, $row->value_en, $locale);
-
-        return $value === '' ? null : $value;
+        return $row === null ? null : $row->localized($locale);
     }
 
     /**

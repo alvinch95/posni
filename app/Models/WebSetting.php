@@ -18,11 +18,17 @@ class WebSetting extends Model
     public static function valueFor(string $key, string $locale): ?string
     {
         $row = static::where('key', $key)->first();
-        if ($row === null) {
-            return null;
-        }
 
-        $value = Localized::pick($row->value_id, $row->value_en, $locale);
+        return $row === null ? null : $row->localized($locale);
+    }
+
+    /**
+     * This row's value for a locale (EN falls back to ID when blank), or null when it resolves to
+     * empty. The single definition of "empty = unset", shared by valueFor() and the public API.
+     */
+    public function localized(string $locale): ?string
+    {
+        $value = Localized::pick($this->value_id, $this->value_en, $locale);
 
         return $value === '' ? null : $value;
     }
