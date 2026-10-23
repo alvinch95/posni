@@ -11,33 +11,22 @@
     {{-- Phones: one card per category (a 7-column table does not fit). --}}
     <div class="d-md-none">
         @forelse ($categories as $category)
-            <div class="card mb-2">
-                <div class="card-body d-flex gap-3 p-3">
-                    @if ($category->image)
-                        <img src="{{ asset('storage/' . ltrim($category->image, '/')) }}" alt="{{ $category->name_id }}"
-                             width="56" height="56" class="rounded border flex-shrink-0" style="object-fit: cover;">
-                    @endif
-                    <div class="flex-grow-1 text-break">
-                        <div class="fw-bold">{{ $category->name_id }}</div>
-                        @if (filled($category->name_en))
-                            <div class="text-muted">{{ $category->name_en }}</div>
-                        @endif
-                        <div class="mt-1"><code style="font-size: 1em;">{{ $category->slug }}</code></div>
-                        <div class="text-muted mt-1">
-                            {{ $category->is_active ? 'Aktif' : 'Nonaktif' }} · {{ $category->products_count }} produk · urutan {{ $category->sort_order }}
-                        </div>
-                    </div>
+            @component('dashboard.website._partials.list_card', [
+                'editUrl' => route('website.categories.edit', $category),
+                'destroyUrl' => route('website.categories.destroy', $category),
+                'thumb' => $category->image,
+                'thumbAlt' => $category->name_id,
+                'deleteData' => ['name' => $category->name_id, 'products' => $category->products_count],
+            ])
+                <div class="fw-bold">{{ $category->name_id }}</div>
+                @if (filled($category->name_en))
+                    <div class="text-muted">{{ $category->name_en }}</div>
+                @endif
+                <div class="mt-1"><code style="font-size: 1em;">{{ $category->slug }}</code></div>
+                <div class="text-muted mt-1">
+                    {{ $category->is_active ? 'Aktif' : 'Nonaktif' }} · {{ $category->products_count }} produk · urutan {{ $category->sort_order }}
                 </div>
-                <div class="d-flex gap-2 px-3 pb-3">
-                    <a href="{{ route('website.categories.edit', $category) }}" class="btn btn-warning flex-fill d-inline-flex align-items-center justify-content-center" style="min-height: 44px;">Edit</a>
-                    <form action="{{ route('website.categories.destroy', $category) }}" method="post" class="d-flex flex-fill">
-                        @method('delete')
-                        @csrf
-                        <button type="submit" class="btn btn-danger hapus flex-fill" style="min-height: 44px;"
-                                data-name="{{ $category->name_id }}" data-products="{{ $category->products_count }}">Hapus</button>
-                    </form>
-                </div>
-            </div>
+            @endcomponent
         @empty
             <p class="text-center text-muted py-4">Belum ada kategori.</p>
         @endforelse

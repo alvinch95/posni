@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Website\WebCategoryController;
+use App\Http\Controllers\Website\WebFaqController;
+use App\Http\Controllers\Website\WebTestimonialController;
 use Illuminate\Support\Facades\Route;
 
 // Website CMS (admin only), mounted by App\Providers\WebsiteServiceProvider under
@@ -8,3 +10,5 @@ use Illuminate\Support\Facades\Route;
 // Later tasks add their resources here.
 
 Route::resource('categories', WebCategoryController::class)->except('show');
+Route::resource('testimonials', WebTestimonialController::class)->except('show');
+Route::resource('faqs', WebFaqController::class)->except('show');
