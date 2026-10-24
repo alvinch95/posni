@@ -65,10 +65,11 @@ class HamperImporter
     /**
      * One row per serie (all series except Item when $serieIds is null), sorted by name:
      * serie_id, serie, hampers (importable ones), linked (of those, already on the website) and
-     * to_create (products an import would create). Writes nothing.
+     * to_create (products an import would create) and partial (groups skipped because some hamper
+     * of the product is on the website already, see import()). Writes nothing.
      *
      * @param  array<int, int|string>|null  $serieIds
-     * @return array<int, array{serie_id: int, serie: string, hampers: int, linked: int, to_create: int}>
+     * @return array<int, array{serie_id: int, serie: string, hampers: int, linked: int, to_create: int, partial: int}>
      */
     public function preview(?array $serieIds = null): array
     {
@@ -79,7 +80,8 @@ class HamperImporter
      * Create the products the preview announces, in one transaction (all or nothing).
      *
      * created / products: what was made. skipped_linked: groups whose hampers are all on the website
-     * already; skipped_partial: groups where only some are (skipped whole, never half-duplicated);
+     * already; skipped_partial: groups where only some are, or whose product is on the website through
+     * a hamper that was deleted or priced at 0 since (skipped whole, never half-duplicated);
      * skipped_duplicate: hampers dropped because a lower-id hamper of the same kind was kept;
      * skipped_invalid: hampers with a price that is empty or not above zero.
      *
@@ -165,9 +167,11 @@ class HamperImporter
             $parts[] = 'Tidak ada produk baru yang dibuat';
         }
 
-        $existing = $result['skipped_linked'] + $result['skipped_partial'];
-        if ($existing > 0) {
-            $parts[] = $existing . ' dilewati (sudah ada di website)';
+        if ($result['skipped_linked'] > 0) {
+            $parts[] = $result['skipped_linked'] . ' dilewati (sudah ada di website)';
+        }
+        if ($result['skipped_partial'] > 0) {
+            $parts[] = $result['skipped_partial'] . ' dilewati (sebagian sudah di website, cek manual)';
         }
         if ($result['skipped_duplicate'] > 0) {
             $parts[] = $result['skipped_duplicate'] . ' hamper kembar dilewati';
@@ -196,13 +200,14 @@ class HamperImporter
             ->get(['id', 'serie_id', 'name', 'selling_price']);
 
         [$eligible, $invalid] = $hampers->partition(fn (Hamper $hamper) => (int) $hamper->selling_price > 0);
-        $linked = $this->linkedHamperIds();
+        $live = $this->linked();
+        $linked = $live['ids'];
 
         // Group by serie + lowercase base name; the lowest id wins a kind slot, later same-kind ones are duplicates.
         $groups = [];
         foreach ($eligible as $hamper) {
             $parsed = self::parseName((string) $hamper->name);
-            $key = $hamper->serie_id . '|' . mb_strtolower(preg_replace('/\s+/u', ' ', $parsed['base']));
+            $key = self::groupKey($hamper->serie_id, $parsed['base']);
 
             if (! isset($groups[$key])) {
                 $groups[$key] = [
@@ -229,8 +234,9 @@ class HamperImporter
         $skippedPartial = 0;
         $skippedDuplicate = 0;
         $toCreate = [];
+        $partialPerSerie = [];
 
-        foreach ($groups as $group) {
+        foreach ($groups as $key => $group) {
             $linkedCount = 0;
             foreach ($group['hampers'] as $hamper) {
                 if (isset($linked[(int) $hamper->id])) {
@@ -238,16 +244,19 @@ class HamperImporter
                 }
             }
 
-            if ($linkedCount === 0) {
+            if ($linkedCount === 0 && ! isset($live['keys'][$key])) {
                 // Engraved wins the display name, as it does the contents order.
                 $group['name'] = $group['bases']['engraved'] ?? $group['bases']['plain'];
                 $create[] = $group;
                 $skippedDuplicate += $group['duplicates'];
                 $toCreate[$group['serie_id']] = ($toCreate[$group['serie_id']] ?? 0) + 1;
-            } elseif ($linkedCount === count($group['hampers'])) {
+            } elseif ($linkedCount > 0 && $linkedCount === count($group['hampers'])) {
                 $skippedLinked++;
             } else {
+                // Some hamper of the product is on the website (here, or deleted/priced at 0 since):
+                // never half-duplicate it, the owner sorts it out by hand.
                 $skippedPartial++;
+                $partialPerSerie[$group['serie_id']] = ($partialPerSerie[$group['serie_id']] ?? 0) + 1;
             }
         }
 
@@ -273,6 +282,7 @@ class HamperImporter
                 'hampers' => $count[$id] ?? 0,
                 'linked' => $linkedPerSerie[$id] ?? 0,
                 'to_create' => $toCreate[$id] ?? 0,
+                'partial' => $partialPerSerie[$id] ?? 0,
             ];
         }
 
@@ -309,20 +319,40 @@ class HamperImporter
     }
 
     /**
-     * Hampers a live product already uses, as [hamperId => true]. A soft-deleted product does not
-     * count (its relation is hidden by the SoftDeletes scope), so its hampers can be imported again.
+     * What live products already use. A soft-deleted product does not count (its relation is hidden
+     * by the SoftDeletes scope), so its hampers can be imported again.
      *
-     * @return array<int, true>
+     * ids:  [hamperId => true] for every hamper a live product points at.
+     * keys: [groupKey => true] for the same hampers, looked up with withTrashed and at any price, so
+     *       a product whose hamper was deleted in posni (or priced at 0) since still owns its group:
+     *       the unlinked twin ("... Tanpa Grafir") must not be imported as a second product.
+     *
+     * @return array{ids: array<int, true>, keys: array<string, true>}
      */
-    private function linkedHamperIds(): array
+    private function linked(): array
     {
         $ids = WebProductOption::query()
             ->whereHas('product')
             ->pluck('hamper_id')
             ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
             ->all();
 
-        return array_fill_keys($ids, true);
+        $keys = [];
+        foreach (array_chunk($ids, 500) as $chunk) {
+            foreach (Hamper::withTrashed()->whereIn('id', $chunk)->get(['id', 'serie_id', 'name']) as $hamper) {
+                $keys[self::groupKey($hamper->serie_id, self::parseName((string) $hamper->name)['base'])] = true;
+            }
+        }
+
+        return ['ids' => array_fill_keys($ids, true), 'keys' => $keys];
+    }
+
+    /** serie + lowercase base name (inner whitespace collapsed): what makes two hampers one product. */
+    private static function groupKey($serieId, string $base): string
+    {
+        return $serieId . '|' . mb_strtolower(preg_replace('/\s+/u', ' ', $base));
     }
 
     /**

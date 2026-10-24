@@ -398,10 +398,144 @@ class HamperImportTest extends WebsiteTestCase
         $this->assertSame(['Empty', 'kappa', 'Solar'], array_column($rows, 'serie'));
         $byName = array_column($rows, null, 'serie');
 
-        $this->assertSame(['serie_id' => $solar, 'serie' => 'Solar', 'hampers' => 4, 'linked' => 0, 'to_create' => 2], $byName['Solar']);
-        $this->assertSame(['serie_id' => $kappa, 'serie' => 'kappa', 'hampers' => 2, 'linked' => 1, 'to_create' => 1], $byName['kappa']);
-        $this->assertSame(['serie_id' => $empty, 'serie' => 'Empty', 'hampers' => 0, 'linked' => 0, 'to_create' => 0], $byName['Empty']);
+        $this->assertSame(['serie_id' => $solar, 'serie' => 'Solar', 'hampers' => 4, 'linked' => 0, 'to_create' => 2, 'partial' => 0], $byName['Solar']);
+        $this->assertSame(['serie_id' => $kappa, 'serie' => 'kappa', 'hampers' => 2, 'linked' => 1, 'to_create' => 1, 'partial' => 0], $byName['kappa']);
+        $this->assertSame(['serie_id' => $empty, 'serie' => 'Empty', 'hampers' => 0, 'linked' => 0, 'to_create' => 0, 'partial' => 0], $byName['Empty']);
         $this->assertSame(1, WebProduct::count(), 'preview must not write anything');
+    }
+
+    public function test_preview_counts_partly_linked_groups_per_serie(): void
+    {
+        $solar = $this->serie('Solar');
+        $kappa = $this->serie('Kappa');
+        [$engraved] = $this->pair($solar, 'Solar F'); // one of the pair is on the website
+        $this->pair($solar, 'Solar G');                // untouched
+        $this->webProduct(['slug' => 'solar-manual'], ['engraved' => ['hamper_id' => $engraved]]);
+        $this->hamper('Kappa A', 120000, [], null, $kappa);
+
+        $byName = array_column($this->importer()->preview(), null, 'serie');
+
+        $this->assertSame(['serie_id' => $solar, 'serie' => 'Solar', 'hampers' => 4, 'linked' => 1, 'to_create' => 1, 'partial' => 1], $byName['Solar']);
+        $this->assertSame(['serie_id' => $kappa, 'serie' => 'Kappa', 'hampers' => 1, 'linked' => 0, 'to_create' => 1, 'partial' => 0], $byName['Kappa']);
+    }
+
+    public function test_a_fully_linked_group_is_not_counted_as_partial(): void
+    {
+        $solar = $this->serie('Solar');
+        [$engraved, $plain] = $this->pair($solar, 'Solar F');
+        $this->webProduct(['slug' => 'solar-manual'], ['engraved' => ['hamper_id' => $engraved], 'plain' => ['hamper_id' => $plain]]);
+
+        $row = $this->importer()->preview()[0];
+
+        $this->assertSame(2, $row['linked']);
+        $this->assertSame(0, $row['to_create']);
+        $this->assertSame(0, $row['partial']);
+    }
+
+    // --- the twin of a hamper that a live product still points at ----------------------------
+
+    public function test_the_twin_of_a_soft_deleted_linked_hamper_is_not_imported_again(): void
+    {
+        $serie = $this->serie('Solar');
+        $deleted = $this->hamper('Solar F Grafir', 94000, [], null, $serie, true);
+        $twin = $this->hamper('Solar F Tanpa Grafir', 89000, [], null, $serie);
+        $this->webProduct(['slug' => 'solar-f', 'name_id' => 'Solar F'], ['engraved' => ['hamper_id' => $deleted]]);
+
+        $row = $this->importer()->preview()[0];
+        $result = $this->importer()->import();
+
+        $this->assertSame(0, $result['created']);
+        $this->assertSame(1, $result['skipped_partial']);
+        $this->assertSame(0, $result['skipped_linked']);
+        $this->assertSame(['to_create' => 0, 'partial' => 1], ['to_create' => $row['to_create'], 'partial' => $row['partial']]);
+        $this->assertSame(1, WebProduct::count());
+        $this->assertSame(0, WebProductOption::where('hamper_id', $twin)->count());
+    }
+
+    public function test_the_twin_of_a_linked_hamper_priced_at_zero_is_not_imported_again(): void
+    {
+        $serie = $this->serie('Solar');
+        $free = $this->hamper('Solar F Grafir', 0, [], null, $serie);
+        $this->hamper('Solar F Tanpa Grafir', 89000, [], null, $serie);
+        $this->webProduct(['slug' => 'solar-f', 'name_id' => 'Solar F'], ['engraved' => ['hamper_id' => $free]]);
+
+        $result = $this->importer()->import();
+
+        $this->assertSame(0, $result['created']);
+        $this->assertSame(1, $result['skipped_partial']);
+        $this->assertSame(1, WebProduct::count());
+    }
+
+    public function test_the_twin_check_follows_the_parenthesis_variant_and_ignores_case(): void
+    {
+        $serie = $this->serie('Miranda');
+        $deleted = $this->hamper('miranda e GRAFIR (Putih)', 100000, [], null, $serie, true);
+        $this->hamper('Miranda E Tanpa Grafir (Putih)', 95000, [], null, $serie); // same product
+        $this->hamper('Miranda E Tanpa Grafir', 95000, [], null, $serie);         // another product
+        $this->webProduct(['slug' => 'miranda-e-putih'], ['engraved' => ['hamper_id' => $deleted]]);
+
+        $result = $this->importer()->import();
+
+        $this->assertSame(['Miranda E'], $result['products']);
+        $this->assertSame(1, $result['skipped_partial']);
+    }
+
+    public function test_a_linked_hamper_of_another_serie_does_not_block_a_group(): void
+    {
+        $solar = $this->serie('Solar');
+        $lunar = $this->serie('Lunar');
+        $deleted = $this->hamper('Solar F Grafir', 94000, [], null, $lunar, true);
+        $this->hamper('Solar F Tanpa Grafir', 89000, [], null, $solar);
+        $this->webProduct(['slug' => 'solar-f', 'name_id' => 'Solar F'], ['engraved' => ['hamper_id' => $deleted]]);
+
+        $result = $this->importer()->import();
+
+        $this->assertSame(1, $result['created']);
+        $this->assertSame(0, $result['skipped_partial']);
+    }
+
+    public function test_the_twin_of_a_hamper_that_only_a_deleted_product_used_is_imported(): void
+    {
+        $serie = $this->serie('Solar');
+        $deleted = $this->hamper('Solar F Grafir', 94000, [], null, $serie, true);
+        $this->hamper('Solar F Tanpa Grafir', 89000, [], null, $serie);
+        $old = $this->webProduct(['slug' => 'solar-f', 'name_id' => 'Solar F'], ['engraved' => ['hamper_id' => $deleted]]);
+        $old->delete(); // the product is gone, nothing live points at the hamper any more
+
+        $result = $this->importer()->import();
+
+        $this->assertSame(1, $result['created']);
+        $this->assertSame(0, $result['skipped_partial']);
+    }
+
+    // --- the Indonesian sentence --------------------------------------------------------------
+
+    public function test_the_summary_reports_partly_linked_groups_separately(): void
+    {
+        $text = HamperImporter::summarize([
+            'created' => 3,
+            'skipped_linked' => 1,
+            'skipped_partial' => 2,
+            'skipped_duplicate' => 0,
+            'skipped_invalid' => 0,
+        ]);
+
+        $this->assertStringContainsString('3 produk dibuat sebagai draft', $text);
+        $this->assertStringContainsString('1 dilewati (sudah ada di website)', $text);
+        $this->assertStringContainsString('2 dilewati (sebagian sudah di website, cek manual)', $text);
+    }
+
+    public function test_the_summary_leaves_out_what_did_not_happen(): void
+    {
+        $zero = ['created' => 0, 'skipped_linked' => 0, 'skipped_partial' => 0, 'skipped_duplicate' => 0, 'skipped_invalid' => 0];
+
+        $only = HamperImporter::summarize(['skipped_partial' => 1] + $zero);
+        $this->assertStringContainsString('1 dilewati (sebagian sudah di website, cek manual)', $only);
+        $this->assertStringNotContainsString('sudah ada di website', $only);
+
+        $none = HamperImporter::summarize(['skipped_linked' => 4] + $zero);
+        $this->assertStringContainsString('4 dilewati (sudah ada di website)', $none);
+        $this->assertStringNotContainsString('sebagian', $none);
     }
 
     public function test_preview_matches_what_import_creates(): void

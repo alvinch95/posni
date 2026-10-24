@@ -6,7 +6,7 @@
         return 'Rp ' . number_format((int) $amount, 0, ',', '.');
     };
     $sortOptions = ['sort_order' => 'Urutan', 'name_id' => 'Nama', 'created_at' => 'Terbaru'];
-    $statusOptions = ['all' => 'Semua status', 'published' => 'Terbit', 'draft' => 'Draf'];
+    $statusOptions = ['all' => 'Semua status', 'published' => 'Terbit', 'draft' => 'Draft'];
     // What every list link (sort, pagination) carries besides its own parameters.
     $filterParams = ['search' => $search, 'status' => $status !== 'all' ? $status : null, 'serie' => $serie];
     $filtered = $search !== '' || $status !== 'all' || $serie !== null;
@@ -136,7 +136,7 @@
                 @endif
 
                 <div class="mt-2 d-flex flex-wrap gap-1">
-                    <span class="badge {{ $product->is_published ? 'bg-success' : 'bg-secondary' }}">{{ $product->is_published ? 'Terbit' : 'Draf' }}</span>
+                    <span class="badge {{ $product->is_published ? 'bg-success' : 'bg-secondary' }}">{{ $product->is_published ? 'Terbit' : 'Draft' }}</span>
                     @if ($product->is_bestseller)<span class="badge bg-warning text-dark">Bestseller</span>@endif
                     @if ($product->is_featured)<span class="badge bg-info text-dark">Unggulan</span>@endif
                     @if ($row['hidden'])<span class="badge bg-danger">Tidak tampil di website</span>@endif
@@ -220,7 +220,7 @@
                         </td>
                         <td>
                             <div class="d-flex flex-wrap gap-1">
-                                <span class="badge {{ $product->is_published ? 'bg-success' : 'bg-secondary' }}">{{ $product->is_published ? 'Terbit' : 'Draf' }}</span>
+                                <span class="badge {{ $product->is_published ? 'bg-success' : 'bg-secondary' }}">{{ $product->is_published ? 'Terbit' : 'Draft' }}</span>
                                 @if ($product->is_bestseller)<span class="badge bg-warning text-dark">Bestseller</span>@endif
                                 @if ($product->is_featured)<span class="badge bg-info text-dark">Unggulan</span>@endif
                                 @if ($row['hidden'])<span class="badge bg-danger">Tidak tampil di website</span>@endif
@@ -314,7 +314,7 @@
                 var title = (publish ? 'Publish ' : 'Unpublish ') + chosen + ' produk?';
                 var text = publish
                     ? 'Produk yang punya hamper valid akan tampil di website. Yang belum valid dilewati.'
-                    : 'Produk akan disembunyikan dari website dan jadi draf.';
+                    : 'Produk akan disembunyikan dari website dan jadi draft.';
 
                 if (window.Swal) {
                     Swal.fire({

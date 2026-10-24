@@ -69,8 +69,8 @@ class ProductImportAdminTest extends WebsiteTestCase
             ->assertDontSee('Batu Kayu');
 
         $rows = collect($response->viewData('rows'))->keyBy('serie');
-        $this->assertSame(['hampers' => 3, 'linked' => 0, 'to_create' => 2], collect($rows['Solar'])->only(['hampers', 'linked', 'to_create'])->all());
-        $this->assertSame(['hampers' => 1, 'linked' => 1, 'to_create' => 0], collect($rows['Kappa'])->only(['hampers', 'linked', 'to_create'])->all());
+        $this->assertSame(['hampers' => 3, 'linked' => 0, 'to_create' => 2, 'partial' => 0], collect($rows['Solar'])->only(['hampers', 'linked', 'to_create', 'partial'])->all());
+        $this->assertSame(['hampers' => 1, 'linked' => 1, 'to_create' => 0, 'partial' => 0], collect($rows['Kappa'])->only(['hampers', 'linked', 'to_create', 'partial'])->all());
         $this->assertFalse($rows->has('Item'));
 
         $html = $response->getContent();
@@ -80,7 +80,74 @@ class ProductImportAdminTest extends WebsiteTestCase
         $this->assertStringContainsString('name="serie_ids[]"', $html);
     }
 
+    public function test_a_row_with_everything_already_linked_says_so(): void
+    {
+        $solar = $this->serie('Solar');
+        $a = $this->liveHamper('Solar F Grafir', $solar);
+        $b = $this->liveHamper('Solar F Tanpa Grafir', $solar);
+        $this->webProduct(['slug' => 'solar-f'], ['engraved' => ['hamper_id' => $a], 'plain' => ['hamper_id' => $b]]);
+
+        $this->actingAs($this->admin())->get(route('website.products.import'))
+            ->assertOk()
+            ->assertSee('Semua sudah ada di website.')
+            ->assertDontSee('Sebagian sudah di website, cek manual.');
+    }
+
+    public function test_a_row_with_only_partly_linked_groups_asks_for_a_manual_check(): void
+    {
+        $solar = $this->serie('Solar');
+        $a = $this->liveHamper('Solar F Grafir', $solar);
+        $this->liveHamper('Solar F Tanpa Grafir', $solar);
+        $this->webProduct(['slug' => 'solar-f'], ['engraved' => ['hamper_id' => $a]]);
+
+        $html = $this->actingAs($this->admin())->get(route('website.products.import'))
+            ->assertOk()
+            ->assertSee('Sebagian sudah di website, cek manual.')
+            ->assertDontSee('Semua sudah ada di website.')
+            ->getContent();
+
+        $this->assertMatchesRegularExpression('/<input[^>]*id="serie-' . $solar . '"[^>]*disabled/', $html);
+    }
+
+    public function test_the_twin_of_a_deleted_linked_hamper_also_asks_for_a_manual_check(): void
+    {
+        $solar = $this->serie('Solar');
+        $deleted = $this->hamper('Solar F Grafir', 94000, [], null, $solar, true);
+        $this->liveHamper('Solar F Tanpa Grafir', $solar);
+        $this->webProduct(['slug' => 'solar-f'], ['engraved' => ['hamper_id' => $deleted]]);
+
+        $this->actingAs($this->admin())->get(route('website.products.import'))
+            ->assertSee('Sebagian sudah di website, cek manual.')
+            ->assertDontSee('Semua sudah ada di website.');
+    }
+
+    public function test_a_row_without_importable_hampers_says_that(): void
+    {
+        $this->serie('Empty');
+
+        $this->actingAs($this->admin())->get(route('website.products.import'))
+            ->assertSee('Belum ada hamper yang bisa diimport.')
+            ->assertDontSee('Semua sudah ada di website.')
+            ->assertDontSee('Sebagian sudah di website');
+    }
+
     // --- import submit ----------------------------------------------------------------------
+
+    public function test_the_flash_reports_partly_linked_groups_separately(): void
+    {
+        $solar = $this->serie('Solar');
+        $a = $this->liveHamper('Solar F Grafir', $solar);
+        $this->liveHamper('Solar F Tanpa Grafir', $solar);
+        $this->webProduct(['slug' => 'solar-f'], ['engraved' => ['hamper_id' => $a]]);
+        $this->liveHamper('Kappa A', $solar);
+
+        $this->actingAs($this->admin())->followingRedirects()
+            ->post(route('website.products.import.store'), ['serie_ids' => [$solar]])
+            ->assertSee('1 produk dibuat sebagai draft')
+            ->assertSee('1 dilewati (sebagian sudah di website, cek manual)')
+            ->assertDontSee('dilewati (sudah ada di website)');
+    }
+
 
     public function test_posting_the_import_creates_drafts_flashes_the_summary_and_redirects(): void
     {
@@ -340,6 +407,23 @@ class ProductImportAdminTest extends WebsiteTestCase
 
         // One checkbox per product in the phone card list and one in the table.
         $this->assertSame(2, substr_count($html, 'name="ids[]" value="' . $product->id . '"'));
+    }
+
+    public function test_the_list_spells_it_draft_everywhere(): void
+    {
+        $serie = $this->serie('Solar');
+        $this->webProduct(['name_id' => 'A Draft', 'is_published' => false], ['engraved' => ['hamper_id' => $this->liveHamper('H1', $serie)]]);
+        $this->webProduct(['name_id' => 'A Live', 'is_published' => true], ['engraved' => ['hamper_id' => $this->liveHamper('H2', $serie)]]);
+        $this->webProduct(['name_id' => 'B Draft', 'is_published' => false]);
+
+        $html = $this->actingAs($this->admin())->get(route('website.products.index'))->assertOk()->getContent();
+
+        // The status filter option, the badge (a phone card and a table row per draft product) and the unpublish dialog.
+        $this->assertStringContainsString('>Draft</option>', $html);
+        $this->assertSame(4, substr_count($html, 'bg-secondary">Draft</span>'));
+        $this->assertStringContainsString('dan jadi draft.', $html);
+        // No "Draf" on its own (not "Draft"), in any case, anywhere the page prints.
+        $this->assertDoesNotMatchRegularExpression('/\bdraf\b/i', $html);
     }
 
     public function test_the_selects_keep_the_chosen_status_and_serie(): void

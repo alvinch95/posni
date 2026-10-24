@@ -104,7 +104,17 @@
                             <td class="wp-import-serie text-break">
                                 <label for="serie-{{ $row['serie_id'] }}" class="m-0 d-flex align-items-center" style="min-height: 44px; font-weight: 600;">{{ $row['serie'] }}</label>
                                 @if ($off)
-                                    <div class="small">{{ $row['hampers'] === 0 ? 'Belum ada hamper yang bisa diimport.' : 'Semua sudah ada di website.' }}</div>
+                                    <div class="small">
+                                        @if ($row['hampers'] === 0)
+                                            Belum ada hamper yang bisa diimport.
+                                        @elseif ($row['partial'] > 0)
+                                            Sebagian sudah di website, cek manual.
+                                        @elseif ($row['linked'] === $row['hampers'])
+                                            Semua sudah ada di website.
+                                        @else
+                                            Tidak ada produk baru.
+                                        @endif
+                                    </div>
                                 @endif
                             </td>
                             <td class="text-end" data-label="Hamper">{{ $row['hampers'] }}</td>

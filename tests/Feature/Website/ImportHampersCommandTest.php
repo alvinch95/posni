@@ -187,6 +187,20 @@ class ImportHampersCommandTest extends WebsiteTestCase
             ->assertExitCode(0);
     }
 
+    public function test_the_summary_reports_partly_linked_groups_separately(): void
+    {
+        [$solar] = $this->seedHampers();
+        $linked = \App\Models\Hamper::where('name', 'Solar F Grafir')->firstOrFail(); // its twin is not on the website
+        $this->webProduct(['slug' => 'solar-manual'], ['engraved' => ['hamper_id' => $linked->id]]);
+
+        [$code, $output] = $this->importCommand();
+
+        $this->assertSame(0, $code);
+        $this->assertStringContainsString('2 produk dibuat', $output);
+        $this->assertStringContainsString('1 dilewati (sebagian sudah di website, cek manual)', $output);
+        $this->assertStringNotContainsString('sudah ada di website', $output);
+    }
+
     public function test_the_summary_lists_the_skips(): void
     {
         [$solar] = $this->seedHampers();
