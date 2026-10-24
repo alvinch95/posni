@@ -5,13 +5,18 @@
   every @can('admin') gate is where it always was.
 --}}
 @php
+  // Sale pages: the cashier (/dashboard/sales, /create) belongs to Transaction. The order detail
+  // (/dashboard/sales/{id}, only reachable from Sales History) belongs to Report > Sales History.
+  $onSalesPage    = Request::is('dashboard/sales', 'dashboard/sales/create*');
+  $onSalesHistory = Request::is('dashboard/sales/history*') || Request::routeIs('sales.show', 'sales.edit');
+
   $navOpen = [
     'attendance'  => Request::is('attendance/*'),
     'masterData'  => Request::is('dashboard/series*', 'dashboard/suppliers*', 'dashboard/customers*', 'dashboard/items*', 'dashboard/hampers*'),
-    'transaction' => Request::is('dashboard/purchases*') || (Request::is('dashboard/sales*') && ! Request::is('dashboard/sales/history*')),
+    'transaction' => Request::is('dashboard/purchases*') || $onSalesPage,
     'stock'       => Request::is('dashboard/stock*'),
     'cash'        => Request::is('dashboard/cashbalances*'),
-    'report'      => Request::is('dashboard/sales/history*', 'dashboard/shopeereminder*'),
+    'report'      => $onSalesHistory || Request::is('dashboard/shopeereminder*'),
     'website'     => Request::is('dashboard/website*'),
   ];
 @endphp
@@ -119,7 +124,7 @@
         </li>
         @endcan
         <li class="nav-item">
-          <a class="nav-link {{ Request::is('dashboard/sales*') && ! Request::is('dashboard/sales/history*') ? 'active' : '' }}" href="/dashboard/sales">
+          <a class="nav-link {{ $onSalesPage ? 'active' : '' }}" href="/dashboard/sales">
             <span data-feather="dollar-sign"></span>
             <span class="sidebar-label">Sales</span>
           </a>
@@ -187,7 +192,7 @@
       </div>
       <ul id="reportSubmenu" class="nav flex-column sidebar-submenu collapse {{ $navOpen['report'] ? 'show' : '' }}">
         <li class="nav-item">
-          <a class="nav-link {{ Request::is('dashboard/sales/history*') ? 'active' : '' }}" href="/dashboard/sales/history">
+          <a class="nav-link {{ $onSalesHistory ? 'active' : '' }}" href="/dashboard/sales/history">
             <span data-feather="clipboard"></span>
             <span class="sidebar-label">Sales History</span>
           </a>

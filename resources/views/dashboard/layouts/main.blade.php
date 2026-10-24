@@ -15,7 +15,7 @@
 
     <!-- Custom styles for this template -->
     <!-- Custom styles for this template -->
-    <link href="/css/modern.css" rel="stylesheet">
+    <link href="/css/modern.css?v={{ @filemtime(public_path('css/modern.css')) ?: '1' }}" rel="stylesheet">
 
     {{-- Trix Editor --}}
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
