@@ -26,18 +26,37 @@ class ProductCatalog
      */
     public static function validPublishedProductIds(): Collection
     {
-        return WebProduct::query()
-            ->where('is_published', true)
-            ->whereHas('options', function ($options) {
-                $options->whereHas('hamper', function ($hamper) use ($options) {
-                    $override = $options->getModel()->qualifyColumn('price_override');
-                    $selling = $hamper->getModel()->qualifyColumn('selling_price');
-
-                    $hamper->whereRaw("COALESCE({$override}, {$selling}) > 0");
-                });
-            })
+        return self::withValidOption(WebProduct::query()->where('is_published', true))
             ->pluck('id')
             ->map(fn ($id) => (int) $id);
+    }
+
+    /**
+     * Which of these products have at least one valid option, published or not: the same option rule
+     * as validPublishedProductIds() (a draft must pass it before it may be published). Soft-deleted
+     * products never match.
+     *
+     * @param  array<int, int>  $productIds
+     * @return Collection<int, int>
+     */
+    public static function validProductIds(array $productIds): Collection
+    {
+        return self::withValidOption(WebProduct::query()->whereIn('id', $productIds))
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id);
+    }
+
+    /** The one definition of "has a valid option" (see validPublishedProductIds). */
+    private static function withValidOption(Builder $products): Builder
+    {
+        return $products->whereHas('options', function ($options) {
+            $options->whereHas('hamper', function ($hamper) use ($options) {
+                $override = $options->getModel()->qualifyColumn('price_override');
+                $selling = $hamper->getModel()->qualifyColumn('selling_price');
+
+                $hamper->whereRaw("COALESCE({$override}, {$selling}) > 0");
+            });
+        });
     }
 
     /**

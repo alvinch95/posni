@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
 use App\Models\Hamper;
+use App\Models\Serie;
 use App\Models\WebCategory;
 use App\Models\WebProduct;
 use App\Models\WebProductImage;
@@ -13,6 +14,7 @@ use App\Services\Website\HamperStock;
 use App\Services\Website\ProductCatalog;
 use App\Services\Website\WebUpload;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -29,6 +31,9 @@ class WebProductController extends Controller
     /** The only columns the list may be sorted by; anything else falls back to the default. */
     private const SORTABLE = ['sort_order', 'name_id', 'created_at'];
 
+    /** ?status= values of the list; anything else means "all". */
+    private const STATUSES = ['all', 'published', 'draft'];
+
     private const PER_PAGE = 20;
 
     private const PUBLISH_ERROR = 'Pilih minimal satu hamper (Grafir atau Tanpa Grafir) sebelum publish.';
@@ -41,10 +46,16 @@ class WebProductController extends Controller
         $search = is_string($request->query('search')) ? trim($request->query('search')) : '';
         $sort = in_array($request->query('sort'), self::SORTABLE, true) ? $request->query('sort') : 'sort_order';
         $direction = $request->query('direction') === 'desc' ? 'desc' : 'asc';
+        $status = in_array($request->query('status'), self::STATUSES, true) ? $request->query('status') : 'all';
+        $serie = is_string($request->query('serie')) && ctype_digit($request->query('serie')) ? (int) $request->query('serie') : null;
 
         $products = WebProduct::query()
             ->with(['options.hamper', 'images'])
             ->when($search !== '', fn ($query) => $query->where('name_id', 'like', '%' . $search . '%'))
+            ->when($status === 'published', fn ($query) => $query->where('is_published', true))
+            ->when($status === 'draft', fn ($query) => $query->where('is_published', false))
+            // Any option whose (live) hamper belongs to the serie.
+            ->when($serie !== null, fn ($query) => $query->whereHas('options.hamper', fn ($hamper) => $hamper->where($hamper->getModel()->qualifyColumn('serie_id'), $serie)))
             ->orderBy($sort, $direction) // $sort comes from SORTABLE only
             ->orderByDesc('id')
             ->paginate(self::PER_PAGE)
@@ -63,7 +74,77 @@ class WebProductController extends Controller
             'search' => $search,
             'sort' => $sort,
             'direction' => $direction,
+            'status' => $status,
+            'serie' => $serie,
+            'series' => $this->filterSeries($serie),
         ]);
+    }
+
+    /**
+     * Publish or unpublish the ticked products of the list. A product only goes live when it has at
+     * least one valid option, by the same rule the public API uses (ProductCatalog); the rest are
+     * left as they were and reported. Unpublishing has no precondition. Ids that are unknown or
+     * soft-deleted are ignored.
+     */
+    public function bulk(Request $request)
+    {
+        $data = $request->validate([
+            'action' => ['required', Rule::in(['publish', 'unpublish'])],
+            'ids' => ['required', 'array', 'min:1', 'max:200'],
+            'ids.*' => ['integer'],
+        ], [
+            'action.required' => 'Pilih aksi: Publish atau Unpublish.',
+            'action.in' => 'Aksi tidak dikenal.',
+            'ids.required' => 'Pilih minimal satu produk.',
+            'ids.array' => 'Pilihan produk tidak valid.',
+            'ids.min' => 'Pilih minimal satu produk.',
+            'ids.max' => 'Maksimal :max produk sekali proses.',
+            'ids.*.integer' => 'Pilihan produk tidak valid.',
+        ]);
+
+        $ids = array_values(array_unique(array_map('intval', $data['ids'])));
+        $products = WebProduct::query()->whereIn('id', $ids)->get(['id', 'is_published']); // soft-deleted rows are not here
+
+        if ($data['action'] === 'publish') {
+            $valid = ProductCatalog::validProductIds($products->pluck('id')->map(fn ($id) => (int) $id)->all())->all();
+            $isValid = fn ($product) => in_array((int) $product->id, $valid, true);
+
+            $toPublish = $products->filter(fn ($product) => ! $product->is_published && $isValid($product));
+            $alreadyLive = $products->filter(fn ($product) => $product->is_published && $isValid($product))->count();
+            $skipped = $products->reject($isValid)->count();
+
+            $this->setPublished($toPublish->pluck('id')->all(), true);
+
+            $parts = [$toPublish->count() . ' produk dipublish'];
+            if ($alreadyLive > 0) {
+                $parts[] = $alreadyLive . ' sudah terbit';
+            }
+            if ($skipped > 0) {
+                $parts[] = $skipped . ' dilewati (belum punya hamper yang valid)';
+            }
+
+            $message = implode(' · ', $parts);
+            if ($toPublish->isEmpty()) {
+                Alert::warning('Info', $message);
+            } else {
+                Alert::success('Success', $message);
+            }
+        } else {
+            $toDraft = $products->filter(fn ($product) => $product->is_published);
+
+            $this->setPublished($toDraft->pluck('id')->all(), false);
+
+            $message = $toDraft->count() . ' produk di-unpublish (jadi draft)';
+            $alreadyDraft = $products->count() - $toDraft->count();
+            if ($alreadyDraft > 0) {
+                $message .= ' · ' . $alreadyDraft . ' sudah draft';
+            }
+
+            Alert::success('Success', $message);
+        }
+
+        // Back to the list as it was (filters, page), which is where the checkboxes were ticked.
+        return back(302, [], route('website.products.index'));
     }
 
     public function create()
@@ -170,6 +251,47 @@ class WebProductController extends Controller
             'stock' => HamperStock::of($hamper),
             'contents' => $contents,
         ]);
+    }
+
+    /**
+     * One query for the whole batch. A query-builder update fires no model event, so the API cache
+     * is bumped by hand (once, after the commit).
+     *
+     * @param  array<int, int>  $ids
+     */
+    private function setPublished(array $ids, bool $published): void
+    {
+        if ($ids === []) {
+            return;
+        }
+
+        DB::transaction(function () use ($ids, $published) {
+            WebProduct::query()->whereIn('id', $ids)->update(['is_published' => $published]);
+            CatalogCache::bump();
+        });
+    }
+
+    /**
+     * Series for the list's filter: the ones that have a hamper behind some product, plus the one
+     * picked in the URL (so the select never shows "Semua serie" while that filter is on).
+     */
+    private function filterSeries(?int $picked): Collection
+    {
+        $linkedHampers = WebProductOption::query()->whereHas('product')->select('hamper_id');
+
+        $series = Serie::query()
+            ->whereIn('id', Hamper::query()->whereIn('id', $linkedHampers)->select('serie_id'))
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        if ($picked !== null && ! $series->contains('id', $picked)) {
+            $extra = Serie::query()->find($picked, ['id', 'name']);
+            if ($extra) {
+                $series = $series->push($extra)->sortBy('name')->values();
+            }
+        }
+
+        return $series;
     }
 
     /**
