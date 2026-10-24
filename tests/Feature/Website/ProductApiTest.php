@@ -122,6 +122,73 @@ class ProductApiTest extends WebsiteTestCase
         $this->getJson(self::LIST_URL . '/orphan')->assertNotFound();
     }
 
+    public function test_option_without_a_positive_price_is_dropped_like_a_deleted_hamper(): void
+    {
+        $noPrice = $this->stockedHamper('No price', 90000);
+        DB::table('hampers')->where('id', $noPrice)->update(['selling_price' => null]);
+        $freeHamper = $this->stockedHamper('Free', 0);
+        $good = $this->stockedHamper('Good', 94000);
+
+        // No override: the hamper's own price decides, and null or 0 is not a price.
+        $this->webProduct(['slug' => 'null-price'], [
+            'engraved' => ['hamper_id' => $good],
+            'plain' => ['hamper_id' => $noPrice],
+        ]);
+        $this->webProduct(['slug' => 'zero-price'], [
+            'engraved' => ['hamper_id' => $good],
+            'plain' => ['hamper_id' => $freeHamper],
+        ]);
+
+        foreach (['null-price', 'zero-price'] as $slug) {
+            $options = $this->getJson(self::LIST_URL . '/' . $slug)->assertOk()->json('data.options');
+            $this->assertSame(['engraved'], array_column($options, 'kind'), $slug);
+            $this->assertSame([94000], array_column($options, 'price'), $slug);
+            $this->getJson(self::LIST_URL . '/' . $slug)->assertJsonPath('data.priceFrom', 94000);
+        }
+
+        $cards = collect($this->getJson(self::LIST_URL)->assertOk()->json('data'))->keyBy('slug');
+        $this->assertSame(94000, $cards['null-price']['priceFrom']);
+        $this->assertSame(94000, $cards['zero-price']['priceFrom']);
+    }
+
+    public function test_override_decides_validity_over_the_hamper_price(): void
+    {
+        $free = $this->stockedHamper('Free', 0);
+        $priced = $this->stockedHamper('Priced', 80000);
+
+        // A positive override rescues a hamper without a price.
+        $this->webProduct(['slug' => 'rescued'], ['plain' => ['hamper_id' => $free, 'price_override' => 50000]]);
+        // A stored 0 override (validation rejects it, but a hand-made row could carry it) is not a price,
+        // even though the hamper itself has one.
+        $this->webProduct(['slug' => 'zero-override'], ['plain' => ['hamper_id' => $priced, 'price_override' => 0]]);
+
+        $this->getJson(self::LIST_URL . '/rescued')->assertOk()->assertJsonPath('data.priceFrom', 50000);
+        $this->getJson(self::LIST_URL . '/zero-override')->assertNotFound();
+        $this->assertSame(['rescued'], $this->slugs($this->getJson(self::LIST_URL)->assertOk()->json('data')));
+    }
+
+    public function test_product_whose_only_option_has_no_price_is_hidden_everywhere(): void
+    {
+        $category = WebCategory::create(['slug' => 'birthday', 'name_id' => 'Birthday']);
+        $free = $this->stockedHamper('Free', 0);
+        $noPrice = $this->stockedHamper('No price', 90000);
+        DB::table('hampers')->where('id', $noPrice)->update(['selling_price' => null]);
+
+        $ok = $this->webProduct(['slug' => 'ok'], ['plain' => ['hamper_id' => $this->stockedHamper('Ok', 60000)]]);
+        $ok->categories()->attach($category->id);
+        foreach (['free' => $free, 'no-price' => $noPrice] as $slug => $hamper) {
+            $this->webProduct(['slug' => $slug], ['engraved' => ['hamper_id' => $hamper]])->categories()->attach($category->id);
+        }
+
+        $this->assertSame(['ok'], $this->slugs($this->getJson(self::LIST_URL)->assertOk()->json('data')));
+        $this->getJson(self::LIST_URL . '/free')->assertNotFound();
+        $this->getJson(self::LIST_URL . '/no-price')->assertNotFound();
+
+        // productCount follows the same rule as the list.
+        $this->getJson('/api/website/v1/categories')->assertOk()->assertJsonPath('data.0.productCount', 1);
+        $this->assertSame(3, WebCategory::first()->products()->count(), 'sanity: all three are attached');
+    }
+
     public function test_hamper_with_soft_deleted_item_counts_as_out_of_stock(): void
     {
         // Hamper::getStock() dereferences the (soft-deleted, so null) item and can throw.

@@ -625,6 +625,23 @@ class ProductAdminTest extends WebsiteTestCase
         $this->assertSame(4, substr_count($html, 'Tidak tampil di website'));
     }
 
+    public function test_index_warns_about_published_products_whose_only_option_has_no_price(): void
+    {
+        $free = $this->stockedHamper('Gratis', 0);
+        $noPrice = $this->stockedHamper('Tanpa Harga', 90000);
+        DB::table('hampers')->where('id', $noPrice)->update(['selling_price' => null]);
+
+        $this->webProduct(['slug' => 'free', 'name_id' => 'Produk Gratis'], ['plain' => ['hamper_id' => $free]]);
+        $this->webProduct(['slug' => 'no-price', 'name_id' => 'Produk Tanpa Harga'], ['plain' => ['hamper_id' => $noPrice]]);
+        // Rescued by an override: visible, no badge.
+        $this->webProduct(['slug' => 'rescued', 'name_id' => 'Produk Diselamatkan'], ['plain' => ['hamper_id' => $free, 'price_override' => 50000]]);
+
+        $html = $this->actingAs($this->admin())->get(route('website.products.index'))->assertOk()->getContent();
+
+        // 2 hidden products x 2 layouts (phone card + desktop table).
+        $this->assertSame(4, substr_count($html, 'Tidak tampil di website'));
+    }
+
     public function test_index_search_filters_by_indonesian_name(): void
     {
         $this->webProduct(['slug' => 'solar-f', 'name_id' => 'Solar F']);

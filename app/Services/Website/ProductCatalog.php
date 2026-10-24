@@ -17,8 +17,10 @@ class ProductCatalog
 
     /**
      * The single definition of "a product the public API may show": published, not soft-deleted,
-     * and with at least one option whose hamper still exists (a soft-deleted or missing hamper
-     * resolves to nothing). Product lists, product details and category counts all derive from it.
+     * and with at least one valid option. An option is valid when its hamper still exists (a
+     * soft-deleted or missing hamper resolves to nothing) and its effective price, the override
+     * or else the hamper's selling price, is above zero (never show "Rp 0"). Product lists,
+     * product details and category counts all derive from it; validOptions() is its PHP twin.
      *
      * @return Collection<int, int>
      */
@@ -26,7 +28,14 @@ class ProductCatalog
     {
         return WebProduct::query()
             ->where('is_published', true)
-            ->whereHas('options.hamper')
+            ->whereHas('options', function ($options) {
+                $options->whereHas('hamper', function ($hamper) use ($options) {
+                    $override = $options->getModel()->qualifyColumn('price_override');
+                    $selling = $hamper->getModel()->qualifyColumn('selling_price');
+
+                    $hamper->whereRaw("COALESCE({$override}, {$selling}) > 0");
+                });
+            })
             ->pluck('id')
             ->map(fn ($id) => (int) $id);
     }
@@ -121,8 +130,9 @@ class ProductCatalog
     }
 
     /**
-     * Options whose hamper still exists (soft-deleted or missing hampers resolve to null),
-     * ordered engraved then plain, each with its resolved price and stock flag.
+     * Valid options only (see validPublishedProductIds): the hamper still exists (soft-deleted or
+     * missing hampers resolve to null) and the effective price is above zero. Ordered engraved
+     * then plain, each with its resolved price and stock flag.
      *
      * @return array<int, array{id:int, kind:string, price:int, inStock:bool, image:?string}>
      */
@@ -137,10 +147,15 @@ class ProductCatalog
                 continue;
             }
 
+            $price = (int) ($option->price_override ?? $hamper->selling_price ?? 0);
+            if ($price <= 0) {
+                continue;
+            }
+
             $options[] = [
                 'id' => (int) $option->id,
                 'kind' => (string) $option->kind,
-                'price' => (int) ($option->price_override ?? $hamper->selling_price ?? 0),
+                'price' => $price,
                 'inStock' => HamperStock::of($hamper) > 0,
                 'image' => $hamper->image,
             ];
