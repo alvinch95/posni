@@ -17,7 +17,7 @@
     <h1 class="h2">Produk Website</h1>
 </div>
 
-<div class="col-xl-11">
+<div class="col-xxl-11">
     @if ($errors->any())
         <div class="alert alert-danger" role="alert">
             <ul class="mb-0 ps-3">
@@ -100,7 +100,7 @@
         /* Bootstrap badges are 0.75em; keep the card text at 14px or more on phones. */
         .wp-cards .badge { font-size: .875rem; }
     </style>
-    <div class="d-lg-none wp-cards">
+    <div class="d-xl-none wp-cards">
         @forelse ($products as $product)
             @php $row = $rows[$product->id]; @endphp
             @component('dashboard.website._partials.list_card', [
@@ -153,8 +153,8 @@
         @endforelse
     </div>
 
-    {{-- Desktop: the table. --}}
-    <div class="card mb-4 d-none d-lg-block">
+    {{-- Desktop (xl and up): the table. It needs about 810 px, more than lg leaves beside the sidebar. --}}
+    <div class="card mb-4 d-none d-xl-block">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-striped table-sm align-middle">

@@ -8,8 +8,8 @@
 <div class="col-xl-10">
     <a href="{{ route('website.faqs.create') }}" class="btn btn-primary mb-3 d-inline-flex align-items-center" style="min-height: 44px;">Tambah FAQ</a>
 
-    {{-- Phones: one card per question (a 6-column table does not fit). --}}
-    <div class="d-md-none">
+    {{-- Phones and tablets: one card per question (a 6-column table does not fit). --}}
+    <div class="d-lg-none">
         @forelse ($faqs as $faq)
             @component('dashboard.website._partials.list_card', [
                 'editUrl' => route('website.faqs.edit', $faq),
@@ -30,8 +30,8 @@
         @endforelse
     </div>
 
-    {{-- Tablet and desktop: the table. --}}
-    <div class="card mb-4 d-none d-md-block">
+    {{-- Desktop (lg and up): the table. Below that it would scroll sideways beside the sidebar. --}}
+    <div class="card mb-4 d-none d-lg-block">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-striped table-sm align-middle">

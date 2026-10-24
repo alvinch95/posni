@@ -117,10 +117,14 @@ class CmsCardsLayoutTest extends WebsiteTestCase
     /**
      * @dataProvider indexPages
      */
-    public function test_the_desktop_table_card_is_hidden_on_phones(string $page, string $hiddenBelow): void
+    public function test_the_table_card_and_the_phone_list_switch_at_the_same_breakpoint(string $page, string $hiddenBelow): void
     {
         $url = $this->seedAndUrl($page);
         $xpath = $this->xpath($this->actingAs($this->admin())->get($url)->assertOk()->getContent());
+
+        // The list of phone cards shows below the breakpoint and the table card from it up, never both and never neither.
+        $phoneLists = $xpath->query('//main//div[' . $this->cls("d-{$hiddenBelow}-none") . '][.//div[' . $this->cls('card') . ']]');
+        $this->assertGreaterThanOrEqual(1, $phoneLists->length, "{$page}: the phone cards must be hidden from {$hiddenBelow} up (d-{$hiddenBelow}-none).");
 
         // The card, not only the table inside it, carries d-none d-{bp}-block: an empty card would show on a phone.
         $tableCards = $xpath->query('//main//div[' . $this->cls('card') . '][.//table]');
@@ -136,10 +140,12 @@ class CmsCardsLayoutTest extends WebsiteTestCase
     public function indexPages(): array
     {
         return [
-            'categories index' => ['categories.index', 'md'],
-            'testimonials index' => ['testimonials.index', 'md'],
-            'faqs index' => ['faqs.index', 'md'],
-            'products index' => ['products.index', 'lg'],
+            // A table that needs more than ~600 px scrolls sideways beside the 260 px sidebar, so it only shows from lg
+            // (992 px); the products table is wider still and shows from xl (1200 px).
+            'categories index' => ['categories.index', 'lg'],
+            'testimonials index' => ['testimonials.index', 'lg'],
+            'faqs index' => ['faqs.index', 'lg'],
+            'products index' => ['products.index', 'xl'],
         ];
     }
 
@@ -169,6 +175,21 @@ class CmsCardsLayoutTest extends WebsiteTestCase
         $this->assertSame(1, $xpath->query('//main//div[' . $this->cls('card') . '][.//h2[normalize-space()="Kontak"]]//input[@name="whatsapp_number"]')->length);
         $this->assertSame(0, $xpath->query('//main//div[' . $this->cls('card') . '][.//h2[normalize-space()="Kontak"]]//table')->length);
         $this->assertGreaterThanOrEqual(1, $xpath->query('//main//div[' . $this->cls('card') . '][.//h2[normalize-space()="Link marketplace & sosial media"]]//table')->length);
+
+        // The links tables show from lg up and the phone link cards below it, outside the links card.
+        $this->assertGreaterThanOrEqual(1, $xpath->query('//main//div[' . $this->cls('d-none') . ' and ' . $this->cls('d-lg-block') . '][.//table]')->length);
+        $phoneLists = $xpath->query('//main//div[' . $this->cls('d-lg-none') . '][.//div[' . $this->cls('card') . ']]');
+        $this->assertGreaterThanOrEqual(1, $phoneLists->length);
+        $this->assertSame(0, $xpath->query('//main//div[' . $this->cls('card') . '][.//h2[normalize-space()="Link marketplace & sosial media"]]//div[' . $this->cls('d-lg-none') . ']')->length);
+    }
+
+    public function test_the_kontak_fields_keep_a_readable_width(): void
+    {
+        $xpath = $this->xpath($this->actingAs($this->admin())->get($this->seedAndUrl('contact.edit'))->assertOk()->getContent());
+
+        // The card stays as wide as the links card, but the fields inside do not stretch across a 1440 px screen.
+        $limited = $xpath->query('//main//div[' . $this->cls('card') . '][.//h2[normalize-space()="Kontak"]]//div[contains(@style, "max-width")][.//textarea[@name="whatsapp_order_template_id"]][.//input[@name="whatsapp_number"]][.//button[@type="submit"]]');
+        $this->assertSame(1, $limited->length, 'The Kontak fields and their save button sit in one width-limited wrapper.');
     }
 
     /**

@@ -15,66 +15,69 @@
             <div class="card-body">
                 <h2 class="h5 mb-3">Kontak</h2>
 
-                <div class="mb-3">
-                    <label for="whatsapp_number" class="form-label">Nomor WhatsApp CS</label>
-                    <input type="tel" inputmode="tel" autocomplete="off" placeholder="0812-3456-7890"
-                           class="form-control @error('whatsapp_number') is-invalid @enderror"
-                           id="whatsapp_number" name="whatsapp_number" value="{{ old('whatsapp_number', $values['whatsapp_number']) }}">
-                    @error('whatsapp_number')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                    <div class="form-text">
-                        Boleh ditulis dengan 0, +62, spasi, atau tanda hubung. Disimpan sebagai angka saja, contoh: 6281234567890. Kosongkan kalau belum ada nomor.
+                {{-- The card is as wide as the links card; the fields keep a readable width. --}}
+                <div style="max-width: 44rem;">
+                    <div class="mb-3">
+                        <label for="whatsapp_number" class="form-label">Nomor WhatsApp CS</label>
+                        <input type="tel" inputmode="tel" autocomplete="off" placeholder="0812-3456-7890"
+                               class="form-control @error('whatsapp_number') is-invalid @enderror"
+                               id="whatsapp_number" name="whatsapp_number" value="{{ old('whatsapp_number', $values['whatsapp_number']) }}">
+                        @error('whatsapp_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">
+                            Boleh ditulis dengan 0, +62, spasi, atau tanda hubung. Disimpan sebagai angka saja, contoh: 6281234567890. Kosongkan kalau belum ada nomor.
+                        </div>
                     </div>
+
+                    <p class="form-text mb-2">
+                        <strong>Pesan pesanan</strong>: teks yang terisi otomatis di WhatsApp saat pelanggan menekan tombol pesan di halaman produk.
+                        Placeholder yang diganti otomatis:
+                        <code>{product}</code> nama produk, <code>{option}</code> pilihan produk, <code>{price}</code> harga, <code>{url}</code> link produk.
+                        Kosongkan untuk memakai teks bawaan website.
+                    </p>
+                    @include('dashboard.website._partials.bilingual_input', [
+                        'name' => 'whatsapp_order_template',
+                        'label' => 'Template pesan pesanan',
+                        'type' => 'textarea',
+                        'valueId' => $values['whatsapp_order_template_id'],
+                        'valueEn' => $values['whatsapp_order_template_en'],
+                        'rows' => 3,
+                        'maxlength' => 500,
+                        'placeholder' => $defaultOrderTemplate,
+                    ])
+
+                    <p class="form-text mb-2">
+                        <strong>Pesan umum</strong>: teks yang terisi otomatis saat pelanggan menekan tombol WhatsApp di luar halaman produk.
+                    </p>
+                    @include('dashboard.website._partials.bilingual_input', [
+                        'name' => 'whatsapp_general_message',
+                        'label' => 'Pesan WhatsApp umum',
+                        'type' => 'textarea',
+                        'valueId' => $values['whatsapp_general_message_id'],
+                        'valueEn' => $values['whatsapp_general_message_en'],
+                        'rows' => 3,
+                        'maxlength' => 500,
+                    ])
+
+                    @include('dashboard.website._partials.bilingual_input', [
+                        'name' => 'address',
+                        'label' => 'Alamat',
+                        'type' => 'textarea',
+                        'valueId' => $values['address_id'],
+                        'valueEn' => $values['address_en'],
+                        'rows' => 3,
+                        'maxlength' => 255,
+                    ])
+
+                    <button type="submit" class="btn btn-primary px-4" style="min-height: 44px;">Simpan Kontak</button>
                 </div>
-
-                <p class="form-text mb-2">
-                    <strong>Pesan pesanan</strong>: teks yang terisi otomatis di WhatsApp saat pelanggan menekan tombol pesan di halaman produk.
-                    Placeholder yang diganti otomatis:
-                    <code>{product}</code> nama produk, <code>{option}</code> pilihan produk, <code>{price}</code> harga, <code>{url}</code> link produk.
-                    Kosongkan untuk memakai teks bawaan website.
-                </p>
-                @include('dashboard.website._partials.bilingual_input', [
-                    'name' => 'whatsapp_order_template',
-                    'label' => 'Template pesan pesanan',
-                    'type' => 'textarea',
-                    'valueId' => $values['whatsapp_order_template_id'],
-                    'valueEn' => $values['whatsapp_order_template_en'],
-                    'rows' => 3,
-                    'maxlength' => 500,
-                    'placeholder' => $defaultOrderTemplate,
-                ])
-
-                <p class="form-text mb-2">
-                    <strong>Pesan umum</strong>: teks yang terisi otomatis saat pelanggan menekan tombol WhatsApp di luar halaman produk.
-                </p>
-                @include('dashboard.website._partials.bilingual_input', [
-                    'name' => 'whatsapp_general_message',
-                    'label' => 'Pesan WhatsApp umum',
-                    'type' => 'textarea',
-                    'valueId' => $values['whatsapp_general_message_id'],
-                    'valueEn' => $values['whatsapp_general_message_en'],
-                    'rows' => 3,
-                    'maxlength' => 500,
-                ])
-
-                @include('dashboard.website._partials.bilingual_input', [
-                    'name' => 'address',
-                    'label' => 'Alamat',
-                    'type' => 'textarea',
-                    'valueId' => $values['address_id'],
-                    'valueEn' => $values['address_en'],
-                    'rows' => 3,
-                    'maxlength' => 255,
-                ])
-
-                <button type="submit" class="btn btn-primary px-4" style="min-height: 44px;">Simpan Kontak</button>
             </div>
         </div>
     </form>
 
     {{-- ---------------------------------------------------------------- links --}}
-    {{-- One card from md up: heading, add button and the tables. On phones the card holds only the heading and
+    {{-- One card from lg up: heading, add button and the tables. Below that the card holds only the heading and
          the add button; the per-link cards below it are cards already and must not sit inside another card. --}}
     <div class="card mb-4">
         <div class="card-body">
@@ -84,8 +87,8 @@
                 <a href="{{ route('website.links.create') }}" class="btn btn-primary d-inline-flex align-items-center flex-shrink-0" style="min-height: 44px;">Tambah link</a>
             </div>
 
-            {{-- Tablet and desktop: the tables. --}}
-            <div class="d-none d-md-block">
+            {{-- Desktop (lg and up): the tables. Below that they would scroll sideways beside the sidebar. --}}
+            <div class="d-none d-lg-block">
                 @foreach (\App\Models\WebLink::GROUPS as $group => $groupLabel)
                     @php($links = $linksByGroup->get($group, collect()))
 
@@ -141,8 +144,8 @@
         </div>
     </div>
 
-    {{-- Phones: one card per link (a 6-column table does not fit). --}}
-    <div class="d-md-none">
+    {{-- Phones and tablets: one card per link (a 6-column table does not fit). --}}
+    <div class="d-lg-none">
         @foreach (\App\Models\WebLink::GROUPS as $group => $groupLabel)
             @php($links = $linksByGroup->get($group, collect()))
 
