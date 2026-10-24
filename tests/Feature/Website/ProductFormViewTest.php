@@ -266,7 +266,7 @@ class ProductFormViewTest extends WebsiteTestCase
 
         $this->assertSame('true', $this->attr($xpath, "//button[@id='desc-tabs-tab-en']", 'aria-selected'));
         $this->assertSame('true', $this->attr($xpath, "//button[@id='name-tabs-tab-id']", 'aria-selected'));
-        $this->assertStringContainsString('Isi hamper (EN) maksimal 5000 karakter.', $html);
+        $this->assertStringContainsString('Isi paket (EN) maksimal 5000 karakter.', $html);
     }
 
     public function test_id_tab_wins_when_both_languages_have_errors_or_only_the_id_one_does(): void
