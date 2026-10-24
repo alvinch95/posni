@@ -198,6 +198,63 @@ class HamperStockViewsTest extends WebsiteTestCase
         $this->assertSame($count(2), $count(6));
     }
 
+    // ---- the forgotten-cart case ---------------------------------------------------------------
+
+    /**
+     * A forgotten cart holds Solar F Grafir x 50, which reserves 50 Pinus Kering against a stock of
+     * 34. The target hamper lists Pinus last, behind three other blockers: in a 3-line compact list
+     * the cart-held item must still be visible, not hidden behind "+N lainnya".
+     */
+    private function forgottenCartTarget(): int
+    {
+        $pinus = $this->item('Pinus Kering', 34);
+        $serie = $this->serie('Solar');
+        $cartHamper = $this->hamper('Solar F Grafir', 100000, [[$pinus, 1]], null, $serie);
+        DB::table('shopping_carts')->insert(['user_id' => 1, 'hamper_id' => $cartHamper, 'qty' => 50]);
+
+        $boxes = [];
+        foreach (['Box A', 'Box B', 'Box C'] as $name) {
+            $boxes[] = [$this->item($name, -2), 1];
+        }
+
+        return $this->hamper('Target Hamper', 100000, array_merge($boxes, [[$pinus, 1]]), null, $serie);
+    }
+
+    public function test_hampers_list_shows_the_cart_held_item_even_behind_other_blockers(): void
+    {
+        $this->forgottenCartTarget();
+
+        $text = $this->text($this->actingAs($this->admin())->get('/dashboard/hampers?search=Target')->assertOk()->getContent());
+
+        $this->assertStringContainsString('Kurang:', $text);
+        $this->assertStringContainsString('Pinus Kering — stok 34 / butuh 1 (50 di keranjang)', $text);
+        $this->assertStringContainsString('+1 lainnya', $text); // 4 blockers, 3 lines
+    }
+
+    public function test_website_list_shows_the_cart_held_item_even_behind_other_blockers(): void
+    {
+        $target = $this->forgottenCartTarget();
+        $this->webProduct(['slug' => 'target', 'name_id' => 'Target'], ['plain' => ['hamper_id' => $target]]);
+
+        $text = $this->text($this->actingAs($this->admin())->get(route('website.products.index'))->assertOk()->getContent());
+
+        $this->assertStringContainsString('Habis', $text);
+        // Phone card + desktop table.
+        $this->assertSame(2, substr_count($text, 'Pinus Kering — stok 34 / butuh 1 (50 di keranjang)'));
+    }
+
+    public function test_hamper_info_json_lists_the_cart_held_item_first(): void
+    {
+        $target = $this->forgottenCartTarget();
+
+        $this->actingAs($this->admin())->getJson(route('website.hampers.info', $target))
+            ->assertOk()
+            ->assertJsonPath('status', 'out')
+            ->assertJsonPath('blocking.0.name', 'Pinus Kering')
+            ->assertJsonPath('blocking.0.stock', 34)
+            ->assertJsonPath('blocking.0.reserved', 50);
+    }
+
     // ---- posni hamper detail -----------------------------------------------------------------
 
     public function test_hamper_detail_shows_the_stock_per_item_table(): void

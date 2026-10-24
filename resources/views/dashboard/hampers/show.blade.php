@@ -96,15 +96,8 @@
         $stockStatus = $stockBreakdown['status'];
         $limitingRowClass = $stockStatus === 'low' ? 'table-warning' : '';
 
-        // The culprits first (blocking, then limiting when low), the rest in the hamper's own order.
-        $stockRows = $stockBreakdown['components'];
-        $stockRank = [];
-        foreach ($stockRows as $position => $component) {
-            $stockRank[$position] = [$component['blocking'] ? 0 : ($component['limiting'] && $stockStatus === 'low' ? 1 : 2), $position];
-        }
-        uksort($stockRows, function ($a, $b) use ($stockRank) {
-            return $stockRank[$a] <=> $stockRank[$b];
-        });
+        // Culprits first, ordered by the service (HamperStockBreakdown 'rows').
+        $stockRows = $stockBreakdown['rows'];
     @endphp
     <div class="mb-5" id="stok-per-item">
         <h1 class="display-6">Stok per item</h1>

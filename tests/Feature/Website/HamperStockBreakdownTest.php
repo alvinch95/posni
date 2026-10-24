@@ -4,6 +4,7 @@ namespace Tests\Feature\Website;
 
 use App\Models\Hamper;
 use App\Services\HamperStockBreakdown;
+use App\Services\Website\HamperStock;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -214,18 +215,165 @@ class HamperStockBreakdownTest extends WebsiteTestCase
         $this->assertSame(3, $this->named($breakdown, 'Kartu')['reserved']);
     }
 
-    public function test_a_detail_with_zero_quantity_never_blocks(): void
+    public function test_a_detail_with_zero_quantity_blocks_like_the_website_shows_it(): void
     {
-        $empty = $this->item('Stiker', 0);
+        // getStock() throws (stock > 0) or returns 0 (stock <= 0) for a qty-0 detail, and the public
+        // website maps both to 0, so the breakdown reports the detail as blocking and the stock as 0.
+        $stiker = $this->item('Stiker', 4);
         $card = $this->item('Kartu', 5);
-        $id = $this->hamper('Nol', 1000, [[$empty, 0], [$card, 1]]);
+        $id = $this->hamper('Nol', 1000, [[$stiker, 0], [$card, 1]]);
 
         $breakdown = HamperStockBreakdown::for($this->model($id));
 
-        $this->assertSame(5, $breakdown['stock']);
-        $this->assertSame([], $breakdown['blocking']);
-        $this->assertFalse($this->named($breakdown, 'Stiker')['blocking']);
-        $this->assertFalse($this->named($breakdown, 'Stiker')['limiting']);
+        $this->assertSame(0, $breakdown['stock']);
+        $this->assertSame('out', $breakdown['status']);
+        $this->assertSame(['Stiker'], array_column($breakdown['blocking'], 'name'));
+
+        $component = $this->named($breakdown, 'Stiker');
+        $this->assertSame(0, $component['needed']);
+        $this->assertSame(0, $component['can_make']);
+        $this->assertTrue($component['blocking']);
+        $this->assertTrue($component['limiting']);
+        $this->assertFalse($this->named($breakdown, 'Kartu')['blocking']);
+    }
+
+    public function test_stock_equals_the_website_stock_for_a_zero_quantity_detail(): void
+    {
+        $card = $this->item('Kartu', 5);
+        $positive = $this->item('Stiker Ada', 4);   // getStock() divides by zero here, the website shows 0
+        $empty = $this->item('Stiker Habis', 0);    // getStock() returns 0 here
+        $negative = $this->item('Stiker Minus', -3);
+
+        foreach ([$positive, $empty, $negative] as $itemId) {
+            $id = $this->hamper("Nol {$itemId}", 1000, [[$card, 1], [$itemId, 0]]);
+            $hamper = $this->model($id);
+
+            $stock = HamperStockBreakdown::for($hamper)['stock'];
+
+            $this->assertSame(HamperStock::of($hamper), $stock, "item {$itemId}");
+            $this->assertSame(0, $stock, "item {$itemId}");
+        }
+
+        // Where getStock() itself does not throw, it agrees too.
+        $hamper = $this->model($this->hamper('Nol Habis', 1000, [[$empty, 0]]));
+        $this->assertSame($hamper->getStock(), HamperStockBreakdown::for($hamper)['stock']);
+    }
+
+    public function test_the_same_item_in_two_details_of_a_cart_hamper_matches_get_stock(): void
+    {
+        $pinus = $this->item('Pinus Kering', 10);
+        $card = $this->item('Kartu', 40);
+
+        // The cart hamper lists Pinus twice; its cart reserves 1 x 3 for each of the two joined rows.
+        $cartHamper = $this->hamper('Solar F Grafir', 1000, [[$pinus, 1], [$pinus, 1], [$card, 1]]);
+        $target = $this->hamper('Target', 1000, [[$pinus, 1], [$card, 2]]);
+        $this->cart($cartHamper, 3);
+
+        foreach ([$cartHamper, $target] as $id) {
+            $hamper = $this->model($id);
+            $breakdown = HamperStockBreakdown::for($hamper);
+
+            $this->assertSame($hamper->getStock(), $breakdown['stock'], "hamper {$hamper->name}");
+            $this->assertSame(6, $this->named($breakdown, 'Pinus Kering')['reserved'], "hamper {$hamper->name}");
+        }
+
+        // 10 - 6 reserved = 4 for the one-Pinus target.
+        $this->assertSame(4, HamperStockBreakdown::for($this->model($target))['stock']);
+    }
+
+    // ---- which blockers come first ---------------------------------------------------------------
+
+    public function test_cart_held_items_come_first_among_the_blockers(): void
+    {
+        $a = $this->item('A Minus Lima', -5);
+        $b = $this->item('B Minus Sembilan', -9);
+        $c = $this->item('C Minus Satu', -1);
+        $pinus = $this->item('Pinus Kering', 34);
+        $cartHamper = $this->hamper('Solar F Grafir', 1000, [[$pinus, 1]]);
+        $this->cart($cartHamper, 50); // reserves 50 of the 34 Pinus: available -16
+
+        // Pinus is the last detail of the target hamper, yet it must lead the blocking list.
+        $id = $this->hamper('Target', 1000, [[$a, 1], [$b, 1], [$c, 1], [$pinus, 1]]);
+
+        $breakdown = HamperStockBreakdown::for($this->model($id));
+
+        $this->assertSame(
+            ['Pinus Kering', 'B Minus Sembilan', 'A Minus Lima', 'C Minus Satu'],
+            array_column($breakdown['blocking'], 'name'),
+        );
+        $pinusComponent = $this->named($breakdown, 'Pinus Kering');
+        $this->assertSame(34, $pinusComponent['stock']);
+        $this->assertSame(50, $pinusComponent['reserved']);
+        $this->assertSame(-16, $pinusComponent['available']);
+    }
+
+    public function test_blockers_are_ordered_reserved_then_deleted_then_most_short_then_detail_order(): void
+    {
+        $shortFirst = $this->item('Zeta Nol Pertama', 0);
+        $shortSecond = $this->item('Alpha Nol Kedua', 0);
+        $veryShort = $this->item('Minus Tujuh', -7);
+        $dead = $this->item('Item Mati', 10, 'pcs', true);
+        $held = $this->item('Ditahan', 3);
+        $cartHamper = $this->hamper('Penahan', 1000, [[$held, 1]]);
+        $this->cart($cartHamper, 5); // Ditahan: 3 - 5 = -2, held by a cart
+
+        $id = $this->hamper('Urutan', 1000, [[$shortFirst, 1], [$shortSecond, 1], [$veryShort, 1], [$dead, 1], [$held, 1]]);
+
+        $breakdown = HamperStockBreakdown::for($this->model($id));
+
+        $this->assertSame(
+            ['Ditahan', 'Item Mati (item dihapus)', 'Minus Tujuh', 'Zeta Nol Pertama', 'Alpha Nol Kedua'],
+            array_column($breakdown['blocking'], 'name'),
+        );
+        // components keep the hamper's own detail order.
+        $this->assertSame(
+            ['Zeta Nol Pertama', 'Alpha Nol Kedua', 'Minus Tujuh', 'Item Mati (item dihapus)', 'Ditahan'],
+            array_column($breakdown['components'], 'name'),
+        );
+    }
+
+    public function test_limiting_items_use_the_same_ordering(): void
+    {
+        $plain = $this->item('Polos', 2);
+        $held = $this->item('Ditahan', 5);
+        $cartHamper = $this->hamper('Penahan', 1000, [[$held, 1]]);
+        $this->cart($cartHamper, 3); // Ditahan: 5 - 3 = 2, the same as Polos
+        $other = $this->item('Banyak', 50);
+
+        $id = $this->hamper('Seri', 1000, [[$plain, 1], [$held, 1], [$other, 1]]);
+
+        $breakdown = HamperStockBreakdown::for($this->model($id));
+
+        $this->assertSame(2, $breakdown['stock']);
+        $this->assertSame(['Ditahan', 'Polos'], array_column($breakdown['limiting'], 'name'));
+    }
+
+    public function test_rows_put_blocking_first_then_limiting_when_low_then_the_rest_in_order(): void
+    {
+        $a = $this->item('Aaa Banyak', 50);
+        $b = $this->item('Bbb Minus', -3);
+        $c = $this->item('Ccc Banyak', 40);
+        $id = $this->hamper('Baris', 1000, [[$a, 1], [$b, 1], [$c, 1]]);
+        $this->assertSame(
+            ['Bbb Minus', 'Aaa Banyak', 'Ccc Banyak'],
+            array_column(HamperStockBreakdown::for($this->model($id))['rows'], 'name'),
+        );
+
+        $low = $this->item('Ddd Dua', 2);
+        $e = $this->item('Eee Banyak', 30);
+        $f = $this->item('Fff Banyak', 20);
+        $lowId = $this->hamper('Baris Rendah', 1000, [[$e, 1], [$low, 1], [$f, 1]]);
+        $this->assertSame(
+            ['Ddd Dua', 'Eee Banyak', 'Fff Banyak'],
+            array_column(HamperStockBreakdown::for($this->model($lowId))['rows'], 'name'),
+        );
+
+        // An ok hamper has no culprits to lift: its own order.
+        $okId = $this->hamper('Baris Aman', 1000, [[$f, 1], [$e, 1]]);
+        $this->assertSame(
+            ['Fff Banyak', 'Eee Banyak'],
+            array_column(HamperStockBreakdown::for($this->model($okId))['rows'], 'name'),
+        );
     }
 
     // ---- edge cases ----------------------------------------------------------------------
