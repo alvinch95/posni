@@ -20,11 +20,20 @@ class SitePayload
     private const COPY_PREFIX = 'copy.';
 
     /**
-     * Active categories with the number of published, valid products in each.
+     * Active categories with the number of published, valid products in each. Cached for
+     * website.cache_seconds: the counts depend on the same validity rule as the product list.
      *
      * @return array<int, array{slug:string, name:string, image:?string, productCount:int}>
      */
     public static function categories(string $locale): array
+    {
+        return CatalogCache::remember("categories:{$locale}", fn () => self::buildCategories($locale));
+    }
+
+    /**
+     * @return array<int, array{slug:string, name:string, image:?string, productCount:int}>
+     */
+    private static function buildCategories(string $locale): array
     {
         $validProductIds = ProductCatalog::validPublishedProductIds();
 

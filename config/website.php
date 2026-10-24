@@ -8,4 +8,9 @@ return [
     // Requests per minute: trusted Next.js server vs. anyone else (per IP).
     'server_rate_per_minute' => 1000,
     'public_rate_per_minute' => 60,
+
+    // How long the product list, product detail and category payloads are cached. CMS edits
+    // invalidate them at once (CatalogCache::bump); stock changes from sales only show once this
+    // expires. 0 turns the cache off.
+    'cache_seconds' => (int) env('WEBSITE_CACHE_SECONDS', 60),
 ];

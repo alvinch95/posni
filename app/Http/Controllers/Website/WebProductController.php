@@ -8,6 +8,7 @@ use App\Models\WebCategory;
 use App\Models\WebProduct;
 use App\Models\WebProductImage;
 use App\Models\WebProductOption;
+use App\Services\Website\CatalogCache;
 use App\Services\Website\HamperStock;
 use App\Services\Website\ProductCatalog;
 use App\Services\Website\WebUpload;
@@ -82,6 +83,7 @@ class WebProductController extends Controller
 
                 $this->syncOptions($product, $request);
                 $product->categories()->sync($data['categories'] ?? []);
+                CatalogCache::bump(); // a pivot sync fires no model event
                 $this->syncImages($product, $request, $stored);
             });
         } catch (\Throwable $e) {
@@ -112,6 +114,7 @@ class WebProductController extends Controller
 
                 $this->syncOptions($product, $request);
                 $product->categories()->sync($data['categories'] ?? []);
+                CatalogCache::bump(); // a pivot sync fires no model event
                 $removed = $this->syncImages($product, $request, $stored);
             });
         } catch (\Throwable $e) {
@@ -445,10 +448,12 @@ class WebProductController extends Controller
             $hamperId = $request->input("options.{$kind}.hamper_id");
 
             if (blank($hamperId)) {
+                // One by one (not a query-builder delete) so the model events invalidate the API cache.
                 WebProductOption::query()
                     ->where('web_product_id', $product->id)
                     ->where('kind', $kind)
-                    ->delete();
+                    ->get()
+                    ->each(fn (WebProductOption $option) => $option->delete());
             } else {
                 $price = $request->input("options.{$kind}.price_override");
 

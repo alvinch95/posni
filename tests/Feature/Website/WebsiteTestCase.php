@@ -25,6 +25,7 @@ abstract class WebsiteTestCase extends TestCase
 
         config(['database.default' => 'sqlite']);
         config(['database.connections.sqlite.database' => ':memory:']);
+        config(['website.cache_seconds' => 0]); // API payload caching is opt-in per test (CatalogCacheTest)
         DB::purge('sqlite');
 
         Schema::create('users', function (Blueprint $table) {

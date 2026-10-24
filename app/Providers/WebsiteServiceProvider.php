@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\WebCategory;
+use App\Models\WebProduct;
+use App\Models\WebProductImage;
+use App\Models\WebProductOption;
+use App\Services\Website\CatalogCache;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -15,6 +20,13 @@ class WebsiteServiceProvider extends ServiceProvider
     {
         // web_* migrations live in their own folder so they stay out of posni's top-level set.
         $this->loadMigrationsFrom(database_path('migrations/website'));
+
+        // Any edit to what the public catalog payloads are built from invalidates them (CatalogCache).
+        // The category pivot has no model, so the product controller bumps after syncing it.
+        foreach ([WebProduct::class, WebProductOption::class, WebProductImage::class, WebCategory::class] as $model) {
+            $model::saved(fn () => CatalogCache::bump());
+            $model::deleted(fn () => CatalogCache::bump());
+        }
 
         RateLimiter::for('website', function (Request $request) {
             $apiKey = (string) config('website.api_key');

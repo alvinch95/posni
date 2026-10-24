@@ -32,9 +32,34 @@ class ProductCatalog
     }
 
     /**
+     * The product list. Cached for website.cache_seconds (see CatalogCache).
+     *
      * @return array<int, array<string, mixed>>
      */
     public static function cards(string $locale): array
+    {
+        return CatalogCache::remember("products:{$locale}", fn () => self::buildCards($locale));
+    }
+
+    /**
+     * One product. Cached like the list, but only when it exists: unknown or hidden slugs are
+     * rebuilt every time, so they can never fill the cache.
+     *
+     * @return array<string, mixed>|null  null when the product is unknown, unpublished or has no valid option
+     */
+    public static function detail(string $slug, string $locale): ?array
+    {
+        if (! CatalogCache::cacheableSlug($slug)) {
+            return self::buildDetail($slug, $locale);
+        }
+
+        return CatalogCache::remember("product:{$locale}:{$slug}", fn () => self::buildDetail($slug, $locale));
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private static function buildCards(string $locale): array
     {
         $cards = [];
 
@@ -51,9 +76,9 @@ class ProductCatalog
     }
 
     /**
-     * @return array<string, mixed>|null  null when the product is unknown, unpublished or has no valid option
+     * @return array<string, mixed>|null
      */
-    public static function detail(string $slug, string $locale): ?array
+    private static function buildDetail(string $slug, string $locale): ?array
     {
         $product = self::query()->where('slug', $slug)->first();
         if (! $product) {
