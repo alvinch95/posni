@@ -75,7 +75,7 @@
                   <td class="col-modal-price">{{ "Rp. ".number_format($hamper->capital_price, 0, ',', '.') }}</td>
                   <td class="col-selling-price">{{ "Rp. ".number_format($hamper->selling_price, 0, ',', '.') }}</td>
                   <td class="col-revenue" contenteditable="false">{{ $hamper->revenue_percentage }}%</td>
-                  <td class="col-stock">{{ $hamper->getStock() }}</td>
+                  <td class="col-stock">@include('dashboard.partials.stock_breakdown', ['breakdown' => $stockBreakdowns[$hamper->id], 'compact' => true])</td>
                   @if ($hamper->image)
                   <td class="col-image"><img src="{{ asset('storage/' . $hamper->image) }}" alt="{{ $hamper->name }}" class="img-fluid" style="max-width: 50px; max-height: 50px;"></td>
                   @else
@@ -110,6 +110,9 @@
     @endif
   </div>
   <style>
+    /* Room for the lines that name the items behind a low or zero stock. */
+    td.col-stock { min-width: 13rem; }
+
     /* Style the page size select */
       .page-size-select {
           padding: 4px 8px; /* Adjust padding as needed */

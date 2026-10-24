@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Serie;
 use App\Models\Hamper;
 use App\Models\HamperDetail;
+use App\Services\HamperStockBreakdown;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -34,10 +35,14 @@ class HamperController extends Controller
             Alert::success('Success', 'Sort Hampers by ' . request('sort') . ' '. request('order'));
         }
 
+        $hampers = Hamper::with(['serie'])->orderBy($sortField, $sortOrder)->filter(request(['search']))->paginate($pageSize)->withQueryString();
+
         return view('dashboard.hampers.index', [
-            'hampers' => Hamper::with(['serie'])->orderBy($sortField, $sortOrder)->filter(request(['search']))->paginate($pageSize)->withQueryString(),
+            'hampers' => $hampers,
             'pageSize' => $pageSize,
-            'totalData' => Hamper::orderBy($sortField, $sortOrder)->filter(request(['search']))->count()
+            'totalData' => Hamper::orderBy($sortField, $sortOrder)->filter(request(['search']))->count(),
+            // Stock + the items behind it, for this page only (one batch of queries, not one per row).
+            'stockBreakdowns' => HamperStockBreakdown::forMany($hampers),
         ]);
     }
 
@@ -128,7 +133,8 @@ class HamperController extends Controller
             'hampers' => $hamper->load('serie'),
             'hamper_details' => HamperDetail::with(['item' => function ($query){
                 $query->withTrashed();
-            }])->where('hamper_id',$hamper->id)->get()
+            }])->where('hamper_id',$hamper->id)->get(),
+            'stockBreakdown' => HamperStockBreakdown::for($hamper),
         ]);
     }
 

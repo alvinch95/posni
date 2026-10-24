@@ -9,6 +9,7 @@ use App\Models\WebCategory;
 use App\Models\WebProduct;
 use App\Models\WebProductImage;
 use App\Models\WebProductOption;
+use App\Services\HamperStockBreakdown;
 use App\Services\Website\CatalogCache;
 use App\Services\Website\HamperStock;
 use App\Services\Website\ProductCatalog;
@@ -63,9 +64,14 @@ class WebProductController extends Controller
 
         $visibleIds = ProductCatalog::validPublishedProductIds()->all();
 
+        // Stock + the items behind it for every option's hamper on this page: one batch, not one per row.
+        $breakdowns = HamperStockBreakdown::forMany(
+            $products->getCollection()->flatMap(fn ($product) => $product->options->map(fn ($option) => $option->hamper))->filter()
+        );
+
         $rows = [];
         foreach ($products as $product) {
-            $rows[$product->id] = $this->summarize($product, $visibleIds);
+            $rows[$product->id] = $this->summarize($product, $visibleIds, $breakdowns);
         }
 
         return view('dashboard.website.products.index', [
@@ -243,6 +249,17 @@ class WebProductController extends Controller
             ->values()
             ->all();
 
+        // Why the stock is what it is: the items at zero or below ("blocking", status out) or the ones
+        // that hold it down ("limiting", status low). The form shows them under the info line.
+        $breakdown = HamperStockBreakdown::for($hamper);
+        $lines = fn (array $components) => array_map(fn ($component) => [
+            'name' => $component['name'],
+            'stock' => $component['stock'],
+            'needed' => $component['needed'],
+            'reserved' => $component['reserved'],
+            'deleted' => $component['deleted'],
+        ], $components);
+
         return response()->json([
             'id' => (int) $hamper->id,
             'name' => (string) $hamper->name,
@@ -250,6 +267,9 @@ class WebProductController extends Controller
             'sellingPrice' => (int) $hamper->selling_price,
             'stock' => HamperStock::of($hamper),
             'contents' => $contents,
+            'status' => $breakdown['status'],
+            'blocking' => $lines($breakdown['blocking']),
+            'limiting' => $lines($breakdown['limiting']),
         ]);
     }
 
@@ -299,8 +319,9 @@ class WebProductController extends Controller
      * and whether a published product is invisible on the website.
      *
      * @param  array<int, int>  $visibleIds  ProductCatalog::validPublishedProductIds()
+     * @param  array<int, array<string, mixed>>  $breakdowns  HamperStockBreakdown::forMany(), by hamper id
      */
-    private function summarize(WebProduct $product, array $visibleIds): array
+    private function summarize(WebProduct $product, array $visibleIds, array $breakdowns): array
     {
         $options = [];
         $prices = [];
@@ -322,11 +343,15 @@ class WebProductController extends Controller
                 $thumb = $hamper->image;
             }
 
+            // Same number as HamperStock::of() (both mirror getStock(); a deleted item counts as 0).
+            $breakdown = $hamper ? $breakdowns[(int) $hamper->id] : null;
+
             $options[] = [
                 'label' => $label,
                 'hamper' => $hamper ? $hamper->name : null,
                 'price' => $price,
-                'stock' => $hamper ? HamperStock::of($hamper) : null,
+                'stock' => $breakdown ? $breakdown['stock'] : null,
+                'breakdown' => $breakdown,
             ];
         }
 

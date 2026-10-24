@@ -470,6 +470,10 @@ class ProductAdminTest extends WebsiteTestCase
                 'sellingPrice' => 94000,
                 'stock' => 5, // min(10 / 2, 6 / 1)
                 'contents' => ['Kotak Kayu', 'Kartu'],
+                // Why the stock is what it is (HamperStockBreakdown): nothing blocks, the box holds it at 5.
+                'status' => 'ok',
+                'blocking' => [],
+                'limiting' => [['name' => 'Kotak Kayu', 'stock' => 10, 'needed' => 2, 'reserved' => 0, 'deleted' => false]],
             ]);
     }
 

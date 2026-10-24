@@ -96,6 +96,8 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     <div class="form-text hamper-info" aria-live="polite"></div>
+                                    {{-- "Kurang: ..." (stok 0) or "Hampir habis: ..." under the info line; filled by the script below --}}
+                                    <div class="form-text hamper-stock-detail" aria-live="polite"></div>
 
                                     <label for="price-{{ $kind }}" class="form-label mt-3 mb-1">Harga di website</label>
                                     <div class="input-group">
@@ -375,6 +377,7 @@
             var $filter = $box.find('.hamper-filter');
             var $empty = $box.find('.hamper-filter-empty');
             var $info = $box.find('.hamper-info');
+            var $stockDetail = $box.find('.hamper-stock-detail');
             var $price = $box.find('.price-input');
             var $preview = $box.find('.price-preview-value');
             var $notSold = $box.find('.not-sold');
@@ -409,6 +412,45 @@
                 }
             }
 
+            // "Kurang: Box 20x15x10 - stok -54 / butuh 1" (status out) or "Hampir habis: ..." (low),
+            // built with .text() only: item names come from the database.
+            function renderStockDetail(info) {
+                $stockDetail.empty().removeClass('text-danger');
+
+                if (!info || (info.status !== 'out' && info.status !== 'low')) { return; }
+
+                var out = info.status === 'out';
+                var list = (out ? info.blocking : info.limiting) || [];
+                if (!list.length) { return; }
+
+                var $label = $('<strong>').text(out ? 'Kurang:' : 'Hampir habis:');
+                if (out) { $label.addClass('text-danger'); } else { $label.css('color', '#b45309'); }
+                $stockDetail.append($label);
+
+                var $list = $('<ul class="list-unstyled mb-0">');
+                if (!out) { $list.addClass('text-muted'); }
+
+                $.each(list.slice(0, 3), function (index, line) {
+                    var $line = $('<li>').css({ 'padding-left': '1em', 'text-indent': '-1em' });
+                    $line.append(document.createTextNode('• '));
+                    if (line.deleted) {
+                        $line.append($('<span class="text-danger">').text(line.name));
+                        $line.append(document.createTextNode(' — butuh ' + line.needed));
+                    } else {
+                        var text = line.name + ' — stok ' + line.stock + ' / butuh ' + line.needed;
+                        if (line.reserved > 0) { text += ' (' + line.reserved + ' di keranjang)'; }
+                        $line.append(document.createTextNode(text));
+                    }
+                    $list.append($line);
+                });
+
+                if (list.length > 3) {
+                    $list.append($('<li class="text-muted">').text('+' + (list.length - 3) + ' lainnya'));
+                }
+
+                $stockDetail.append($list);
+            }
+
             // Fetches the picked hamper's price/stock/contents; the request is kept in
             // $box.data('pending') so "Isi dari posni" can wait for it.
             function loadInfo() {
@@ -416,6 +458,7 @@
                 var mine = ++token;
                 $box.removeData('info').removeData('pending').removeData('infoFailed');
                 $info.removeClass('text-danger');
+                renderStockDetail(null);
 
                 if (!id) {
                     $info.text('');
@@ -430,6 +473,7 @@
                     if (mine !== token) { return; }
                     $box.data('info', data);
                     $info.text('Harga posni: ' + rupiah(data.sellingPrice) + ' · Stok ' + data.stock);
+                    renderStockDetail(data);
                     renderPreview();
                 }).fail(function () {
                     if (mine !== token) { return; }

@@ -90,6 +90,66 @@
         </div>
         <hr class="my-4 bg-dark">
     </form>
+
+    {{-- Stok per item: why the hamper's stock is what it is (see App\Services\HamperStockBreakdown). --}}
+    @php
+        $stockStatus = $stockBreakdown['status'];
+        $limitingRowClass = $stockStatus === 'low' ? 'table-warning' : '';
+
+        // The culprits first (blocking, then limiting when low), the rest in the hamper's own order.
+        $stockRows = $stockBreakdown['components'];
+        $stockRank = [];
+        foreach ($stockRows as $position => $component) {
+            $stockRank[$position] = [$component['blocking'] ? 0 : ($component['limiting'] && $stockStatus === 'low' ? 1 : 2), $position];
+        }
+        uksort($stockRows, function ($a, $b) use ($stockRank) {
+            return $stockRank[$a] <=> $stockRank[$b];
+        });
+    @endphp
+    <div class="mb-5" id="stok-per-item">
+        <h1 class="display-6">Stok per item</h1>
+        <div class="lead mb-3 d-flex flex-wrap align-items-baseline gap-2">
+            <span>Stok hamper:</span>
+            @include('dashboard.partials.stock_breakdown', ['breakdown' => $stockBreakdown, 'showList' => false])
+        </div>
+
+        @if (count($stockRows) > 0)
+            <div class="table-responsive">
+                <table class="table table-sm align-middle" style="min-width: 36rem;">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="min-width: 10rem;">Item</th>
+                            <th scope="col" class="text-end">Stok item</th>
+                            <th scope="col" class="text-end">Di keranjang</th>
+                            <th scope="col" class="text-end">Tersedia</th>
+                            <th scope="col" class="text-end">Butuh/hamper</th>
+                            <th scope="col" class="text-end">Bisa jadi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($stockRows as $component)
+                            <tr class="{{ $component['blocking'] ? 'table-danger' : ($component['limiting'] ? $limitingRowClass : '') }}">
+                                <td>
+                                    @if ($component['deleted'])
+                                        <span class="text-danger">{{ $component['name'] }}</span>
+                                    @else
+                                        {{ $component['name'] }}
+                                    @endif
+                                </td>
+                                <td class="text-end">{{ $component['stock'] }}</td>
+                                <td class="text-end">{{ $component['reserved'] }}</td>
+                                <td class="text-end">{{ $component['available'] }}</td>
+                                <td class="text-end">{{ $component['needed'] }}</td>
+                                <td class="text-end">{{ $component['can_make'] }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <p class="text-muted">Hamper ini belum punya item.</p>
+        @endif
+    </div>
 </div>
 
 

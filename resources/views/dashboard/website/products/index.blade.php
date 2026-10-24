@@ -5,6 +5,10 @@
     $money = function ($amount) {
         return 'Rp ' . number_format((int) $amount, 0, ',', '.');
     };
+    // Badge colour of an option's stock: red when out, amber when low, green otherwise.
+    $stockBadgeClass = function ($status) {
+        return $status === 'out' ? 'bg-danger' : ($status === 'low' ? 'bg-warning text-dark' : 'bg-success');
+    };
     $sortOptions = ['sort_order' => 'Urutan', 'name_id' => 'Nama', 'created_at' => 'Terbaru'];
     $statusOptions = ['all' => 'Semua status', 'published' => 'Terbit', 'draft' => 'Draft'];
     // What every list link (sort, pagination) carries besides its own parameters.
@@ -127,7 +131,8 @@
                         <span class="text-muted">{{ $option['label'] }}:</span>
                         @if ($option['hamper'] !== null)
                             {{ $option['hamper'] }}
-                            <span class="badge {{ $option['stock'] > 0 ? 'bg-success' : 'bg-secondary' }}">{{ $option['stock'] > 0 ? 'Stok ' . $option['stock'] : 'Habis' }}</span>
+                            <span class="badge {{ $stockBadgeClass($option['breakdown']['status']) }}">{{ $option['stock'] > 0 ? 'Stok ' . $option['stock'] : 'Habis' }}</span>
+                            @include('dashboard.partials.stock_breakdown', ['breakdown' => $option['breakdown'], 'showStock' => false])
                         @else
                             <span class="text-danger">hamper dihapus di posni</span>
                         @endif
@@ -211,14 +216,19 @@
                                     @endforelse
                                 </td>
                                 <td class="text-nowrap">{{ $row['priceFrom'] !== null ? $money($row['priceFrom']) : '-' }}</td>
-                                <td class="text-nowrap">
+                                <td style="min-width: 13rem;">
                                     @forelse ($row['options'] as $option)
-                                        <div>
-                                            <span class="text-muted">{{ $option['label'] }}:</span>
-                                            @if ($option['stock'] === null)
-                                                -
-                                            @else
-                                                <span class="badge {{ $option['stock'] > 0 ? 'bg-success' : 'bg-secondary' }}">{{ $option['stock'] > 0 ? 'Stok ' . $option['stock'] : 'Habis' }}</span>
+                                        <div class="mb-1">
+                                            <span class="text-nowrap">
+                                                <span class="text-muted">{{ $option['label'] }}:</span>
+                                                @if ($option['stock'] === null)
+                                                    -
+                                                @else
+                                                    <span class="badge {{ $stockBadgeClass($option['breakdown']['status']) }}">{{ $option['stock'] > 0 ? 'Stok ' . $option['stock'] : 'Habis' }}</span>
+                                                @endif
+                                            </span>
+                                            @if ($option['breakdown'] !== null)
+                                                @include('dashboard.partials.stock_breakdown', ['breakdown' => $option['breakdown'], 'showStock' => false])
                                             @endif
                                         </div>
                                     @empty
