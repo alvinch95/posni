@@ -17,6 +17,7 @@
     --bg-white: #ffffff;
 
     --sidebar-width: 260px;
+    --sidebar-mini-width: 72px;
     --header-height: 64px;
     --border-radius: 12px;
     --shadow-sm: 0 1px 2px 0 rgba(74, 64, 54, 0.05);
@@ -139,8 +140,14 @@ h6 {
     padding: 0.5rem;
     color: var(--text-dark) !important;
     position: absolute;
-    right: 1rem;
-    top: 0.75rem;
+    right: 0.5rem;
+    top: calc((var(--header-height) - 44px) / 2);
+    /* 44px tap target, centred in the header bar */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
 }
 
 .navbar-toggler:focus {
@@ -152,113 +159,315 @@ h6 {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%234a4036' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
 }
 
-/* --- Sidebar --- */
+/* --- Sidebar (AdminLTE-style) ---
+   Flex column: brand (fixed) / nav (scrolls on its own) / logout (pinned).
+   Desktop (>= 768px) can shrink to an icon-only "mini" mode (html.sidebar-mini, set from
+   localStorage); mobile (< 768px) is an off-canvas panel opened by the header toggler. */
 #sidebarMenu {
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     z-index: 100;
+    flex-direction: column;
+    width: var(--sidebar-width);
     padding: 0;
-    box-shadow: none;
+    overflow: hidden;
     background-color: var(--text-dark);
     /* Dark Brown Theme */
     border-right: none;
-    width: var(--sidebar-width);
-    transition: all 0.3s ease;
+    box-shadow: none;
+    transition: width 0.25s ease;
 }
 
-#sidebarMenu.collapsed {
-    margin-left: calc(-1 * var(--sidebar-width));
+/* Top: brand + collapse button (never scrolls) */
+.sidebar-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+    padding: 0 0.75rem 0 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.sidebar-header .navbar-brand {
+.sidebar-brand {
     color: #fff !important;
+    font-weight: 700;
+    font-size: 1.375rem;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.sidebar-mini-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar-mini-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.sidebar-mini-toggle svg {
+    transition: transform 0.25s ease;
+}
+
+/* Middle: the nav scrolls independently, with a thin, subtle scrollbar */
+.sidebar-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Rows: single links, group headers, and sub-links share one rhythm */
+.sidebar .nav-link,
+.sidebar-group-toggle,
+.sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 1.25rem 0.5rem 1.5rem;
+    border: 0;
+    border-left: 3px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.4;
+    text-align: left;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .sidebar .nav-link {
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
-    padding: 0.75rem 1.5rem;
-    border-radius: 0;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-left: 3px solid transparent;
+    color: rgba(255, 255, 255, 0.72);
 }
 
-.sidebar .nav-link:hover {
+.sidebar .nav-link:hover,
+.sidebar .nav-link:focus {
     color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.06);
     border-left-color: var(--primary-color);
 }
 
 .sidebar .nav-link.active {
     color: #ffffff;
     background-color: rgba(255, 255, 255, 0.1);
-    border-right: none;
     border-left-color: var(--primary-color);
-    border-radius: 0;
-    margin: 0;
 }
 
-.sidebar .nav-link svg {
+.sidebar a:focus-visible,
+.sidebar button:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+    box-shadow: none;
+}
+
+.sidebar svg {
+    flex: 0 0 auto;
     width: 18px;
     height: 18px;
 }
 
-/* Submenu Toggles */
-.sidebar-heading button {
+.sidebar-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Group header: icon, label, chevron (rotates when open) */
+.sidebar-heading {
+    margin: 0;
+}
+
+.sidebar-group-toggle {
+    color: rgba(255, 255, 255, 0.78);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5) !important;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    padding: 0.5rem 1.5rem;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-decoration: none !important;
+    cursor: pointer;
 }
 
-.sidebar-heading button:hover {
-    color: #ffffff !important;
+.sidebar-group-toggle .sidebar-label {
+    flex: 1 1 auto;
 }
 
-.sidebar-heading button:focus {
-    box-shadow: none;
+.sidebar-group-toggle:hover,
+.sidebar-heading.is-open .sidebar-group-toggle,
+.sidebar-heading.has-active .sidebar-group-toggle {
+    color: #ffffff;
 }
 
-/* --- Content Content --- */
-/* --- Content Content --- */
+.sidebar-group-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar .sidebar-chevron {
+    margin-left: auto;
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+}
+
+.sidebar-heading.is-open .sidebar-chevron {
+    transform: rotate(90deg);
+}
+
+/* Sub-links: indented under their group, slightly darker band */
+.sidebar-submenu {
+    margin: 0;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0.14);
+}
+
+.sidebar-submenu .nav-item:first-child {
+    padding-top: 0.25rem;
+}
+
+.sidebar-submenu .nav-item:last-child {
+    padding-bottom: 0.25rem;
+}
+
+.sidebar-submenu .nav-link {
+    padding-left: 2.75rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+/* Bottom: Logout stays pinned */
+.sidebar-footer {
+    flex: 0 0 auto;
+    padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-footer form {
+    margin: 0;
+}
+
+.sidebar-logout {
+    color: #f2a7a0;
+    cursor: pointer;
+}
+
+.sidebar-logout:hover,
+.sidebar-logout:focus {
+    color: #ffc9c4;
+    background-color: rgba(242, 167, 160, 0.12);
+}
+
+/* --- Content --- */
 .dashboard-main {
     margin-left: var(--sidebar-width) !important;
     /* Push content */
     padding: 2rem;
-    transition: margin-left 0.3s ease;
+    transition: margin-left 0.25s ease;
     min-height: 100vh;
     width: auto;
 }
 
-.dashboard-main.expanded {
-    margin-left: 0 !important;
-}
-
-.dashboard-main.expanded #sidebarToggleMain {
-    display: block !important;
-}
-
-@media (max-width: 768px) {
+/* Desktop: the sidebar is always present as a flex column; mini mode = icons only */
+@media (min-width: 768px) {
     #sidebarMenu {
-        width: 100%;
-        height: calc(100vh - var(--header-height));
-        position: fixed;
+        display: flex !important;
+    }
+
+    html.sidebar-mini #sidebarMenu {
+        width: var(--sidebar-mini-width);
+    }
+
+    html.sidebar-mini .dashboard-main {
+        margin-left: var(--sidebar-mini-width) !important;
+    }
+
+    html.sidebar-mini .sidebar-header {
+        justify-content: center;
+        padding: 0;
+    }
+
+    html.sidebar-mini .sidebar-brand,
+    html.sidebar-mini .sidebar-chevron,
+    html.sidebar-mini .sidebar-submenu {
+        display: none !important;
+    }
+
+    html.sidebar-mini .sidebar-mini-toggle svg {
+        transform: rotate(180deg);
+    }
+
+    /* Labels stay in the accessibility tree (accessible names) but leave the layout */
+    html.sidebar-mini .sidebar-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    html.sidebar-mini .sidebar .nav-link,
+    html.sidebar-mini .sidebar-group-toggle,
+    html.sidebar-mini .sidebar-logout {
+        justify-content: center;
+        gap: 0;
+        padding-left: 0;
+        padding-right: 0;
+        border-right: 3px solid transparent;
+    }
+
+    /* Mini mode hides the sub-links, so mark the group that holds the current page */
+    html.sidebar-mini .sidebar-heading.has-active .sidebar-group-toggle {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-left-color: var(--primary-color);
+    }
+}
+
+@media (max-width: 767.98px) {
+    #sidebarMenu {
         top: var(--header-height);
-        left: 0;
+        width: 100%;
+        height: auto;
         z-index: 1050;
-        overflow-y: auto;
         border-right: none;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         transform: translateX(-100%);
@@ -266,12 +475,32 @@ h6 {
         transition: transform 0.3s ease-in-out;
     }
 
+    /* Bootstrap's collapse toggles .show / .collapsing; stay a full-height column in both */
+    #sidebarMenu.show,
+    #sidebarMenu.collapsing {
+        display: flex;
+    }
+
+    #sidebarMenu.collapsing {
+        height: auto !important;
+    }
+
     #sidebarMenu.show {
         transform: translateX(0);
         /* Slide in */
     }
 
+    /* The page header above already carries the brand */
+    .sidebar-header {
+        display: none;
+    }
 
+    .sidebar .nav-link,
+    .sidebar-group-toggle,
+    .sidebar-logout {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
 
     /* Mobile: Navbar Brand fills width */
     .navbar>div:first-child {
@@ -291,11 +520,6 @@ h6 {
     .dashboard-main {
         margin-left: 0 !important;
         padding-top: 1.5rem;
-    }
-
-    /* Adjust sidebar nav links for mobile touch targets */
-    .sidebar .nav-link {
-        padding: 1rem 1.5rem;
     }
 }
 

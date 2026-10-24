@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>POSNI | Dashboard</title>
 
+    {{-- Apply the remembered sidebar mode before first paint so the page never flashes at the wrong width. Desktop only (CSS), see sidebar.blade.php --}}
+    <script>
+      try { if (localStorage.getItem('posni.sidebar.mini') === '1') { document.documentElement.classList.add('sidebar-mini'); } } catch (e) {}
+    </script>
+
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
@@ -62,11 +67,6 @@
         </div>
       </div>
       
-      <!-- Floating Sidebar Toggle (Visible only when sidebar is collapsed) -->
-      <button class="btn btn-light shadow-sm border position-fixed d-none" id="sidebarToggleMain" style="top: 20px; left: 20px; z-index: 1040;">
-        <span data-feather="menu"></span>
-      </button>
-
       @yield('container')
     </main>
 </div>
