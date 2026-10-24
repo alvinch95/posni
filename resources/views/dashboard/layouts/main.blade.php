@@ -50,8 +50,8 @@
       }
     </style>
   </head>
-  <body>
-    
+  <body class="{{ Request::is('dashboard/website*') ? 'cms-website' : '' }}">
+
 @include('dashboard.layouts.header')
 @include('sweetalert::alert')
 
