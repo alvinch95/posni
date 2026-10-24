@@ -5,7 +5,7 @@
     <h1 class="h2">FAQ Website</h1>
 </div>
 
-<div class="col-lg-10">
+<div class="col-xl-10">
     <a href="{{ route('website.faqs.create') }}" class="btn btn-primary mb-3 d-inline-flex align-items-center" style="min-height: 44px;">Tambah FAQ</a>
 
     {{-- Phones: one card per question (a 6-column table does not fit). --}}
@@ -31,55 +31,59 @@
     </div>
 
     {{-- Tablet and desktop: the table. --}}
-    <div class="table-responsive d-none d-md-block">
-        <table class="table table-striped table-sm align-middle">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Pertanyaan</th>
-                    <th scope="col">Jawaban</th>
-                    <th scope="col" class="text-end">Urutan</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($faqs as $faq)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td class="text-break">
-                            {{ $faq->question_id }}
-                            @if (filled($faq->question_en))
-                                <div class="small text-muted">{{ $faq->question_en }}</div>
-                            @endif
-                        </td>
-                        <td class="text-break">{{ \Illuminate\Support\Str::limit($faq->answer_id, 100) }}</td>
-                        <td class="text-end">{{ $faq->sort_order }}</td>
-                        <td>
-                            @if ($faq->is_active)
-                                <span class="badge bg-success">Aktif</span>
-                            @else
-                                <span class="badge bg-secondary">Nonaktif</span>
-                            @endif
-                        </td>
-                        <td class="text-nowrap">
-                            <a href="{{ route('website.faqs.edit', $faq) }}" class="btn btn-sm btn-warning">Edit</a>
-                            <form action="{{ route('website.faqs.destroy', $faq) }}" method="post" class="d-inline">
-                                @method('delete')
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-danger hapus"
-                                        data-confirm-title="Hapus FAQ?"
-                                        data-confirm-text="FAQ &quot;{{ \Illuminate\Support\Str::limit($faq->question_id, 80) }}&quot; akan dihapus.">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">Belum ada FAQ.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <div class="card mb-4 d-none d-md-block">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Pertanyaan</th>
+                            <th scope="col">Jawaban</th>
+                            <th scope="col" class="text-end">Urutan</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($faqs as $faq)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td class="text-break">
+                                    {{ $faq->question_id }}
+                                    @if (filled($faq->question_en))
+                                        <div class="small text-muted">{{ $faq->question_en }}</div>
+                                    @endif
+                                </td>
+                                <td class="text-break">{{ \Illuminate\Support\Str::limit($faq->answer_id, 100) }}</td>
+                                <td class="text-end">{{ $faq->sort_order }}</td>
+                                <td>
+                                    @if ($faq->is_active)
+                                        <span class="badge bg-success">Aktif</span>
+                                    @else
+                                        <span class="badge bg-secondary">Nonaktif</span>
+                                    @endif
+                                </td>
+                                <td class="text-nowrap">
+                                    <a href="{{ route('website.faqs.edit', $faq) }}" class="btn btn-sm btn-warning">Edit</a>
+                                    <form action="{{ route('website.faqs.destroy', $faq) }}" method="post" class="d-inline">
+                                        @method('delete')
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-danger hapus"
+                                                data-confirm-title="Hapus FAQ?"
+                                                data-confirm-text="FAQ &quot;{{ \Illuminate\Support\Str::limit($faq->question_id, 80) }}&quot; akan dihapus.">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">Belum ada FAQ.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 

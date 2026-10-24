@@ -584,6 +584,37 @@ h6 {
     background-color: rgba(74, 64, 54, 0.05);
 }
 
+/* A table that fills its card edge to edge (card-body p-0): clip the header row to the card's rounded corners. */
+.cms-website .card > .card-body.p-0 > .table-responsive {
+    border-radius: var(--border-radius);
+}
+
+/* Compact tables inside a card: tighter cells than the global .table (1rem), so the Aksi column stays in view at 1024 px. */
+.cms-website .card .table-sm > :not(caption) > * > * {
+    padding: 0.75rem 0.625rem;
+}
+
+/* The "Aktif" switch of the CMS forms: the whole 44px row is the tap target, not only the 24px line of text. */
+.cms-website .form-check.form-switch {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding-left: 0;
+}
+
+.cms-website .form-switch .form-check-input {
+    float: none;
+    flex-shrink: 0;
+    margin: 0 0.75rem 0 0;
+}
+
+.cms-website .form-switch .form-check-label {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    align-self: stretch;
+}
+
 .cms-website .card .hamper-option,
 .cms-website .card .photo-tile {
     background-color: var(--bg-white);
