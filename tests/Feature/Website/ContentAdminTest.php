@@ -110,8 +110,8 @@ class ContentAdminTest extends WebsiteTestCase
         }
 
         // Both languages' defaults are the placeholders.
-        $response->assertSee('placeholder="Hampers kayu, dipersonalisasi"', false);
-        $response->assertSee('placeholder="Personalized wooden hampers"', false);
+        $response->assertSee('placeholder="Hampers kayu untuk setiap momen"', false);
+        $response->assertSee('placeholder="Wooden hampers for every moment"', false);
     }
 
     public function test_a_saved_value_is_prefilled_and_other_fields_stay_empty(): void

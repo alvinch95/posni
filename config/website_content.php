@@ -33,8 +33,8 @@ return [
                 'Hero.eyebrow' => [
                     'label' => 'Eyebrow (teks kecil di atas judul)',
                     'type' => 'text',
-                    'default_id' => 'Hampers kayu, dipersonalisasi',
-                    'default_en' => 'Personalized wooden hampers',
+                    'default_id' => 'Hampers kayu untuk setiap momen',
+                    'default_en' => 'Wooden hampers for every moment',
                 ],
                 'Hero.headlineLine1' => [
                     'label' => 'Judul baris 1',
@@ -198,8 +198,8 @@ return [
                 'TopProducts.sectionEyebrow' => [
                     'label' => 'Eyebrow',
                     'type' => 'text',
-                    'default_id' => 'Hampers Pilihan',
-                    'default_en' => 'Featured Hampers',
+                    'default_id' => 'Hampers pilihan',
+                    'default_en' => 'Featured hampers',
                 ],
                 'TopProducts.sectionTitle' => [
                     'label' => 'Judul',
@@ -210,7 +210,7 @@ return [
                 'TopProducts.sectionSub' => [
                     'label' => 'Sub-judul',
                     'type' => 'text',
-                    'default_id' => 'Pilihan favorit dari customer Kayuni — semua bisa di-personalisasi.',
+                    'default_id' => 'Pilihan favorit dari customer Kayuni — semua bisa dipersonalisasi.',
                     'default_en' => 'Customer favorites from Kayuni — all can be personalized.',
                 ],
             ],
@@ -233,8 +233,8 @@ return [
                 'ShopByCategory.sectionSub' => [
                     'label' => 'Sub-judul',
                     'type' => 'text',
-                    'default_id' => 'Geser ke samping buat lihat semua kategori.',
-                    'default_en' => 'Swipe sideways to see all categories.',
+                    'default_id' => 'Pilih momennya, kami siapkan hampers yang pas.',
+                    'default_en' => 'Pick the moment, we\'ll match the hamper.',
                 ],
             ],
         ],
@@ -256,7 +256,7 @@ return [
                 'CaraPesan.sectionSub' => [
                     'label' => 'Sub-judul',
                     'type' => 'text',
-                    'default_id' => 'Mulai dari pilih sampai sampai — tenang, kami bantu setiap langkahnya.',
+                    'default_id' => 'Dari pilih hampers sampai paket tiba — tenang, kami bantu setiap langkahnya.',
                     'default_en' => 'From browsing to delivery — we\'ll help you through every step.',
                 ],
                 'CaraPesan.step1Title' => [
@@ -315,7 +315,7 @@ return [
                 'CustomCTA.title' => [
                     'label' => 'Judul',
                     'type' => 'text',
-                    'default_id' => 'Mau hampers yang gak ada di sini?',
+                    'default_id' => 'Mau hampers yang nggak ada di sini?',
                     'default_en' => 'Looking for something custom?',
                 ],
                 'CustomCTA.desc' => [
@@ -390,8 +390,8 @@ return [
                 'KoleksiPage.pageEyebrow' => [
                     'label' => 'Eyebrow',
                     'type' => 'text',
-                    'default_id' => 'Semua Koleksi',
-                    'default_en' => 'Full Collection',
+                    'default_id' => 'Semua koleksi',
+                    'default_en' => 'Full collection',
                 ],
                 'KoleksiPage.pageTitle' => [
                     'label' => 'Judul',
