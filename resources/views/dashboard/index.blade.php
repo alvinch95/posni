@@ -62,7 +62,16 @@
     .seg-toggle .btn { min-height: 44px; min-width: 72px; }
     .seg-toggle .btn.active { background: var(--text-dark); border-color: var(--text-dark); color: #fff; }
 
+    /* Tren Penjualan grouping: full width under the title on phones, so four buttons fit at 320px */
+    .group-toggle { flex: 1 0 100%; }
+    .group-toggle .btn { flex: 1 1 auto; min-width: 0; min-height: 44px; padding-left: .25rem; padding-right: .25rem; }
+    .group-toggle .btn.active { background: var(--text-dark); border-color: var(--text-dark); color: #fff; }
+    .group-toggle .btn:disabled { cursor: not-allowed; }
+    .is-busy .trend-body { opacity: .55; transition: opacity .15s; }
+
     @media (min-width: 576px) {
+        .group-toggle { flex: 0 0 auto; }
+        .group-toggle .btn { flex: 0 0 auto; min-width: 72px; padding-left: .75rem; padding-right: .75rem; }
         .dash-header { flex-direction: row; justify-content: space-between; align-items: flex-end; }
         .dash-filter { align-items: flex-end; }
         .dash-filter .form-select { width: 220px; }
@@ -139,16 +148,23 @@
         </section>
 
         <!-- Trend -->
-        <section class="card dash-card">
+        <section class="card dash-card" id="trend-card">
             <div class="dash-card-head">
                 <h2>Tren Penjualan</h2>
-                <small id="trend-granularity"></small>
+                <div class="btn-group group-toggle" id="trend-group" role="group" aria-label="Kelompokkan tren per">
+                    <button type="button" class="btn btn-outline-secondary" data-group="day" aria-pressed="false">Hari</button>
+                    <button type="button" class="btn btn-outline-secondary" data-group="week" aria-pressed="false">Minggu</button>
+                    <button type="button" class="btn btn-outline-secondary" data-group="month" aria-pressed="false">Bulan</button>
+                    <button type="button" class="btn btn-outline-secondary" data-group="year" aria-pressed="false">Tahun</button>
+                </div>
             </div>
-            <div id="trend-empty" class="empty-state d-none">Belum ada penjualan di periode ini.</div>
-            <div id="trend-charts">
-                <div id="trendChart"></div>
-                <p class="chart-caption">Jumlah order</p>
-                <div id="ordersChart"></div>
+            <div class="trend-body">
+                <div id="trend-empty" class="empty-state d-none">Belum ada penjualan di periode ini.</div>
+                <div id="trend-charts">
+                    <div id="trendChart"></div>
+                    <p class="chart-caption">Jumlah order</p>
+                    <div id="ordersChart"></div>
+                </div>
             </div>
         </section>
 
@@ -211,6 +227,9 @@
     let lastData = null;
     let topSort = 'qty';
     let requestId = 0;
+    let trendRequestId = 0; // trend-only refetches (grouping buttons) are superseded separately from full loads
+    let fullLoading = false;
+    let trendShown = null; // the grouping the trend charts currently show
     const charts = {};
 
     // --- Period state <-> URL ---
@@ -240,27 +259,41 @@
     };
 
     // --- Fetch ---
-    const load = async () => {
-        const id = ++requestId;
-        $('#dash').addClass('is-loading');
+    const TOO_MANY_POINTS = 'Terlalu banyak titik untuk rentang ini';
 
+    // Resolves to the payload, or null when the request was superseded or failed (already reported)
+    const fetchDashboard = async (extra, isCurrent) => {
         const q = new URLSearchParams({ period: state.period });
         if (state.period === 'custom') { q.set('from', state.from); q.set('to', state.to); }
+        Object.keys(extra).forEach((k) => q.set(k, extra[k]));
+
+        const res = await fetch('/dashboard/data?' + q.toString(), { headers: { 'Accept': 'application/json' } });
+        const body = await res.json();
+        if (!isCurrent()) return null; // a newer request superseded this one
+
+        if (res.status === 401 || res.status === 419) {
+            Swal.fire({ icon: 'info', title: 'Sesi berakhir', text: 'Silakan login ulang.' }).then(() => window.location.reload());
+            return null;
+        }
+        if (!res.ok) {
+            const errors = body.errors ? Object.values(body.errors).flat().join(' ') : (body.message || 'Gagal memuat data.');
+            Swal.fire({ icon: 'warning', title: 'Periode tidak valid', text: errors });
+            return null;
+        }
+        return body;
+    };
+
+    // A full load always starts from the automatic trend grouping (no trend_group sent)
+    const load = async () => {
+        const id = ++requestId;
+        trendRequestId++;
+        fullLoading = true;
+        $('#trend-card').removeClass('is-busy');
+        $('#dash').addClass('is-loading');
 
         try {
-            const res = await fetch('/dashboard/data?' + q.toString(), { headers: { 'Accept': 'application/json' } });
-            const body = await res.json();
-            if (id !== requestId) return; // a newer request superseded this one
-
-            if (res.status === 401 || res.status === 419) {
-                Swal.fire({ icon: 'info', title: 'Sesi berakhir', text: 'Silakan login ulang.' }).then(() => window.location.reload());
-                return;
-            }
-            if (!res.ok) {
-                const errors = body.errors ? Object.values(body.errors).flat().join(' ') : (body.message || 'Gagal memuat data.');
-                Swal.fire({ icon: 'warning', title: 'Periode tidak valid', text: errors });
-                return;
-            }
+            const body = await fetchDashboard({}, () => id === requestId);
+            if (!body) return;
 
             lastData = body;
             render(body);
@@ -269,7 +302,27 @@
                 Swal.fire({ icon: 'error', title: 'Gagal memuat dashboard', text: 'Coba muat ulang halaman.' });
             }
         } finally {
-            if (id === requestId) $('#dash').removeClass('is-loading');
+            if (id === requestId) {
+                fullLoading = false;
+                $('#dash').removeClass('is-loading');
+            }
+        }
+    };
+
+    // Only the Tren Penjualan and Jumlah order charts change; the rest of the page keeps what it has
+    const loadTrend = async (group) => {
+        const id = ++trendRequestId;
+        $('#trend-card').addClass('is-busy');
+
+        try {
+            const body = await fetchDashboard({ trend_group: group }, () => id === trendRequestId);
+            if (body) renderTrend(body.trend);
+        } catch (e) {
+            if (id === trendRequestId) {
+                Swal.fire({ icon: 'error', title: 'Gagal memuat tren', text: 'Coba lagi sebentar.' });
+            }
+        } finally {
+            if (id === trendRequestId) $('#trend-card').removeClass('is-busy');
         }
     };
 
@@ -308,8 +361,8 @@
 
     // Apex doesn't thin category labels reliably, so show every Nth label and keep the
     // full label for the tooltip (looked up by index)
-    const xaxisFor = (labels) => {
-        const step = Math.ceil(labels.length / (isNarrow() ? 4 : 10));
+    const xaxisFor = (labels, maxLabels) => {
+        const step = Math.ceil(labels.length / (maxLabels || (isNarrow() ? 4 : 10)));
         return {
             categories: labels.map((l, i) => (i % step === 0 ? l : '')),
             labels: { rotate: 0, hideOverlappingLabels: false, trim: false, style: { colors: '#8b7e74', fontSize: '12px' } },
@@ -328,9 +381,31 @@
         animations: { enabled: false },
     });
 
+    // Week labels ("26 Feb–3 Mar 2024") are long: show only as many as fit the chart width
+    const weekLabelBudget = (labels) => {
+        const plotWidth = $('#trendChart').width() - 56; // minus the y-axis gutter
+        const longest = Math.max(...labels.map((l) => l.length));
+        return Math.max(1, Math.min(isNarrow() ? 4 : 10, Math.floor(plotWidth / (longest * 6.2 + 10))));
+    };
+
+    // Mark the grouping in use; values with too many points for the range are disabled
+    const renderTrendGroups = (trend) => {
+        trendShown = trend.granularity;
+        $('#trend-group .btn').each(function () {
+            const group = $(this).data('group');
+            const allowed = trend.allowed_groups.includes(group);
+            const selected = group === trend.granularity;
+            $(this)
+                .toggleClass('active', selected)
+                .attr('aria-pressed', selected ? 'true' : 'false')
+                .prop('disabled', !allowed);
+            if (allowed) $(this).removeAttr('title'); else $(this).attr('title', TOO_MANY_POINTS);
+        });
+    };
+
     const renderTrend = (trend) => {
-        const unit = trend.granularity === 'day' ? 'per hari' : 'per bulan';
-        $('#trend-granularity').text(unit);
+        renderTrendGroups(trend);
+        const maxLabels = trend.granularity === 'week' ? weekLabelBudget(trend.labels) : undefined;
         const empty = trend.orders.every((n) => n === 0);
         $('#trend-empty').toggleClass('d-none', !empty);
         $('#trend-charts').toggleClass('d-none', empty);
@@ -344,12 +419,13 @@
             ],
             colors: [COLORS.omzet, COLORS.cuan],
             stroke: { width: [0, 2], curve: 'straight' },
-            markers: { size: 0, hover: { size: 5 } },
+            // A line of one point (e.g. Tahun on a single month) draws nothing, so give it a dot
+            markers: { size: [0, trend.cuan.length === 1 ? 5 : 0], hover: { size: 5 } },
             plotOptions: { bar: { columnWidth: '60%', borderRadius: 4, borderRadiusApplication: 'end' } },
             dataLabels: { enabled: false },
             legend: { position: 'top', horizontalAlign: 'left', fontSize: '13px', markers: { width: 10, height: 10, radius: 2 } },
             grid: { borderColor: '#efebe5', strokeDashArray: 3, xaxis: { lines: { show: false } } },
-            xaxis: xaxisFor(trend.labels),
+            xaxis: xaxisFor(trend.labels, maxLabels),
             yaxis: { labels: { minWidth: 40, formatter: (v) => compact(v), style: { colors: '#8b7e74' } } },
             tooltip: { shared: true, intersect: false, x: tooltipTitle(trend.labels), y: { formatter: (v) => rupiah(v) } },
         });
@@ -361,7 +437,7 @@
             plotOptions: { bar: { columnWidth: '60%', borderRadius: 3, borderRadiusApplication: 'end' } },
             dataLabels: { enabled: false },
             grid: { borderColor: '#efebe5', strokeDashArray: 3, xaxis: { lines: { show: false } } },
-            xaxis: xaxisFor(trend.labels),
+            xaxis: xaxisFor(trend.labels, maxLabels),
             yaxis: { tickAmount: 2, labels: { minWidth: 40, formatter: (v) => number(Math.round(v)), style: { colors: '#8b7e74' } } },
             tooltip: { x: tooltipTitle(trend.labels), y: { formatter: (v) => number(v) + ' order' } },
         });
@@ -476,6 +552,12 @@
             state = { period: 'custom', from, to };
             writeUrl();
             load();
+        });
+
+        $('#trend-group .btn').on('click', function () {
+            const group = $(this).data('group');
+            if (this.disabled || fullLoading || !lastData || group === trendShown) return;
+            loadTrend(group);
         });
 
         $('.seg-toggle .btn').on('click', function () {

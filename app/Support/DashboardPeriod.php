@@ -26,6 +26,10 @@ class DashboardPeriod
     // Ranges up to this many days are charted per day, longer ones per month
     const DAILY_MAX_DAYS = 62;
 
+    // The trend chart can also be grouped per week or year, but never into more points than this
+    const GROUPS = ['day', 'week', 'month', 'year'];
+    const TREND_MAX_BUCKETS = 400;
+
     // Custom ranges are capped at about 10 years
     const CUSTOM_MAX_DAYS = 3660;
 
@@ -113,6 +117,54 @@ class DashboardPeriod
     public function granularity(): string
     {
         return $this->days() <= self::DAILY_MAX_DAYS ? 'day' : 'month';
+    }
+
+    /**
+     * How many buckets the range makes when grouped per day, ISO week (Monday start), month or year.
+     * The first and last bucket count even when the range only touches them partly.
+     */
+    public function bucketCount(string $group): int
+    {
+        switch ($group) {
+            case 'day':
+                return $this->days();
+
+            case 'week':
+                $first = $this->from->copy()->startOfWeek(Carbon::MONDAY);
+                $last = $this->to->copy()->startOfWeek(Carbon::MONDAY);
+                return intdiv($first->diffInDays($last), 7) + 1;
+
+            case 'month':
+                return ($this->to->year - $this->from->year) * 12 + $this->to->month - $this->from->month + 1;
+
+            case 'year':
+                return $this->to->year - $this->from->year + 1;
+        }
+
+        throw new InvalidArgumentException("Unknown trend group [{$group}].");
+    }
+
+    /**
+     * The trend groupings that stay within TREND_MAX_BUCKETS for this range, in display order.
+     */
+    public function allowedGroups(): array
+    {
+        return array_values(array_filter(self::GROUPS, function ($group) {
+            return $this->bucketCount($group) <= self::TREND_MAX_BUCKETS;
+        }));
+    }
+
+    /**
+     * The grouping the trend really uses: the requested one when it is known and not too big,
+     * otherwise the automatic one. Never an error, so a stale request still gets a chart.
+     */
+    public function effectiveGranularity(?string $requested): string
+    {
+        if ($requested !== null && in_array($requested, $this->allowedGroups(), true)) {
+            return $requested;
+        }
+
+        return $this->granularity();
     }
 
     public static function rangeLabel(Carbon $from, Carbon $to): string

@@ -18,7 +18,12 @@ class DashboardMetrics
 {
     const TOP_PRODUCTS_LIMIT = 10;
 
-    public function forPeriod(DashboardPeriod $period): array
+    /**
+     * @param string|null $trendGroup day|week|month|year for the trend charts only. Null, or a grouping
+     *                                with too many points for the range, uses the automatic one.
+     *                                Inventory always stays automatic.
+     */
+    public function forPeriod(DashboardPeriod $period, ?string $trendGroup = null): array
     {
         $current = $this->summary($period->from, $period->to);
         $previous = $this->summary($period->prevFrom, $period->prevTo);
@@ -35,7 +40,10 @@ class DashboardMetrics
                 'previous' => $previous,
                 'changes' => $changes,
             ],
-            'trend' => $this->trend($period->from, $period->to, $period->granularity()),
+            'trend' => $this->trend($period->from, $period->to, $period->effectiveGranularity($trendGroup)) + [
+                'auto_granularity' => $period->granularity(),
+                'allowed_groups' => $period->allowedGroups(),
+            ],
             'top_products' => [
                 'by_qty' => $this->topProducts($period->from, $period->to, 'qty'),
                 'by_margin' => $this->topProducts($period->from, $period->to, 'margin'),
@@ -203,32 +211,117 @@ class DashboardMetrics
             ->where($column, '<', $to->copy()->addDay()->startOfDay()->toDateTimeString());
     }
 
+    /**
+     * One blank bucket per day / ISO week (Monday start) / month / year touching the range, keyed by
+     * bucketKey(). Week buckets are labelled with the part of the week that is inside the range.
+     */
     private function emptyBuckets(Carbon $from, Carbon $to, string $granularity, callable $blank): array
     {
         $buckets = [];
-        $cursor = $granularity === 'month' ? $from->copy()->startOfMonth() : $from->copy()->startOfDay();
+        $cursor = $this->bucketStart($from, $granularity);
 
         while ($cursor->lte($to)) {
             $key = $this->bucketKey($cursor, $granularity);
-            $buckets[$key] = ['label' => $this->bucketLabel($cursor, $granularity)] + $blank();
-            $granularity === 'month' ? $cursor->addMonth() : $cursor->addDay();
+            $buckets[$key] = ['label' => $this->bucketLabel($cursor, $granularity, $from, $to)] + $blank();
+            $this->advance($cursor, $granularity);
         }
 
         return $buckets;
     }
 
-    private function bucketKey(Carbon $date, string $granularity): string
+    private function bucketStart(Carbon $date, string $granularity): Carbon
     {
-        return $granularity === 'month' ? $date->format('Y-m') : $date->format('Y-m-d');
+        switch ($granularity) {
+            case 'week':
+                return $date->copy()->startOfWeek(Carbon::MONDAY)->startOfDay();
+            case 'month':
+                return $date->copy()->startOfMonth();
+            case 'year':
+                return $date->copy()->startOfYear();
+        }
+
+        return $date->copy()->startOfDay();
     }
 
-    private function bucketLabel(Carbon $date, string $granularity): string
+    private function advance(Carbon $cursor, string $granularity): void
+    {
+        switch ($granularity) {
+            case 'week':
+                $cursor->addWeek();
+                break;
+            case 'month':
+                $cursor->addMonth();
+                break;
+            case 'year':
+                $cursor->addYear();
+                break;
+            default:
+                $cursor->addDay();
+        }
+    }
+
+    private function bucketKey(Carbon $date, string $granularity): string
+    {
+        switch ($granularity) {
+            case 'week':
+                return $this->bucketStart($date, 'week')->format('Y-m-d');
+            case 'month':
+                return $date->format('Y-m');
+            case 'year':
+                return $date->format('Y');
+        }
+
+        return $date->format('Y-m-d');
+    }
+
+    /**
+     * @param Carbon $date the bucket's first day (for a week: its Monday, possibly before $from)
+     */
+    private function bucketLabel(Carbon $date, string $granularity, Carbon $from, Carbon $to): string
     {
         $month = DashboardPeriod::MONTHS[$date->month];
 
-        return $granularity === 'month'
-            ? $month . ' ' . $date->format('y')
-            : $date->day . ' ' . $month;
+        switch ($granularity) {
+            case 'week':
+                return $this->weekLabel($date, $from, $to);
+            case 'month':
+                return $month . ' ' . $date->format('y');
+            case 'year':
+                return $date->format('Y');
+        }
+
+        return $date->day . ' ' . $month;
+    }
+
+    /**
+     * "7–13 Okt", "30 Sep–6 Okt". The range is clipped to what was selected, so a range starting on a
+     * Wednesday labels its first week from that Wednesday. Years only show when the range covers
+     * more than one calendar year.
+     */
+    private function weekLabel(Carbon $monday, Carbon $from, Carbon $to): string
+    {
+        $start = $monday->lt($from) ? $from : $monday;
+        $sunday = $monday->copy()->addDays(6);
+        $end = $sunday->gt($to) ? $to : $sunday;
+
+        $m = DashboardPeriod::MONTHS;
+        $showYear = $from->year !== $to->year;
+
+        if ($start->isSameDay($end)) {
+            return $start->day . ' ' . $m[$start->month] . ($showYear ? ' ' . $start->year : '');
+        }
+
+        if ($start->year !== $end->year) {
+            return $start->day . ' ' . $m[$start->month] . ' ' . $start->year . '–' . $end->day . ' ' . $m[$end->month] . ' ' . $end->year;
+        }
+
+        $suffix = $showYear ? ' ' . $end->year : '';
+
+        if ($start->month === $end->month) {
+            return $start->day . '–' . $end->day . ' ' . $m[$end->month] . $suffix;
+        }
+
+        return $start->day . ' ' . $m[$start->month] . '–' . $end->day . ' ' . $m[$end->month] . $suffix;
     }
 
     private function percentChange(float $current, float $previous): ?float

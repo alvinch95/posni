@@ -36,6 +36,8 @@ class DashboardController extends Controller
             'period' => ['nullable', Rule::in(DashboardPeriod::PRESETS)],
             'from' => ['nullable', 'required_if:period,custom', 'date_format:Y-m-d'],
             'to' => ['nullable', 'required_if:period,custom', 'date_format:Y-m-d', 'after_or_equal:from'],
+            // Groups the Tren Penjualan chart only; unusable choices fall back to the automatic one
+            'trend_group' => ['nullable', Rule::in(DashboardPeriod::GROUPS)],
         ]);
 
         try {
@@ -48,6 +50,6 @@ class DashboardController extends Controller
             throw ValidationException::withMessages(['period' => $e->getMessage()]);
         }
 
-        return response()->json($metrics->forPeriod($period));
+        return response()->json($metrics->forPeriod($period, $request->input('trend_group')));
     }
 }
