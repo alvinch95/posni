@@ -66,7 +66,10 @@
     .group-toggle { flex: 1 0 100%; }
     .group-toggle .btn { flex: 1 1 auto; min-width: 0; min-height: 44px; padding-left: .25rem; padding-right: .25rem; }
     .group-toggle .btn.active { background: var(--text-dark); border-color: var(--text-dark); color: #fff; }
-    .group-toggle .btn:disabled { cursor: not-allowed; }
+    /* Not a real :disabled (Bootstrap sets pointer-events:none on those, which would hide the title tooltip) */
+    .group-toggle .btn.is-disabled { opacity: .55; cursor: not-allowed; }
+    .group-toggle .btn.is-disabled:hover, .group-toggle .btn.is-disabled:active { color: #6c757d; background-color: transparent; }
+    .trend-hint { font-size: .875rem; color: var(--text-muted); margin: -.25rem 0 .75rem; }
     .is-busy .trend-body { opacity: .55; transition: opacity .15s; }
 
     @media (min-width: 576px) {
@@ -158,6 +161,7 @@
                     <button type="button" class="btn btn-outline-secondary" data-group="year" aria-pressed="false">Tahun</button>
                 </div>
             </div>
+            <p class="trend-hint" id="trend-group-hint" hidden></p>
             <div class="trend-body">
                 <div id="trend-empty" class="empty-state d-none">Belum ada penjualan di periode ini.</div>
                 <div id="trend-charts">
@@ -230,6 +234,7 @@
     let trendRequestId = 0; // trend-only refetches (grouping buttons) are superseded separately from full loads
     let fullLoading = false;
     let trendShown = null; // the grouping the trend charts currently show
+    let pendingGroup = null; // the grouping a trend-only refetch is currently loading, if any
     const charts = {};
 
     // --- Period state <-> URL ---
@@ -262,7 +267,7 @@
     const TOO_MANY_POINTS = 'Terlalu banyak titik untuk rentang ini';
 
     // Resolves to the payload, or null when the request was superseded or failed (already reported)
-    const fetchDashboard = async (extra, isCurrent) => {
+    const fetchDashboard = async (extra, isCurrent, failureTitle) => {
         const q = new URLSearchParams({ period: state.period });
         if (state.period === 'custom') { q.set('from', state.from); q.set('to', state.to); }
         Object.keys(extra).forEach((k) => q.set(k, extra[k]));
@@ -275,9 +280,14 @@
             Swal.fire({ icon: 'info', title: 'Sesi berakhir', text: 'Silakan login ulang.' }).then(() => window.location.reload());
             return null;
         }
-        if (!res.ok) {
+        if (res.status === 422) {
             const errors = body.errors ? Object.values(body.errors).flat().join(' ') : (body.message || 'Gagal memuat data.');
             Swal.fire({ icon: 'warning', title: 'Periode tidak valid', text: errors });
+            return null;
+        }
+        if (!res.ok) {
+            // 429, 500 and the like: not the user's period, so don't blame it
+            Swal.fire({ icon: 'error', title: failureTitle, text: 'Coba lagi sebentar.' });
             return null;
         }
         return body;
@@ -287,12 +297,13 @@
     const load = async () => {
         const id = ++requestId;
         trendRequestId++;
+        pendingGroup = null;
         fullLoading = true;
         $('#trend-card').removeClass('is-busy');
         $('#dash').addClass('is-loading');
 
         try {
-            const body = await fetchDashboard({}, () => id === requestId);
+            const body = await fetchDashboard({}, () => id === requestId, 'Gagal memuat dashboard');
             if (!body) return;
 
             lastData = body;
@@ -310,19 +321,25 @@
     };
 
     // Only the Tren Penjualan and Jumlah order charts change; the rest of the page keeps what it has
+    const TREND_FAILED = 'Gagal memuat grafik, coba lagi';
+
     const loadTrend = async (group) => {
         const id = ++trendRequestId;
+        pendingGroup = group;
         $('#trend-card').addClass('is-busy');
 
         try {
-            const body = await fetchDashboard({ trend_group: group }, () => id === trendRequestId);
+            const body = await fetchDashboard({ trend_group: group }, () => id === trendRequestId, TREND_FAILED);
             if (body) renderTrend(body.trend);
         } catch (e) {
             if (id === trendRequestId) {
-                Swal.fire({ icon: 'error', title: 'Gagal memuat tren', text: 'Coba lagi sebentar.' });
+                Swal.fire({ icon: 'error', title: TREND_FAILED, text: 'Coba lagi sebentar.' });
             }
         } finally {
-            if (id === trendRequestId) $('#trend-card').removeClass('is-busy');
+            if (id === trendRequestId) {
+                pendingGroup = null;
+                $('#trend-card').removeClass('is-busy');
+            }
         }
     };
 
@@ -388,19 +405,31 @@
         return Math.max(1, Math.min(isNarrow() ? 4 : 10, Math.floor(plotWidth / (longest * 6.2 + 10))));
     };
 
-    // Mark the grouping in use; values with too many points for the range are disabled
+    const joinLabels = (list) => (list.length > 1 ? list.slice(0, -1).join(', ') + ' dan ' + list[list.length - 1] : list[0]);
+
+    // Mark the grouping in use. Values with too many points for the range are aria-disabled (not
+    // :disabled, so hover and focus still work), with a title and a visible hint saying why.
     const renderTrendGroups = (trend) => {
         trendShown = trend.granularity;
+        const unavailable = [];
         $('#trend-group .btn').each(function () {
             const group = $(this).data('group');
             const allowed = trend.allowed_groups.includes(group);
             const selected = group === trend.granularity;
             $(this)
                 .toggleClass('active', selected)
-                .attr('aria-pressed', selected ? 'true' : 'false')
-                .prop('disabled', !allowed);
-            if (allowed) $(this).removeAttr('title'); else $(this).attr('title', TOO_MANY_POINTS);
+                .toggleClass('is-disabled', !allowed)
+                .attr('aria-pressed', selected ? 'true' : 'false');
+            if (allowed) {
+                $(this).removeAttr('aria-disabled title aria-describedby');
+            } else {
+                $(this).attr({ 'aria-disabled': 'true', 'title': TOO_MANY_POINTS, 'aria-describedby': 'trend-group-hint' });
+                unavailable.push($(this).text());
+            }
         });
+        $('#trend-group-hint')
+            .text(unavailable.length ? joinLabels(unavailable) + ' tidak tersedia untuk rentang sepanjang ini' : '')
+            .prop('hidden', unavailable.length === 0);
     };
 
     const renderTrend = (trend) => {
@@ -556,7 +585,18 @@
 
         $('#trend-group .btn').on('click', function () {
             const group = $(this).data('group');
-            if (this.disabled || fullLoading || !lastData || group === trendShown) return;
+            if ($(this).attr('aria-disabled') === 'true' || fullLoading || !lastData) return;
+
+            // The last click wins. Going back to what is already shown just cancels a pending refetch.
+            if (group === trendShown) {
+                if (pendingGroup) {
+                    trendRequestId++;
+                    pendingGroup = null;
+                    $('#trend-card').removeClass('is-busy');
+                }
+                return;
+            }
+            if (group === pendingGroup) return;
             loadTrend(group);
         });
 
