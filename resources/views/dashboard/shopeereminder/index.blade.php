@@ -383,42 +383,61 @@
 
 @if (session()->has('convert_success'))
 <script>
-  // "Ka-ching" after a successful Convert Order. Synthesized with Web Audio,
-  // so there is no audio file to host.
+  // Cash-register "ka-ching" after a successful Convert Order. Synthesized
+  // with Web Audio, so there is no audio file to host.
   (function () {
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
 
+    // A mechanical cash register: lever clunk, bell strike as the drawer
+    // kicks out, then the drawer hitting its stop. Timings and frequencies
+    // are modelled on a recording of a real register.
     function playKaChing(ctx) {
       var t0 = ctx.currentTime + 0.03;
       var master = ctx.createGain();
-      master.gain.value = 0.4;
+      master.gain.value = 0.7; // leaves headroom at 44.1, 48 and 96 kHz output
       master.connect(ctx.destination);
 
-      var noise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.2), ctx.sampleRate);
-      var samples = noise.getChannelData(0);
-      for (var i = 0; i < samples.length; i++) samples[i] = Math.random() * 2 - 1;
+      // Seeded noise, so the sound (and its peak level) is the same every time.
+      var seed = 7;
+      function rand() {
+        seed = (seed + 0x6D2B79F5) | 0;
+        var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      }
 
-      function burst(at, filterType, freq, peak, dur) {
+      var noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+      var samples = noise.getChannelData(0);
+      for (var i = 0; i < samples.length; i++) samples[i] = rand() * 2 - 1;
+
+      function noiseSource(at, dur) {
         var src = ctx.createBufferSource();
+        src.buffer = noise;
+        src.start(at, rand() * 0.7);
+        src.stop(at + dur + 0.05);
+        return src;
+      }
+
+      // Short filtered noise hit.
+      function burst(at, filterType, freq, peak, dur) {
+        var src = noiseSource(at, dur);
         var filter = ctx.createBiquadFilter();
         var gain = ctx.createGain();
-        src.buffer = noise;
         filter.type = filterType;
         filter.frequency.value = freq;
         gain.gain.setValueAtTime(peak, at);
-        gain.gain.exponentialRampToValueAtTime(0.001, at + dur);
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + dur);
         src.connect(filter); filter.connect(gain); gain.connect(master);
-        src.start(at);
-        src.stop(at + dur);
       }
 
-      function tone(at, freq, peak, dur) {
+      // One decaying sine partial.
+      function partial(at, freq, peak, dur) {
         var osc = ctx.createOscillator();
         var gain = ctx.createGain();
         osc.frequency.setValueAtTime(freq, at);
         gain.gain.setValueAtTime(0.0001, at);
-        gain.gain.exponentialRampToValueAtTime(peak, at + 0.004);
+        gain.gain.exponentialRampToValueAtTime(peak, at + 0.003);
         gain.gain.exponentialRampToValueAtTime(0.0001, at + dur);
         osc.connect(gain); gain.connect(master);
         osc.start(at);
@@ -426,22 +445,54 @@
         return osc;
       }
 
-      // Bell: a bright fundamental plus slightly inharmonic overtones.
-      function ching(at, base, level) {
-        burst(at, 'highpass', 6000, 0.3 * level, 0.03);
-        tone(at, base,        0.50 * level, 1.0);
-        tone(at, base * 2,    0.25 * level, 0.7);
-        tone(at, base * 2.76, 0.18 * level, 0.5);
-        tone(at, base * 4.07, 0.08 * level, 0.3);
+      // Mechanical clunk: noise ringing through the machine's body
+      // resonances, plus a click and a low thump.
+      function clunk(at, level, freqs, dur) {
+        var src = noiseSource(at, dur);
+        var env = ctx.createGain();
+        env.gain.setValueAtTime(level * 4.6, at);
+        env.gain.exponentialRampToValueAtTime(0.001, at + dur);
+        freqs.forEach(function (f) {
+          var bp = ctx.createBiquadFilter();
+          bp.type = 'bandpass';
+          bp.frequency.value = f;
+          bp.Q.value = 7;
+          src.connect(bp); bp.connect(env);
+        });
+        env.connect(master);
+        burst(at, 'highpass', 2500, level * 0.25, 0.012);
+        partial(at, 120, level * 0.35, 0.07).frequency.exponentialRampToValueAtTime(70, at + 0.07);
       }
 
-      // "Ka": the drawer kicking open.
-      burst(t0, 'bandpass', 1800, 0.9, 0.05);
-      tone(t0, 170, 0.6, 0.09).frequency.exponentialRampToValueAtTime(60, t0 + 0.09);
+      // Register bell: about 1400 Hz and 3565 Hz, ringing for over a second.
+      function bell(at, level, ring) {
+        var base = 1400;
+        burst(at, 'bandpass', 3500, level * 0.35, 0.02);
+        partial(at, base,         level * 0.34, ring);
+        partial(at, base * 1.004, level * 0.20, ring);
+        partial(at, base * 2.546, level * 0.24, ring * 0.75);
+        partial(at, base * 0.755, level * 0.14, ring * 0.15);
+        partial(at, base * 4.507, level * 0.07, ring * 0.2);
+      }
 
-      // "Ching ching".
-      ching(t0 + 0.10, 2093, 0.8);
-      ching(t0 + 0.26, 2637, 1.0);
+      // Drawer rolling out.
+      function slide(at, level, dur) {
+        var src = noiseSource(at, dur);
+        var lowpass = ctx.createBiquadFilter();
+        var gain = ctx.createGain();
+        lowpass.type = 'lowpass';
+        lowpass.frequency.value = 700;
+        gain.gain.setValueAtTime(0.0001, at);
+        gain.gain.exponentialRampToValueAtTime(level, at + dur * 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+        src.connect(lowpass); lowpass.connect(gain); gain.connect(master);
+      }
+
+      clunk(t0, 1.0, [160, 250, 345, 470], 0.13);
+      clunk(t0 + 0.26, 1.2, [180, 225, 345, 500, 560], 0.16);
+      bell(t0 + 0.28, 1.0, 2.6);
+      slide(t0 + 0.33, 0.25, 0.3);
+      clunk(t0 + 0.68, 0.8, [215, 470, 750, 1130], 0.11);
     }
 
     var ctx = new AC();
@@ -453,7 +504,7 @@
       played = true;
       unlockEvents.forEach(function (e) { document.removeEventListener(e, unlock, true); });
       playKaChing(ctx);
-      setTimeout(function () { ctx.close(); }, 2500);
+      setTimeout(function () { ctx.close(); }, 3500);
     }
 
     // If the browser blocks sound on page load, the first click or key press
