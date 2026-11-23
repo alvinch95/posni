@@ -239,7 +239,8 @@ class ShopeeReminderController extends Controller
 
             DB::commit();
             Alert::success('Success', 'Convert to Order Successs !');
-            return redirect()->back();
+            // convert_success tells the view to play the "ka-ching" sound once
+            return redirect()->back()->with('convert_success', true);
         }catch (\Exception $e) {
             DB::rollback();
             // Handle the exception (log, display error message, etc.)

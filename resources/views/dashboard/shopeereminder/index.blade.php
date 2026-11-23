@@ -380,4 +380,92 @@
     }
   });
 </script>
+
+@if (session()->has('convert_success'))
+<script>
+  // "Ka-ching" after a successful Convert Order. Synthesized with Web Audio,
+  // so there is no audio file to host.
+  (function () {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+
+    function playKaChing(ctx) {
+      var t0 = ctx.currentTime + 0.03;
+      var master = ctx.createGain();
+      master.gain.value = 0.4;
+      master.connect(ctx.destination);
+
+      var noise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.2), ctx.sampleRate);
+      var samples = noise.getChannelData(0);
+      for (var i = 0; i < samples.length; i++) samples[i] = Math.random() * 2 - 1;
+
+      function burst(at, filterType, freq, peak, dur) {
+        var src = ctx.createBufferSource();
+        var filter = ctx.createBiquadFilter();
+        var gain = ctx.createGain();
+        src.buffer = noise;
+        filter.type = filterType;
+        filter.frequency.value = freq;
+        gain.gain.setValueAtTime(peak, at);
+        gain.gain.exponentialRampToValueAtTime(0.001, at + dur);
+        src.connect(filter); filter.connect(gain); gain.connect(master);
+        src.start(at);
+        src.stop(at + dur);
+      }
+
+      function tone(at, freq, peak, dur) {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.frequency.setValueAtTime(freq, at);
+        gain.gain.setValueAtTime(0.0001, at);
+        gain.gain.exponentialRampToValueAtTime(peak, at + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+        osc.connect(gain); gain.connect(master);
+        osc.start(at);
+        osc.stop(at + dur + 0.02);
+        return osc;
+      }
+
+      // Bell: a bright fundamental plus slightly inharmonic overtones.
+      function ching(at, base, level) {
+        burst(at, 'highpass', 6000, 0.3 * level, 0.03);
+        tone(at, base,        0.50 * level, 1.0);
+        tone(at, base * 2,    0.25 * level, 0.7);
+        tone(at, base * 2.76, 0.18 * level, 0.5);
+        tone(at, base * 4.07, 0.08 * level, 0.3);
+      }
+
+      // "Ka": the drawer kicking open.
+      burst(t0, 'bandpass', 1800, 0.9, 0.05);
+      tone(t0, 170, 0.6, 0.09).frequency.exponentialRampToValueAtTime(60, t0 + 0.09);
+
+      // "Ching ching".
+      ching(t0 + 0.10, 2093, 0.8);
+      ching(t0 + 0.26, 2637, 1.0);
+    }
+
+    var ctx = new AC();
+    var played = false;
+    var unlockEvents = ['pointerdown', 'keydown', 'touchstart'];
+
+    function fire() {
+      if (played || ctx.state !== 'running') return;
+      played = true;
+      unlockEvents.forEach(function (e) { document.removeEventListener(e, unlock, true); });
+      playKaChing(ctx);
+      setTimeout(function () { ctx.close(); }, 2500);
+    }
+
+    // If the browser blocks sound on page load, the first click or key press
+    // (e.g. OK on the success popup) plays it instead.
+    function unlock() {
+      ctx.resume().then(fire).catch(function () {});
+    }
+
+    unlockEvents.forEach(function (e) { document.addEventListener(e, unlock, true); });
+    ctx.addEventListener('statechange', fire);
+    unlock();
+  })();
+</script>
+@endif
 @endsection
